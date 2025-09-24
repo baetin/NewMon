@@ -1,3 +1,1 @@
-자두가자
-헤헤 
-ㅋㅂㄹ?
+# npm install 후 npm run dev
