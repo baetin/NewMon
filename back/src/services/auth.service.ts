@@ -1,0 +1,57 @@
+import prisma from '../utils/prisma.js';
+import * as bcrypt from 'bcrypt';
+// 1. PrismaClient 대신, Prisma 네임스페이스를 가져옵니다.
+import { Prisma } from '@prisma/client'; 
+
+// 입력 데이터의 타입을 정의합니다.
+interface SignupData {
+    username: string;
+    password: string;
+    email: string;
+    interests: number[]; // Topic ID 배열
+}
+
+// 비밀번호 해싱 및 사용자 생성을 처리하는 핵심 함수
+export const signupService = async (data: SignupData) => {
+    
+    // 1. 비밀번호 해싱
+    const saltRounds = 10;
+    const password_hash = await bcrypt.hash(data.password, saltRounds);
+
+    // 2. DB 트랜잭션 실행: User 생성 및 UserInterest 연결
+    // 2. 트랜잭션 콜백 함수에 Prisma.TransactionClient 타입을 명시합니다.
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => { 
+        
+        // 3-1. User 테이블에 사용자 정보 삽입
+        const newUser = await tx.user.create({
+            data: {
+                username: data.username,
+                password_hash: password_hash,
+                email: data.email,
+            },
+        });
+        
+        // 3-2. UserInterest 테이블에 관심 분야 연결
+        const interestData = data.interests.map((topicId: number) => ({
+            user_id: newUser.user_id,
+            topic_id: topicId,
+        }));
+
+        await tx.userInterest.createMany({
+            data: interestData,
+            skipDuplicates: true,
+        });
+
+        return newUser;
+    });
+    
+    // 성공 시 사용자 정보 반환 (비밀번호 해시 제외)
+    return {
+        user_id: result.user_id,
+        username: result.username,
+    };
+};
+
+// ✨ 로그인 서비스 로직도 함께 export 합니다. ✨
+// (이전에 작성된 loginService 함수 코드가 이 파일에 있다고 가정합니다.)
+// export const loginService = async (data: LoginData) => { /* ... */ };
