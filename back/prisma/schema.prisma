@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ✨ 이 부분이 핵심입니다! provider를 "postgresql"로 설정해야 합니다. ✨
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// prisma/schema.prisma 파일의 'model' 정의 섹션에 아래 내용을 삽입합니다.
+
+// -----------------------------------
+// I. 사용자 및 개인화 테이블 (4개)
+// -----------------------------------
+
+model User {
+  user_id           Int               @id @default(autoincrement())
+  username          String            @unique @db.VarChar(100)
+  password_hash     String            @db.VarChar(255)
+  email             String            @unique @db.VarChar(100)
+  created_at        DateTime          @default(now())
+  
+  // 논리적 관계
+  interests         UserInterest[]
+  search_history    UserSearchHistory[]
+}
+
+model Topic {
+  topic_id          Int               @id @default(autoincrement())
+  topic_name        String            @unique @db.VarChar(50)
+  
+  // 논리적 관계
+  user_interests    UserInterest[]
+  article_keywords  ArticleKeyword[]
+}
+
+model UserInterest {
+  interest_id       Int       @id @default(autoincrement())
+  user_id           Int
+  topic_id          Int
+  set_at            DateTime  @default(now())
+  
+  // 외래 키 정의
+  user              User      @relation(fields: [user_id], references: [user_id])
+  topic             Topic     @relation(fields: [topic_id], references: [topic_id])
+
+  @@unique([user_id, topic_id])
+}
+
+model UserSearchHistory {
+  history_id        Int       @id @default(autoincrement())
+  user_id           Int
+  search_keyword    String    @db.VarChar(100)
+  search_time       DateTime  @default(now())
+  hit_count         Int       @default(1)
+
+  // 외래 키 정의
+  user              User      @relation(fields: [user_id], references: [user_id])
+}
+
+// -----------------------------------
+// II. 뉴스 기사 저장 테이블 (4개)
+// -----------------------------------
+
+model Topic_Economic_Article {
+  article_id          Int       @id @default(autoincrement())
+  title               String    @db.VarChar(255)
+  summary_text        String?   @db.Text // DBML의 text는 String? @db.Text로 매핑
+  full_text           String    @db.Text
+  image_url           String?   @db.VarChar(255)
+  source              String?   @db.VarChar(100)
+  published_date      DateTime
+  crawled_at          DateTime  @default(now())
+  
+  // 기사의 세부 특성 및 객관성 점수
+  information_depth   String    @db.VarChar(50)
+  focus_area          String?   @db.VarChar(50)
+  objectivity_score   Decimal   @db.Decimal(5, 2)
+}
+
+// 나머지 3개 토픽 테이블도 위 구조와 동일합니다. 
+// Topic_Social_Article, Topic_IT_Science_Article, Topic_Sports_Article...
+
+model Topic_Social_Article {
+  article_id          Int       @id @default(autoincrement())
+  title               String    @db.VarChar(255)
+  summary_text        String?   @db.Text
+  full_text           String    @db.Text
+  image_url           String?   @db.VarChar(255)
+  source              String?   @db.VarChar(100)
+  published_date      DateTime
+  crawled_at          DateTime  @default(now())
+
+  information_depth   String    @db.VarChar(50)
+  focus_area          String?   @db.VarChar(50)
+  objectivity_score   Decimal   @db.Decimal(5, 2)
+}
+
+model Topic_IT_Science_Article {
+  article_id          Int       @id @default(autoincrement())
+  title               String    @db.VarChar(255)
+  summary_text        String?   @db.Text
+  full_text           String    @db.Text
+  image_url           String?   @db.VarChar(255)
+  source              String?   @db.VarChar(100)
+  published_date      DateTime
+  crawled_at          DateTime  @default(now())
+
+  information_depth   String    @db.VarChar(50)
+  focus_area          String?   @db.VarChar(50)
+  objectivity_score   Decimal   @db.Decimal(5, 2)
+}
+
+model Topic_Sports_Article {
+  article_id          Int       @id @default(autoincrement())
+  title               String    @db.VarChar(255)
+  summary_text        String?   @db.Text
+  full_text           String    @db.Text
+  image_url           String?   @db.VarChar(255)
+  source              String?   @db.VarChar(100)
+  published_date      DateTime
+  crawled_at          DateTime  @default(now())
+
+  information_depth   String    @db.VarChar(50)
+  focus_area          String?   @db.VarChar(50)
+  objectivity_score   Decimal   @db.Decimal(5, 2)
+}
+
+// -----------------------------------
+// III. 키워드 검색 테이블 (2개)
+// -----------------------------------
+
+model Keyword {
+  keyword_id          Int       @id @default(autoincrement())
+  keyword_name        String    @unique @db.VarChar(100)
+  
+  // 논리적 관계
+  article_keywords    ArticleKeyword[]
+}
+
+model ArticleKeyword {
+  article_keyword_id  Int       @id @default(autoincrement())
+  topic_id            Int
+  article_id          Int
+  keyword_id          Int
+
+  // 외래 키 정의
+  topic               Topic     @relation(fields: [topic_id], references: [topic_id])
+  keyword             Keyword   @relation(fields: [keyword_id], references: [keyword_id])
+  
+  @@unique([topic_id, article_id, keyword_id])
+}

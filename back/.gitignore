@@ -1,0 +1,27 @@
+# ----------------------------------------------------
+# Node.js / TypeScript
+# ----------------------------------------------------
+/node_modules
+/dist
+/build
+.env
+.env.local
+npm-debug.log
+yarn-error.log
+# (ts-node를 사용하는 개발 환경에서 생성될 수 있는 임시 파일)
+*.tsbuildinfo
+*.js.map
+
+# ----------------------------------------------------
+# Prisma
+# ----------------------------------------------------
+# Prisma Client는 설치 시 자동으로 생성되므로 제외합니다.
+/node_modules/@prisma/client
+/src/generated/
+
+# 데이터베이스 파일 및 기록 제외
+# (SQLite를 사용한다면) 실제 DB 파일 (.db 확장자)
+*.db
+
+# 마이그레이션 파일은 포함합니다! (필수)
+# /prisma/migrations 폴더는 반드시 Git에 커밋되어야 합니다.
