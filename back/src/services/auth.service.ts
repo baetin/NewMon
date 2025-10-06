@@ -52,6 +52,34 @@ export const signupService = async (data: SignupData) => {
     };
 };
 
-// ✨ 로그인 서비스 로직도 함께 export 합니다. ✨
-// (이전에 작성된 loginService 함수 코드가 이 파일에 있다고 가정합니다.)
-// export const loginService = async (data: LoginData) => { /* ... */ };
+interface LoginData {
+    username: string;
+    password: string;
+}
+
+export const loginService = async (data: LoginData) => {
+    
+    // 1. 사용자 정보 조회 (해당 username의 레코드와 password_hash를 가져옴)
+    const user = await prisma.user.findUnique({
+        where: { username: data.username },
+    });
+
+    // 사용자가 존재하지 않는 경우
+    if (!user) {
+        return null; 
+    }
+
+    // 2. 비밀번호 검증 (입력된 비밀번호와 해시값 비교)
+    // bcrypt.compare(입력된 비밀번호, DB에 저장된 해시값)
+    const isPasswordValid = await bcrypt.compare(data.password, user.password_hash);
+
+    if (!isPasswordValid) {
+        return null; // 비밀번호 불일치
+    }
+
+    // 3. 검증 성공: 사용자 ID와 username 반환
+    return {
+        user_id: user.user_id,
+        username: user.username,
+    };
+};
