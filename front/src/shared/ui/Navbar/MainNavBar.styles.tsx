@@ -1,0 +1,39 @@
+import styled from "styled-components";
+
+export const Logo = styled.img`
+  height: 80px;
+`;
+
+export const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+`;
+
+export const ButtonBase = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 25px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+`;
+
+export const SignupButton = styled(ButtonBase)`
+  background-color: #fa9675;
+
+  &:hover {
+    background-color: #f88963;
+  }
+`;
+
+export const LoginButton = styled(ButtonBase)`
+  background-color: #162733;
+
+  &:hover {
+    background-color: #22394b;
+  }
+`;
