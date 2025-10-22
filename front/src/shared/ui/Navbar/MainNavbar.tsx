@@ -1,8 +1,7 @@
 import { Navbar, Nav, Container } from "react-bootstrap";
 import mainLogo from "../../assets/mainLogo.png";
-import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
-import { RightSection, SignupButton, LoginButton } from "./MainNavBar.styles";
-
+import { FaSignInAlt } from "react-icons/fa";
+import { RightSection, LoginButton } from "./MainNavBar.styles";
 export const MainNavbar: React.FC = () => {
   return (
     <Navbar bg="light" expand="lg">
@@ -32,10 +31,6 @@ export const MainNavbar: React.FC = () => {
 
         {/* 우측 영역 */}
         <RightSection>
-          <SignupButton onClick={() => (window.location.href = "/signUp")}>
-            <FaUserPlus size={18} />
-            회원가입
-          </SignupButton>
           <LoginButton onClick={() => (window.location.href = "/login")}>
             <FaSignInAlt size={18} />
             로그인

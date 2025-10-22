@@ -6,7 +6,6 @@ import { createBrowserRouter } from "react-router-dom";
 // 페이지 lazy import
 const HomePage = lazy(() => import("../../pages/Home/ui/HomePage"));
 const LoginPage = lazy(() => import("../../pages/Login/LoginPage"));
-const SignUpPage = lazy(() => import("../../pages/SignUp/SignUpPage"));
 const NotFoundPage = lazy(() => import("../../pages/NotFound/NotFoundPage"));
 
 // Suspense 래퍼
@@ -23,6 +22,5 @@ export const AppRouter = createBrowserRouter([
     children: [{ path: "", element: withSuspense(HomePage) }],
   },
   { path: "/login", element: withSuspense(LoginPage) },
-  { path: "/signUp", element: withSuspense(SignUpPage) },
   { path: "*", element: withSuspense(NotFoundPage) },
 ]);
