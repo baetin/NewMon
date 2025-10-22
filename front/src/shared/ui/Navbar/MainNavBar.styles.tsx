@@ -22,18 +22,11 @@ export const ButtonBase = styled.div`
   transition: all 0.3s ease;
 `;
 
-export const SignupButton = styled(ButtonBase)`
-  background-color: #fa9675;
-
-  &:hover {
-    background-color: #f88963;
-  }
-`;
-
 export const LoginButton = styled(ButtonBase)`
   background-color: #162733;
 
   &:hover {
-    background-color: #22394b;
+    transition: all 0.3s ease;
+    background-color: #fa9675;
   }
 `;

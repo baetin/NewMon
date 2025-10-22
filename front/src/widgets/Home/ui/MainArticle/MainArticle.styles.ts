@@ -3,12 +3,20 @@ import styled from "styled-components";
 export const ArticleContainer = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 800px;
 `;
 
 export const Image = styled.img`
-  width: 100%;
+  width: 800px;
   height: auto;
   border-radius: 12px;
+`;
+
+export const Contents = styled.div`
+  padding: 20px 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 `;
 
 export const Title = styled.h2`
