@@ -29,6 +29,7 @@ const ExpandedArticle: React.FC<ExpandedArticleProps> = ({
         <CloseBtn>
           <AiOutlineClose size={30} onClick={() => onClose()} />
         </CloseBtn>
+        <h2>{article.title}</h2>
         <img
           src={article.image}
           alt={article.title}
@@ -39,7 +40,7 @@ const ExpandedArticle: React.FC<ExpandedArticleProps> = ({
             marginBottom: "1rem",
           }}
         />
-        <h2>{article.title}</h2>
+
         <p>AI 요약 : {article.summary}</p>
         {article.article && (
           <MainArticle>본문 기사 : {article.article}</MainArticle>

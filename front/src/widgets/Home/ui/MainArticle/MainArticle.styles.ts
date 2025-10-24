@@ -3,29 +3,28 @@ import styled from "styled-components";
 export const ArticleContainer = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 800px;
+  gap: 12px;
 `;
 
 export const Image = styled.img`
-  width: 800px;
+  width: 100%;
   height: auto;
   border-radius: 12px;
 `;
 
-export const Contents = styled.div`
-  padding: 20px 0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
-`;
-
 export const Title = styled.h2`
-  margin: 12px 0 8px;
-  font-size: 24px;
-  color: #162733;
+  font-size: 1.8rem;
+  font-weight: bold;
 `;
 
 export const Summary = styled.p`
-  color: #444;
-  font-size: 16px;
+  font-size: 1rem;
+  color: #555;
+`;
+
+export const CompareBox = styled.div`
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.9rem;
 `;

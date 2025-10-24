@@ -13,7 +13,7 @@ export const SubArticle = styled(motion.div)`
   justify-content: space-between;
   max-width: 700px;
   max-height: 180px;
-  background: #ffffff;
+  background: ${({ theme }) => theme.colors.background};
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 1rem 1.5rem;

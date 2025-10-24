@@ -1,16 +1,19 @@
-import type React from "react";
-import { Container, Left, Right } from "./HomePage.styles";
-import MainArticle from "../../../widgets/Home/ui/MainArticle/MainArticle";
-import SubArticleList from "../../../widgets/Home/ui/SubArticleList/SubArticleList";
+import {
+  Container,
+  Left,
+  Right,
+} from "../../../shared/styles/articleContents.styles";
+import { HotTopicList } from "../../../widgets/Home/ui/HotTopic/HotTopic";
+import { MainArticle } from "../../../widgets/Home/ui/MainArticle/MainArticle";
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
   return (
     <Container>
       <Left>
         <MainArticle />
       </Left>
       <Right>
-        <SubArticleList />
+        <HotTopicList />
       </Right>
     </Container>
   );
