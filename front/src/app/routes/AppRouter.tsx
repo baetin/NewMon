@@ -4,8 +4,15 @@ import { MainLayout } from "../../widgets/layouts";
 import { createBrowserRouter } from "react-router-dom";
 
 // 페이지 lazy import
+
 const HomePage = lazy(() => import("../../pages/Home/ui/HomePage"));
+const TopicsHomePage = lazy(
+  () => import("../../pages/TopicsHome/ui/TopicsHomePage")
+);
 const LoginPage = lazy(() => import("../../pages/Login/LoginPage"));
+const InterestSelectPage = lazy(
+  () => import("../../pages/InterestSelect/ui/InterestSelect")
+);
 const NotFoundPage = lazy(() => import("../../pages/NotFound/NotFoundPage"));
 
 // Suspense 래퍼
@@ -19,8 +26,12 @@ export const AppRouter = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-    children: [{ path: "", element: withSuspense(HomePage) }],
+    children: [
+      { path: "", element: withSuspense(HomePage) },
+      { path: "/news/:topic", element: withSuspense(TopicsHomePage) },
+    ],
   },
   { path: "/login", element: withSuspense(LoginPage) },
+  { path: "/interest-select", element: withSuspense(InterestSelectPage) },
   { path: "*", element: withSuspense(NotFoundPage) },
 ]);

@@ -11,7 +11,7 @@ export const Container = styled.div`
 `;
 
 export const Card = styled.div`
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.colors.background};
   padding: 120px 80px;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);

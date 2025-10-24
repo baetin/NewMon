@@ -37,7 +37,7 @@ export const ExpandedCard = styled(motion.div)`
   -ms-overflow-style: none;
 
   h2 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 1rem 0;
   }
 
   p:first-of-type {

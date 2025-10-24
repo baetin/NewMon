@@ -1,46 +1,23 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
 import {
   ArticleContainer,
+  Image,
   Title,
   Summary,
-  Image,
-  Contents,
+  CompareBox,
 } from "./MainArticle.styles";
-import ExpandedArticle from "../../../../features/article-expand/ui/ExpandedArticle";
-import { exArticles } from "../../model/articles";
 
-const MainArticle: React.FC = () => {
-  const [selected, setSelected] = useState<boolean>(false);
-  const article = exArticles[0]; // 예시로 첫 번째 기사 사용
-
+export const MainArticle: React.FC = () => {
   return (
-    <>
-      <motion.div
-        layoutId={`main-article-${article.id}`}
-        onClick={() => setSelected(true)}
-        whileTap={{ scale: 0.98 }}
-        style={{ cursor: "pointer" }}
-      >
-        <ArticleContainer>
-          <Image src={article.image} alt={article.title} />
-          <Contents>
-            <Title>{article.title}</Title>
-            <Summary>AI 요약 : {article.summary}</Summary>
-          </Contents>
-        </ArticleContainer>
-      </motion.div>
-
-      <AnimatePresence>
-        {selected && (
-          <ExpandedArticle
-            article={article}
-            onClose={() => setSelected(false)}
-          />
-        )}
-      </AnimatePresence>
-    </>
+    <ArticleContainer>
+      <Image src="https://placehold.co/800x400" alt="메인 기사" />
+      <Title>한국은행, 기준금리 동결</Title>
+      <Summary>🤖 경기 둔화 우려 속 금리 인상 멈춤</Summary>
+      <CompareBox>
+        <h4>AI 요약 vs 원문 비교</h4>
+        <p>AI 요약: 경기 둔화 우려로 금리 인상 멈춤</p>
+        <p>원문: 한국은행은 오늘 열린 금융통화위원회에서...</p>
+      </CompareBox>
+    </ArticleContainer>
   );
 };
-
-export default MainArticle;
