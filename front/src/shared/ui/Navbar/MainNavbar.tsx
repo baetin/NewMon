@@ -2,6 +2,8 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import mainLogo from "../../assets/mainLogo.png";
 import { FaSignInAlt } from "react-icons/fa";
 import { RightSection, LoginButton } from "./MainNavBar.styles";
+import { topics } from "../../model/topics";
+
 export const MainNavbar: React.FC = () => {
   return (
     <Navbar bg="light" expand="lg">
@@ -23,10 +25,13 @@ export const MainNavbar: React.FC = () => {
           className="mx-auto"
           style={{ gap: "30px", fontSize: "18px", fontWeight: "600" }}
         >
-          <Nav.Link href="/news/economy">경제</Nav.Link>
-          <Nav.Link href="/news/society">사회</Nav.Link>
-          <Nav.Link href="/news/it">IT/과학</Nav.Link>
-          <Nav.Link href="/news/sports">스포츠</Nav.Link>
+          {topics.map((topic) => {
+            return (
+              <>
+                <Nav.Link href={`/news/${topic.value}`}>{topic.label}</Nav.Link>
+              </>
+            );
+          })}
         </Nav>
 
         {/* 우측 영역 */}
