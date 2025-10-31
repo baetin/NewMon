@@ -1,13 +1,53 @@
 # pipeline_csv.py
-import os, csv, re, hashlib
+
+import os, csv, re
 import feedparser
 from dateutil import parser as dtparser
 from datetime import timezone
+from typing import List
+import numpy as np
+
 from extractor import extract_full_article, sha256
 from settings import (
     FEEDS, SOURCE_ID, CSV_PATH, MIN_CONTENT_CHARS,
-    PER_FEED_LIMIT, USE_LOCAL, LOCAL_MODEL, MAX_SUMMARY_CHARS
+    PER_FEED_LIMIT, USE_LOCAL, LOCAL_MODEL, MAX_SUMMARY_CHARS,
+    # 의미기반 요약 설정
+    USE_SEMANTIC_SUMMARY, SEM_MODEL_NAME, SEM_MAX_SENTENCES, SEM_MIN_SENT_LEN
 )
+
+# sentence-transformers / sklearn은 선택 설치
+try:
+    from sentence_transformers import SentenceTransformer
+    from sklearn.metrics.pairwise import cosine_similarity
+    _SEM_MODEL = None  # lazy init
+except Exception:
+    _SEM_MODEL = None  # 미설치 시 False로 대체해 폴백하게 함
+
+# NEW: 가벼운 맞춤법/띄어쓰기 교정기(Hanspell) — 미설치면 자동 무시
+try:
+    from hanspell import spell_checker  # pip install py-hanspell
+    _HAS_HANSPELL = True
+except Exception:
+    spell_checker = None
+    _HAS_HANSPELL = False
+
+# NEW: 요약 후 문장 폴리시(교정) 함수
+def _polish_summary(text: str) -> str:
+    if not text:
+        return text
+    out = text.strip()
+    # 1) Hanspell 교정(가능할 때만)
+    if _HAS_HANSPELL:
+        try:
+            out = spell_checker.check(out).checked
+        except Exception:
+            pass
+    # 2) 공백 정리
+    out = re.sub(r"\s+", " ", out).strip()
+    # 3) 끝맺음 기호 보정(문장 마지막이 기호로 끝나지 않으면 마침표 추가)
+    if out and not re.search(r"[\.!?…]$", out):
+        out += "."
+    return out
 
 # === 날짜 파싱 ===
 def parse_pubdate(e):
@@ -43,8 +83,93 @@ def summarize_extractive(title: str, content: str, max_chars=300) -> str:
     s = " ".join(parts[:3])
     return (s[:max_chars] + "…") if len(s) > max_chars else s
 
-# === 로컬(KoBART) 요약 ===
-def summarize(title: str, content: str) -> str:
+# ===== 의미기반(벡터) 요약 유틸 =====
+_SENT_SPLIT = re.compile(r'(?<=[.!?])\s+|(?<=다)\s+|(?<=요)\s+|(?<=입니다)\s+')
+
+def _split_sents_kor(text: str) -> List[str]:
+    text = (text or "").strip()
+    if not text:
+        return []
+    sents = [s.strip() for s in _SENT_SPLIT.split(text) if s and len(s.strip()) > 0]
+    sents = [re.sub(r'\s+', ' ', s).strip() for s in sents if len(s.strip()) >= SEM_MIN_SENT_LEN]
+    # 앞 40자로 간단 중복 제거
+    seen, uniq = set(), []
+    for s in sents:
+        k = s[:40]
+        if k not in seen:
+            seen.add(k)
+            uniq.append(s)
+    return uniq
+
+def _ensure_sem_model():
+    global _SEM_MODEL
+    if _SEM_MODEL is None:
+        try:
+            _SEM_MODEL = SentenceTransformer(SEM_MODEL_NAME)
+        except Exception:
+            _SEM_MODEL = False
+    return _SEM_MODEL
+
+# Maximal Marginal Relevance: 질의와 유사하면서 상호중복 적은 문장 k개 선택
+def _mmr_select(query_vec: np.ndarray, cand_vecs: np.ndarray, k=2, lambda_div=0.7):
+    if cand_vecs.shape[0] == 0:
+        return []
+    from sklearn.metrics.pairwise import cosine_similarity  # ensure available here
+    sim_to_query = cosine_similarity(cand_vecs, query_vec.reshape(1, -1)).ravel()
+    selected = [int(np.argmax(sim_to_query))]
+    candidates = set(range(cand_vecs.shape[0])) - set(selected)
+    while len(selected) < min(k, cand_vecs.shape[0]):
+        max_score, max_idx = -1e9, None
+        for idx in candidates:
+            sim1 = sim_to_query[idx]
+            sim2 = 0.0
+            if selected:
+                sim2 = float(np.max(cosine_similarity(cand_vecs[idx:idx+1], cand_vecs[selected]).ravel()))
+            score = lambda_div * sim1 - (1.0 - lambda_div) * sim2
+            if score > max_score:
+                max_score, max_idx = score, idx
+        selected.append(max_idx)
+        candidates.remove(max_idx)
+    return selected
+
+def summarize_semantic(title: str, content: str, rss_sum: str, max_chars: int) -> str:
+    model = _ensure_sem_model()
+    if not model:
+        return ""  # 모델 불가 시 상위에서 폴백
+
+    # 문장 후보: 본문 → 없으면 RSS → 없으면 제목
+    sents = _split_sents_kor(content) or _split_sents_kor(rss_sum) or _split_sents_kor(title)
+    if not sents:
+        base = (rss_sum or title or "").strip()
+        return (base[:max_chars] + "…") if len(base) > max_chars else base
+
+    # 질의: 제목 + RSS요약 결합
+    query = f"{(title or '').strip()} {(rss_sum or '').strip()}".strip() or sents[0]
+
+    # 임베딩
+    cand_vecs = model.encode(sents, convert_to_numpy=True, normalize_embeddings=True)
+    query_vec = model.encode([query], convert_to_numpy=True, normalize_embeddings=True)[0]
+
+    # 상위 문장 선택
+    top_idx = _mmr_select(query_vec, cand_vecs, k=SEM_MAX_SENTENCES, lambda_div=0.7)
+    picked = [sents[i] for i in top_idx]
+
+    out = " ".join(picked)
+    out = re.sub(r'\s+', ' ', out).strip()
+    return (out[:max_chars] + "…") if len(out) > max_chars else out
+
+# === 요약 본체 ===
+def summarize(title: str, content: str, rss_sum: str = "") -> str:
+    # 1) 의미기반(벡터) 요약 먼저 시도
+    if USE_SEMANTIC_SUMMARY:
+        try:
+            out = summarize_semantic(title, content, rss_sum, MAX_SUMMARY_CHARS)
+            if out:
+                return out
+        except Exception:
+            pass
+
+    # 2) 로컬(KoBART) 요약 폴백
     if USE_LOCAL:
         try:
             from summarize_local import summarize_local
@@ -53,48 +178,10 @@ def summarize(title: str, content: str) -> str:
                 return out
         except Exception:
             pass
-    return summarize_extractive(title, content, MAX_SUMMARY_CHARS)
 
-# === 저장 전용 중복 제거(원본문은 건드리지 않음) ===
-from difflib import SequenceMatcher
-from collections import Counter
-
-def _norm_line(s: str) -> str:
-    s = re.sub(r"\s+", " ", s).strip()
-    return s.replace("“", '"').replace("”", '"').replace("’", "'").replace("‘", "'")
-
-def _split_sents_safe(text: str):
-    tmp = re.sub(r'([.!?][\"\')]|[.!?]|다\.)\s+', r'\1\n', text)
-    return [s.strip() for s in tmp.split("\n") if s.strip()]
-
-def dedupe_for_storage(text: str, sim_th: float = 0.90) -> str:
-    if not text:
-        return ""
-    # 1) 문단(줄) 중복 제거 + 인접 유사 제거
-    lines = [l for l in re.split(r"\r?\n|<br\s*/?>", text) if l and l.strip()]
-    uniq, seen = [], set()
-    for ln in lines:
-        n = _norm_line(ln)
-        if len(n) < 3:
-            continue
-        key = hashlib.sha1(n.encode("utf-8")).hexdigest()
-        if key in seen:
-            continue
-        if uniq and SequenceMatcher(None, uniq[-1], n).ratio() >= sim_th:
-            continue
-        seen.add(key)
-        uniq.append(n)
-    # 2) 문장 중복 제거(완전 동일 문장 1회만)
-    sents = _split_sents_safe("\n".join(uniq))
-    cnt = Counter(sents)
-    out, seen_sent = [], set()
-    for s in sents:
-        if cnt[s] > 1:
-            if s in seen_sent:
-                continue
-            seen_sent.add(s)
-        out.append(s)
-    return "\n".join(out)
+    # 3) 추출식 폴백
+    base = content or rss_sum or title
+    return summarize_extractive(title, base, MAX_SUMMARY_CHARS)
 
 def run_once():
     rows = []
@@ -111,21 +198,20 @@ def run_once():
 
             art = extract_full_article(url)
             title = art["title"] or (getattr(e, "title", "") or "").strip()
+            content = art["content"] or ""
 
-            # 원본문(요약용)은 그대로 보존
-            raw_content = art["content"] or ""
-
-            # 저장용 본문 후보(너무 짧으면 RSS summary로 보강)
+            # 너무 짧으면 RSS summary로 보강(옵션)
             rss_sum = (getattr(e, "summary", "") or getattr(e, "description", "") or "").strip()
-            chosen_for_storage = rss_sum if (len(raw_content) < MIN_CONTENT_CHARS and len(rss_sum) > len(raw_content)) else raw_content
+            if len(content) < MIN_CONTENT_CHARS and len(rss_sum) > len(content):
+                content = rss_sum
 
-            # 요약은 원본문(길이 유지) 기준
-            summary = summarize(title, raw_content if raw_content.strip() else chosen_for_storage)
+            author = extract_author(title, content)
 
-            # 저장 직전에만 중복 제거
-            content_clean = dedupe_for_storage(chosen_for_storage)
+            # 의미기반 요약 → KoBART → 추출식
+            summary = summarize(title, content, rss_sum=rss_sum)
 
-            author = extract_author(title, content_clean)
+            # NEW: 요약 후 문장 폴리시(맞춤법/띄어쓰기/끝맺음)
+            summary = _polish_summary(summary)
 
             rows.append({
                 "url": art["url"],
@@ -135,9 +221,9 @@ def run_once():
                 "published_at": art.get("published_at") or "",
                 "rss_published_at": parse_pubdate(e).isoformat() if parse_pubdate(e) else "",
                 "title": title,
-                "content": content_clean,   # 저장은 깔끔본
+                "content": content,
                 "author": author,
-                "summary": summary,         # 요약은 원본문 기반
+                "summary": summary,
                 "image_main": art.get("image_main") or "",
                 "image_urls": ";".join(art.get("image_urls") or []),
             })
