@@ -1,7 +1,10 @@
-import type React from "react";
-import { Container, Left, Right } from "./HomePage.styles";
-import MainArticle from "../components/MainArticle";
-import SubArticleList from "../components/SubArticleList";
+import {
+  Container,
+  Left,
+  Right,
+} from "../../../shared/styles/articleContents.styles";
+import { MainArticle } from "../../../widgets/Home/ui/MainArticle/MainArticle";
+import { MainRightSection } from "../../../widgets/Home/ui/MainRightSection/MainRightSection";
 
 const HomePage: React.FC = () => {
   return (
@@ -10,7 +13,7 @@ const HomePage: React.FC = () => {
         <MainArticle />
       </Left>
       <Right>
-        <SubArticleList />
+        <MainRightSection />
       </Right>
     </Container>
   );

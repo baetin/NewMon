@@ -9,3 +9,9 @@
 # --------위에 하나하나 받기 귀찮으면---------
 
 # npm install react-bootstrap bootstrap axios react-router-dom
+
+# ----------------------------------------------------------------------
+
+# npm install @react-oauth/google
+
+# npm install recharts

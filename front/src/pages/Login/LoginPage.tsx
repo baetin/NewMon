@@ -1,7 +1,7 @@
-import type React from "react";
+import LoginForm from "../../widgets/Login/ui/LoginForm";
 
 const LoginPage: React.FC = () => {
-  return <></>;
+  return <LoginForm />;
 };
 
 export default LoginPage;

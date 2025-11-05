@@ -1,47 +1,47 @@
-import { Navbar, Nav, Container } from "react-bootstrap";
 import mainLogo from "../../assets/mainLogo.png";
-import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
-import { RightSection, SignupButton, LoginButton } from "./MainNavBar.styles";
+import { FaSignInAlt } from "react-icons/fa";
+import { topics } from "../../model/topics";
+import { useLocation } from "react-router-dom";
+import {
+  Container,
+  LeftSection,
+  CenterSection,
+  NavItem,
+  Logo,
+  RightSection,
+  LoginButton,
+} from "./MainNavBar.styles";
 
 export const MainNavbar: React.FC = () => {
+  const location = useLocation();
+
   return (
-    <Navbar bg="light" expand="lg">
-      <Container
-        className="d-flex align-items-center justify-content-between"
-        style={{ maxHeight: "100px" }}
-      >
-        {/* 로고 */}
-        <Navbar.Brand href="/">
-          <img
-            src={mainLogo}
-            alt="Main Logo"
-            style={{ height: "150px", width: "180px" }}
-          />
-        </Navbar.Brand>
+    <Container>
+      {/* 왼쪽: 로고 */}
+      <LeftSection href="/">
+        <Logo src={mainLogo} alt="Main Logo" />
+      </LeftSection>
 
-        {/* 가운데 메뉴 */}
-        <Nav
-          className="mx-auto"
-          style={{ gap: "30px", fontSize: "18px", fontWeight: "600" }}
-        >
-          <Nav.Link href="/news/economy">경제</Nav.Link>
-          <Nav.Link href="/news/society">사회</Nav.Link>
-          <Nav.Link href="/news/it">IT/과학</Nav.Link>
-          <Nav.Link href="/news/sports">스포츠</Nav.Link>
-        </Nav>
+      {/* 가운데: 주제 메뉴 */}
+      <CenterSection>
+        {topics.map((topic) => (
+          <NavItem
+            key={topic.value}
+            href={`/news/${topic.value}`}
+            className={location.pathname.includes(topic.value) ? "active" : ""}
+          >
+            {topic.label}
+          </NavItem>
+        ))}
+      </CenterSection>
 
-        {/* 우측 영역 */}
-        <RightSection>
-          <SignupButton onClick={() => (window.location.href = "/signUp")}>
-            <FaUserPlus size={18} />
-            회원가입
-          </SignupButton>
-          <LoginButton onClick={() => (window.location.href = "/login")}>
-            <FaSignInAlt size={18} />
-            로그인
-          </LoginButton>
-        </RightSection>
-      </Container>
-    </Navbar>
+      {/* 오른쪽: 로그인 버튼 */}
+      <RightSection>
+        <LoginButton onClick={() => (window.location.href = "/login")}>
+          <FaSignInAlt size={16} />
+          로그인
+        </LoginButton>
+      </RightSection>
+    </Container>
   );
 };
