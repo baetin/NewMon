@@ -3,16 +3,16 @@ import TopicsMainArticle from "../../../widgets/TopicsHome/ui/TopicsMainArticle/
 import TopicsSubArticleList from "../../../widgets/TopicsHome/ui/TopicsSubArticleList/TopicsSubArticleList";
 import {
   Container,
-  Left,
+  TopicsLeft,
   Right,
 } from "../../../shared/styles/articleContents.styles";
 
 const TopicsHomePage: React.FC = () => {
   return (
     <Container>
-      <Left>
+      <TopicsLeft>
         <TopicsMainArticle />
-      </Left>
+      </TopicsLeft>
       <Right>
         <TopicsSubArticleList />
       </Right>

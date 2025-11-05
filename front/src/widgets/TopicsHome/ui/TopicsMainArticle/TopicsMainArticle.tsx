@@ -17,10 +17,10 @@ const TopicsMainArticle: React.FC = () => {
   return (
     <>
       <motion.div
-        layoutId={`main-article-${article.id}`}
+        layoutId={selected ? `card-${article.id}` : undefined}
         onClick={() => setSelected(true)}
         whileTap={{ scale: 0.98 }}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", width: "100%" }}
       >
         <ArticleContainer>
           <Image src={article.image} alt={article.title} />
@@ -31,7 +31,7 @@ const TopicsMainArticle: React.FC = () => {
         </ArticleContainer>
       </motion.div>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {selected && (
           <ExpandedArticle
             article={article}

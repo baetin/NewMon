@@ -3,17 +3,17 @@ import {
   Left,
   Right,
 } from "../../../shared/styles/articleContents.styles";
-import { HotTopicList } from "../../../widgets/Home/ui/HotTopic/HotTopic";
 import { MainArticle } from "../../../widgets/Home/ui/MainArticle/MainArticle";
+import { MainRightSection } from "../../../widgets/Home/ui/MainRightSection/MainRightSection";
 
-const HomePage = () => {
+const HomePage: React.FC = () => {
   return (
     <Container>
       <Left>
         <MainArticle />
       </Left>
       <Right>
-        <HotTopicList />
+        <MainRightSection />
       </Right>
     </Container>
   );

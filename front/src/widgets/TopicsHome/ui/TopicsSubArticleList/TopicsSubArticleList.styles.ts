@@ -1,18 +1,20 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-export const List = styled.div`
+export const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
+  min-width: 0;
 `;
 
 export const SubArticle = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 700px;
-  max-height: 180px;
+  width: 100%;
+  max-width: none;
   background: ${({ theme }) => theme.colors.background};
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -23,7 +25,8 @@ export const SubArticle = styled(motion.div)`
 export const Texts = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 450px;
+  max-width: 400px;
+  min-width: 0;
   padding-right: 20px;
 `;
 
@@ -41,8 +44,8 @@ export const Title = styled.h3`
 `;
 
 export const Image = styled.img`
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 8px;
   object-fit: cover;
 `;
