@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import {
-  List,
+  ListContainer,
   SubArticle,
   Image,
   Title,
@@ -24,7 +24,7 @@ const TopicsSubArticleList: React.FC = () => {
 
   return (
     <>
-      <List>
+      <ListContainer>
         {visibleArticles.map((article) => (
           <SubArticle
             key={article.id}
@@ -45,7 +45,7 @@ const TopicsSubArticleList: React.FC = () => {
         {visibleCount < exArticles.length - 1 && (
           <SeeMore onClick={handleSeeMore} />
         )}
-      </List>
+      </ListContainer>
 
       {/* 클릭시 팝업 */}
       <AnimatePresence>

@@ -3,11 +3,12 @@ import styled from "styled-components";
 export const ArticleContainer = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 800px;
+  width: 100%;
+  gap: 12px;
 `;
 
 export const Image = styled.img`
-  width: 800px;
+  width: 100%;
   height: auto;
   border-radius: 12px;
 `;
