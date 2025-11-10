@@ -22,9 +22,7 @@ const TopicsSubArticleList: React.FC = () => {
   const [articles, setArticles] = useState<ArticleDataTypes[]>([]);
   const { topic, id } = useParams<{ topic: string; id: string }>();
 
-  const handleSeeMore = () => {
-    setVisibleCount((prev) => prev + 4);
-  };
+  const handleSeeMore = () => setVisibleCount((prev) => prev + 4);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -32,7 +30,12 @@ const TopicsSubArticleList: React.FC = () => {
 
       try {
         const data = await getArticles(topic as TopicType, Number(id));
-        setArticles(data);
+
+        // data가 배열인지 확인, 아니면 배열로 감싸기
+        const articlesArray = Array.isArray(data) ? data : [data];
+
+        // 첫 번째 기사 제외
+        setArticles(articlesArray.slice(1));
       } catch (error) {
         console.error("Failed to fetch article:", error);
       }
@@ -41,11 +44,10 @@ const TopicsSubArticleList: React.FC = () => {
     fetchArticles();
   }, [topic, id]);
 
-  const visibleArticles = articles
-    .filter((a) => a.article_id !== 0)
-    .slice(0, visibleCount); // 첫번째 기사는 제외
-
   if (!articles.length) return <Spinner />;
+
+  const visibleArticles = articles.slice(0, visibleCount);
+  const selectedArticle = articles.find((a) => a.article_id === selectedId);
 
   return (
     <>
@@ -66,17 +68,14 @@ const TopicsSubArticleList: React.FC = () => {
             <Image src={article.image_url} alt={article.title} />
           </SubArticle>
         ))}
-        {/* 더 보기 버튼 */}
-        {visibleCount < articles.length - 1 && (
-          <SeeMore onClick={handleSeeMore} />
-        )}
+
+        {visibleCount < articles.length && <SeeMore onClick={handleSeeMore} />}
       </ListContainer>
 
-      {/* 클릭시 팝업 */}
       <AnimatePresence>
-        {selectedId && (
+        {selectedArticle && (
           <ExpandedArticle
-            article={articles.find((a) => a.article_id === selectedId)!}
+            article={selectedArticle}
             onClose={() => setSelectedId(null)}
           />
         )}
