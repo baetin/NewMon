@@ -32,7 +32,7 @@ const TopicsSubArticleList: React.FC = () => {
 
       try {
         const data = await getArticles(topic as TopicType, Number(id));
-        setArticles(data);
+        setArticles(data.slice(1));
       } catch (error) {
         console.error("Failed to fetch article:", error);
       }
@@ -41,9 +41,7 @@ const TopicsSubArticleList: React.FC = () => {
     fetchArticles();
   }, [topic, id]);
 
-  const visibleArticles = articles
-    .filter((a) => a.article_id !== 0)
-    .slice(0, visibleCount); // 첫번째 기사는 제외
+  const visibleArticles = articles.slice(0, visibleCount); // 첫번째 기사는 제외
 
   if (!articles.length) return <Spinner />;
 
