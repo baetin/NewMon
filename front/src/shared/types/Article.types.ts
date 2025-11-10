@@ -1,9 +1,13 @@
 export interface ArticleDataTypes {
-  keyword_id: number;
+  article_id: number;
   title: string;
+  summary_text: string;
   full_text: string;
-  original_url?: string;
-  summary?: string;
-  category?: string;
-  publisher?: string;
+  image_url: string;
+  source: string;
+  published_date: string;
+  crawled_at: string;
+  information_depth: string;
+  focus_area: string;
+  objectivity_score: string;
 }
