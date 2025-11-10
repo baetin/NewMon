@@ -27,7 +27,7 @@ export const MainNavbar: React.FC = () => {
         {topics.map((topic) => (
           <NavItem
             key={topic.value}
-            href={`/news/${topic.value}`}
+            href={`/news/${topic.value}/1`} // 임시
             className={location.pathname.includes(topic.value) ? "active" : ""}
           >
             {topic.label}
