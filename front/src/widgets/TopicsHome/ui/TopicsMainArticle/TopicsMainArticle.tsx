@@ -41,19 +41,20 @@ const TopicsMainArticle: React.FC = () => {
   return (
     <>
       <motion.div
-        layoutId={`card-${article.keyword_id}`}
+        layoutId={`card-${article.article_id}`}
         onClick={() => setSelected(true)}
         whileTap={{ scale: 0.98 }}
         style={{ cursor: "pointer", width: "100%" }}
       >
         <ArticleContainer>
-          {/* image 필드가 없으므로 publisher나 다른 값으로 대체 가능 */}
-          {article.publisher && (
-            <Image src={article.publisher} alt={article.title} />
+          {article.image_url && (
+            <Image src={article.image_url} alt={article.title} />
           )}
           <Contents>
             <Title>{article.title}</Title>
-            {article.summary && <Summary>AI 요약 : {article.summary}</Summary>}
+            {article.summary_text && (
+              <Summary>AI 요약 : {article.summary_text}</Summary>
+            )}
           </Contents>
         </ArticleContainer>
       </motion.div>
