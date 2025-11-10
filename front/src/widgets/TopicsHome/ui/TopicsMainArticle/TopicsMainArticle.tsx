@@ -17,7 +17,7 @@ import { Spinner } from "../../../../shared/ui";
 const TopicsMainArticle: React.FC = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [article, setArticle] = useState<ArticleDataTypes | null>(null);
-  const { topic, id } = useParams<{ topic: string; id: string }>();
+  const { topic, id } = useParams<{ topic: string; id: "1" }>();
 
   useEffect(() => {
     const fetchArticles = async () => {
