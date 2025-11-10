@@ -20,16 +20,16 @@ const TopicsSubArticleList: React.FC = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(4);
   const [articles, setArticles] = useState<ArticleDataTypes[]>([]);
-  const { topic, id } = useParams<{ topic: string; id: string }>();
+  const { topic } = useParams<{ topic: string }>();
 
   const handleSeeMore = () => setVisibleCount((prev) => prev + 4);
 
   useEffect(() => {
     const fetchArticles = async () => {
-      if (!topic || !id) return;
+      if (!topic) return;
 
       try {
-        const data = await getArticles(topic as TopicType, Number(id));
+        const data = await getArticles(topic as TopicType);
 
         // data가 배열인지 확인, 아니면 배열로 감싸기
         const articlesArray = Array.isArray(data) ? data : [data];
@@ -42,7 +42,7 @@ const TopicsSubArticleList: React.FC = () => {
     };
 
     fetchArticles();
-  }, [topic, id]);
+  }, [topic]);
 
   if (!articles.length) return <Spinner />;
 

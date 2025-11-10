@@ -17,14 +17,14 @@ import { Spinner } from "../../../../shared/ui";
 const TopicsMainArticle: React.FC = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [article, setArticle] = useState<ArticleDataTypes | null>(null);
-  const { topic, id } = useParams<{ topic: string; id: "1" }>();
+  const { topic, id } = useParams<{ topic: string; id: "1" }>(); // 임시 id 타입
 
   useEffect(() => {
     const fetchArticles = async () => {
       if (!topic || !id) return;
 
       try {
-        const data = await getArticles(topic as TopicType, Number(id));
+        const data = await getArticles(topic as TopicType);
         if (data.length > 0) {
           setArticle(data[0]); // 첫번째 기사만
         }
