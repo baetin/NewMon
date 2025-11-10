@@ -1,7 +1,9 @@
-export interface ArticleType {
-  id: number;
+export interface ArticleDataTypes {
+  keyword_id: number;
   title: string;
-  summary: string;
-  article?: string;
-  image: string;
+  full_text: string;
+  original_url?: string;
+  summary?: string;
+  category?: string;
+  publisher?: string;
 }

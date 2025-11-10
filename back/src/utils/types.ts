@@ -1,6 +1,6 @@
 // types.ts
 
-export type Topic = 'Economic' | 'IT_Science' | 'Social' | 'Sport';
+export type Topic = "Economic" | "IT_Science" | "Social" | "Sport";
 
 export interface ArticleData {
   keyword_id: number;
