@@ -3,12 +3,11 @@ import type { ArticleDataTypes } from "../../../shared/types/Article.types";
 import type { TopicType } from "../../../shared/types/Topics.types";
 
 export const getArticles = async (
-  topic: TopicType,
-  id: number
+  topic: TopicType
 ): Promise<ArticleDataTypes[]> => {
   try {
     const response = await axios.get<ArticleDataTypes[]>(
-      `/api/articles/${topic}/${id}`
+      `/api/articles/${topic}`
     );
     return response.data;
   } catch (error) {
