@@ -7,16 +7,16 @@ import {
   Container,
   GoogleButtonWrapper,
   Logo,
-  NaverButtonWrapper,
+  // NaverButtonWrapper,
 } from "./LoginForm.styles";
 import { Link } from "react-router-dom";
 
-const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
-const NAVER_CALLBACK_URL = import.meta.env.VITE_NAVER_CALLBACK_URL;
+// const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
+// const NAVER_CALLBACK_URL = import.meta.env.VITE_NAVER_CALLBACK_URL;
 
-const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${encodeURIComponent(
-  NAVER_CALLBACK_URL
-)}&state=${Math.random()}`;
+// const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${encodeURIComponent(
+//   NAVER_CALLBACK_URL
+// )}&state=${Math.random()}`;
 
 const LoginForm: React.FC = () => {
   return (
@@ -32,9 +32,9 @@ const LoginForm: React.FC = () => {
         </GoogleButtonWrapper>
 
         {/* 네이버 로그인 */}
-        <NaverButtonWrapper>
+        {/* <NaverButtonWrapper>
           <a href={naverLoginUrl}>N 네이버 로그인</a>
-        </NaverButtonWrapper>
+        </NaverButtonWrapper> */}
       </Card>
     </Container>
   );

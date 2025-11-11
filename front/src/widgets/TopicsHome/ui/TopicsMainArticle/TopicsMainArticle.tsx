@@ -11,20 +11,26 @@ import ExpandedArticle from "../../../../features/article-expand/ui/ExpandedArti
 import { getArticles } from "../../api/getArticles";
 import type { ArticleDataTypes } from "../../../../shared/types/Article.types";
 import { useParams } from "react-router-dom";
-import type { TopicType } from "../../../../shared/types/Topics.types";
 import { Spinner } from "../../../../shared/ui";
+import { topicMap } from "../../model/topics.constants";
 
 const TopicsMainArticle: React.FC = () => {
   const [selected, setSelected] = useState<boolean>(false);
   const [article, setArticle] = useState<ArticleDataTypes | null>(null);
-  const { topic, id } = useParams<{ topic: string; id: "1" }>(); // 임시 id 타입
+  const { topic } = useParams<{ topic: string }>();
 
   useEffect(() => {
     const fetchArticles = async () => {
-      if (!topic || !id) return;
+      if (!topic) return;
+
+      const topicId = topicMap[topic.toLowerCase()];
+      if (!topicId) {
+        console.error("유효하지 않은 topic:", topic);
+        return;
+      }
 
       try {
-        const data = await getArticles(topic as TopicType);
+        const data = await getArticles(topicId);
         if (data.length > 0) {
           setArticle(data[0]); // 첫번째 기사만
         }
@@ -34,7 +40,7 @@ const TopicsMainArticle: React.FC = () => {
     };
 
     fetchArticles();
-  }, [topic, id]);
+  }, [topic]);
 
   if (!article) return <Spinner />;
 
