@@ -1,7 +1,7 @@
 import mainLogo from "../../assets/mainLogo.png";
 import { FaSignInAlt } from "react-icons/fa";
 import { topics } from "../../model/topics";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   Container,
   LeftSection,
@@ -26,12 +26,9 @@ export const MainNavbar: React.FC = () => {
       <CenterSection>
         {topics.map((topic) => (
           <NavItem
-            as={Link}
             key={topic.value}
-            to={`/news/${topic.value}`}
-            className={
-              location.pathname === `/news/${topic.value}` ? "active" : ""
-            }
+            href={`/news/${topic.value}`}
+            className={location.pathname.includes(topic.value) ? "active" : ""}
           >
             {topic.label}
           </NavItem>
