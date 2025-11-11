@@ -35,6 +35,7 @@ const TopicsSubArticleList: React.FC = () => {
 
       try {
         const data = await getArticles(topicId);
+        console.log("데이터 : ", data);
 
         // data가 배열인지 확인, 아니면 배열로 감싸기
         const articlesArray = Array.isArray(data) ? data : [data];
