@@ -28,7 +28,7 @@ export const AppRouter = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "", element: withSuspense(HomePage) },
-      { path: "/news/:topic", element: withSuspense(TopicsHomePage) },
+      { path: "news/:topic", element: withSuspense(TopicsHomePage) },
     ],
   },
   { path: "/login", element: withSuspense(LoginPage) },

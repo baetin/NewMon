@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const Container = styled.nav`
@@ -32,7 +33,7 @@ export const CenterSection = styled.div`
   gap: 60px;
 `;
 
-export const NavItem = styled.a`
+export const NavItem = styled(Link)`
   position: relative;
   font-size: 18px;
   font-weight: 600;
