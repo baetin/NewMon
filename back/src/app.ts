@@ -1,30 +1,56 @@
-import express, { Application } from 'express'; // Application 타입을 추가하여 TS 환경 명확화
+// app.ts
+
+import express, { Application } from 'express';
 import bodyParser from 'body-parser';
 import articleRouter from './routes/article.router.js';
-import db from './utils/db.js'; // DB 연결 풀 초기화를 위해 import
+import db from './utils/db.js'; 
+import cors, { CorsOptions, CorsRequest, CorsCallback } from 'cors';
 
-const app: Application = express(); // Application 타입 명시
+const app: Application = express();
 const PORT = process.env.PORT || 3000;
+
+
+
 
 const initializeDatabase = async () => {
     try {
-        // Pool에서 클라이언트 하나를 가져와 연결 상태 확인 (실제 연결 테스트)
         const client = await db.connect();
         client.release();
         console.log('✅ Database connection pool successfully initialized and tested.');
     } catch (error) {
         console.error('❌ Failed to initialize database connection:', error);
-        // DB 연결 실패 시 앱 종료 등을 결정할 수 있습니다.
+        // DB 연결 실패 시 앱이 실행되지 않도록 여기서 throw 할 수도 있습니다.
     }
 };
 
+const allowedOrigins = [
+    'http://localhost:5173', // 친구의 로컬 개발 서버 포트 (일반적인 React/Vue 포트)
+    'http://localhost:3001', // 기타 로컬 개발 포트
+    'http://192.168.1.10:5173', // 로컬 네트워크 접속 테스트 시 친구의 내부 IP
+    // ⚠️ 여기에 고객님의 공용 IP 주소와 포트도 포함되어야 합니다. (예: http://211.123.45.67:3000)
+];
+
+// 💡 CORS 설정: 외부에서 들어오는 친구의 프론트엔드 요청을 허용
+const corsOptions: CorsOptions = { // CorsOptions 타입을 명시
+    origin: (origin: string | undefined, callback: CorsCallback) => { // 💡 타입 명시
+        // string | undefined 타입은 origin이 없을 경우(Postman, 서버 자체 요청)를 포함합니다.
+        if (!origin || allowedOrigins.some(o => origin.startsWith(o))) {
+            callback(null, true);
+        } else {
+            // callback의 첫 번째 인자는 Error 객체입니다.
+            callback(new Error(`CORS policy error: Origin ${origin} is not allowed`), false); 
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+};
+
 // 미들웨어 설정
-// express.json()이 body-parser의 역할을 대신하므로 body-parser는 제거하거나 주석 처리합니다.
 app.use(express.json()); 
-app.use(bodyParser.json()); // express.json() 사용 시 주석 처리하거나 제거 가능
+// app.use(bodyParser.json()); // 💡 express.json() 사용 시 주석 처리
+app.use(cors(corsOptions)); // 💡 CORS 미들웨어 적용
 
 // 라우터 연결
-// app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRouter);
 
 // 서버 시작

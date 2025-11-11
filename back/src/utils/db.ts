@@ -1,5 +1,5 @@
 // db.ts
-import { Pool } from 'pg';
+import { Pool, QueryResult } from 'pg';
 import * as dotenv from 'dotenv'; // 환경 변수 관리를 위해 dotenv 사용을 권장합니다.
 
 // .env 파일에서 환경 변수 로드
@@ -27,3 +27,4 @@ pool.on('error', (err) => {
 
 // Pool 객체를 모듈 외부로 내보냅니다.
 export default pool;
+export { QueryResult };
