@@ -11,7 +11,8 @@ export const handleSuccess = (res: any) => {
   try {
     const decoded = jwtDecode(res.credential);
     console.log("✅ 디코딩 성공:", decoded);
-    window.location.href = "/";
+    sessionStorage.setItem("google_jwt", res.credential);
+    // window.location.href = "/";
   } catch (err) {
     console.error("❌ JWT 디코딩 실패:", err);
   }
