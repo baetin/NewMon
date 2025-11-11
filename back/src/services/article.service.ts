@@ -1,66 +1,135 @@
 // article.service.ts
 import db from '../utils/db.js'; 
-import { ArticleData, ArticleEntity, Topic } from '../utils/types.js';
+import { QueryResult } from 'pg';
+import type { ArticleEntity, ArticleListResult } from '../utils/types.js';
+
+// 토픽 ID를 사용하여 DB 테이블 이름을 조회하고 조합하는 로직
+async function getTableDetails(topicId: number) {
+    // 1. Topic 테이블에서 topic_name 조회 (Topic 테이블 이름은 DDL에 따라 "Topic" 또는 "topic" 중 하나일 수 있으므로 "Topic"을 사용하여 시도)
+    const topicQuery = `SELECT topic_name FROM public.topic WHERE topic_id = $1`;
+    const topicResult = await db.query(topicQuery, [topicId]);
+
+    if (topicResult.rowCount === 0) {
+        throw new Error(`Invalid topic_id: ${topicId}. Topic not found.`); 
+    }
+    
+    let topicName = topicResult.rows[0].topic_name; 
+    
+    // 2. topic_name을 DDL에 맞게 변환 및 소문자 통일
+    let baseTopicName = topicName.toLowerCase();
+    if (baseTopicName === 'sport') {
+        baseTopicName = 'sports'; // DDL 불일치('Sports') 해결
+    }
+    
+    // 최종 테이블 이름: DB에 저장된 소문자 이름 (예: topic_sports_article)
+    const tableName = `topic_${baseTopicName}_article`; 
+    
+    return { tableName, topicName };
+}
 
 export const ArticleService = {
-  // CREATE: 기사 생성 로직
-  async createArticle(topic: Topic, data: ArticleData): Promise<{ article_id: number, topic: Topic }> {
-    const { keyword_id, title, full_text, original_url, summary, category, publisher } = data;
-    const tableName = `Topic_${topic}_Article`;
-    
-    try {
-      // 1. 기사 데이터 삽입 (Topic 테이블)
-      const articleQuery = `
-        INSERT INTO "${tableName}" 
-        (title, full_text, summary_text, image_url, source, publisher, category) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7) 
-        RETURNING article_id
-      `;
-      // original_url 대신 image_url 칼럼에 해당 값을 바인딩 ($4)
-      const articleResult = await db.query(articleQuery, [
-        title, full_text, summary, original_url, publisher, category 
-      ]);
-      const newArticleId: number = articleResult.rows[0].article_id;
+    // [R] 목록 조회 로직 (LIMIT 10 적용)
+    async getArticleList(
+        topicId: number, 
+        keywordName: string | undefined, 
+        page: number = 1, 
+        limit: number = 10 
+    ): Promise<ArticleListResult> {
+        
+        const { tableName } = await getTableDetails(topicId); // 💡 ID를 사용해 테이블 이름 조회
+        
+        const offset = (page - 1) * limit;
+        const isKeywordSearch = keywordName && keywordName.trim().length > 0;
+        
+        // 테이블 이름도 모두 소문자로 변경 (DB와 일치)
+        const articleKeywordTable = 'articlekeyword';
+        const keywordTable = 'keyword';
+        
+        try {
+            let listQuery: string;
+            let countQuery: string;
+            let queryParams: any[];
 
-      // 2. ArticleKeyword 테이블에 관계 삽입
-      const keywordRelationQuery = `
-        INSERT INTO "ArticleKeyword" (article_id, keyword_id) 
-        VALUES ($1, $2)
-      `;
-      await db.query(keywordRelationQuery, [newArticleId, keyword_id]);
+            if (isKeywordSearch) {
+                // 경로 A: 키워드 검색
+                listQuery = `
+                    SELECT 
+                        T.*, K.keyword_name 
+                    FROM 
+                        public.${tableName} AS T  
+                    JOIN 
+                        public.${articleKeywordTable} AS AK ON T.article_id = AK.article_id
+                    JOIN 
+                        public.${keywordTable} AS K ON AK.keyword_id = K.keyword_id
+                    WHERE 
+                        K.keyword_name = $1
+                    ORDER BY 
+                        T.crawled_at DESC
+                    LIMIT 10 OFFSET $2; 
+                `;
+                countQuery = `
+                    SELECT COUNT(T.article_id) 
+                    FROM public.${tableName} AS T
+                    JOIN public.${articleKeywordTable} AS AK ON T.article_id = AK.article_id
+                    JOIN public.${keywordTable} AS K ON AK.keyword_id = K.keyword_id
+                    WHERE K.keyword_name = $1;
+                `;
+                queryParams = [keywordName, offset];
+            } else {
+                // 경로 B: 토픽 전체 목록 조회
+                listQuery = `
+                    SELECT * FROM public.${tableName} 
+                    ORDER BY crawled_at DESC
+                    LIMIT 10 OFFSET $1;
+                `;
+                countQuery = `
+                    SELECT COUNT(*) 
+                    FROM public.${tableName};
+                `;
+                queryParams = [offset]; 
+            }
 
-      return { article_id: newArticleId, topic };
-    } catch (error: any) {
-      if (error.code === '23503') { 
-        throw new Error('유효하지 않은 keyword_id 입니다. (FK 제약 위반)');
-      }
-      throw error;
-    }
-  },
+            const listResult: QueryResult = await db.query(listQuery, queryParams);
+            const countParams = isKeywordSearch ? [keywordName] : []; 
+            const countResult: QueryResult = await db.query(countQuery, countParams);
+            
+            const totalCount: number = parseInt(countResult.rows[0].count);
+            const totalPages = Math.ceil(totalCount / 10); 
+            
+            return {
+                articles: listResult.rows as ArticleEntity[],
+                totalCount,
+                totalPages,
+            };
 
-  // READ: 기사 상세 조회 로직
-  async getArticleDetail(topic: Topic, id: number): Promise<ArticleEntity | null> {
-    const tableName = `Topic_${topic}_Article`; 
-    
-    // 상세 정보 조회
-    const query = `SELECT * FROM "${tableName}" WHERE article_id = $1`;
-    const result = await db.query(query, [id]);
-    
-    if (result.rowCount === 0) {
-      return null;
-    }
-    return result.rows[0] as ArticleEntity;
-  },
-  
-    // DELETE: 기사 삭제 로직
-    async deleteArticle(topic: Topic, id: number): Promise<number> {
-    const tableName = `Topic_${topic}_Article`; 
+        } catch (error) {
+            console.error("Error fetching article list:", error);
+            throw error;
+        }
+    },
 
-    // 삭제 쿼리 실행
-    const query = `DELETE FROM "${tableName}" WHERE article_id = $1`;
-    const result = await db.query(query, [id]);
+    // [R] 기사 상세 조회 로직
+    async getArticleDetail(topicId: number, id: number): Promise<ArticleEntity | null> {
+        const { tableName } = await getTableDetails(topicId); 
+        
+        // 💡 쿼리에서 따옴표 제거 (소문자 테이블 접근)
+        const query = `SELECT * FROM public.${tableName} WHERE article_id = $1`;
+        const result = await db.query(query, [id]);
+        
+        if (result.rowCount === 0) {
+            return null;
+        }
+        return result.rows[0] as ArticleEntity;
+    },
 
-        // **오류 해결 부분:** result.rowCount를 number로 명시적으로 캐스팅합니다.
-    return result.rowCount as number; 
+    // [D] 기사 삭제 로직
+    async deleteArticle(topicId: number, id: number): Promise<number> {
+        const { tableName } = await getTableDetails(topicId); 
+
+        // 💡 쿼리에서 따옴표 제거 (소문자 테이블 접근)
+        const query = `DELETE FROM public.${tableName} WHERE article_id = $1`;
+        const result = await db.query(query, [id]);
+
+        return result.rowCount as number; 
     }
 };

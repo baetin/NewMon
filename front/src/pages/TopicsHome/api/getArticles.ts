@@ -6,12 +6,14 @@ export const getArticles = async (
   topicId: TopicType
 ): Promise<ArticleDataTypes[]> => {
   try {
-    const response = await axios.get<ArticleDataTypes[]>(
-      `/api/articles?topicId=${topicId}`
-    );
-    return response.data;
+    const response = await axios.get(`/api/articles?topicId=${topicId}`);
+    const data = response.data;
+
+    // 배열이 아니면 배열로 감싸기
+    if (!data) return [];
+    return Array.isArray(data) ? data : [data];
   } catch (error) {
     console.error("api fetch 실패", error);
-    throw error;
+    return [];
   }
 };

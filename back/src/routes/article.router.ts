@@ -4,8 +4,8 @@ import { articleController } from '../controllers/article.controller.js'
 
 const router = Router();
 
-// [C] CREATE: 기사 생성 (POST /api/articles/Economic)
-router.post('/:topic', articleController.createArticle); 
+
+router.get('/', articleController.getArticles);
 
 // [R] READ: 기사 상세 조회 (GET /api/articles/IT_Science/123)
 router.get('/:topic/:id', articleController.readArticleDetail); 
