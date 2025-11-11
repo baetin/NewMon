@@ -13,8 +13,7 @@ import { SeeMore } from "../../../../shared/ui/SeeMore/SeeMore";
 import type { ArticleDataTypes } from "../../../../shared/types/Article.types";
 import { useParams } from "react-router-dom";
 import { getArticles } from "../../api/getArticles";
-import type { TopicType } from "../../../../shared/types/Topics.types";
-import { Spinner } from "../../../../shared/ui";
+import { topicMap } from "../../model/topics.constants";
 
 const TopicsSubArticleList: React.FC = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -28,14 +27,22 @@ const TopicsSubArticleList: React.FC = () => {
     const fetchArticles = async () => {
       if (!topic) return;
 
+      const topicId = topicMap[topic.toLowerCase()];
+      if (!topicId) {
+        console.error("유효하지 않은 topic:", topic);
+        return;
+      }
+
       try {
-        const data = await getArticles(topic as TopicType);
+        const data = await getArticles(topicId);
 
         // data가 배열인지 확인, 아니면 배열로 감싸기
         const articlesArray = Array.isArray(data) ? data : [data];
 
         // 첫 번째 기사 제외
-        setArticles(articlesArray.slice(1));
+        setArticles(
+          articlesArray.length > 1 ? articlesArray.slice(1) : articlesArray
+        );
       } catch (error) {
         console.error("Failed to fetch article:", error);
       }
@@ -44,7 +51,7 @@ const TopicsSubArticleList: React.FC = () => {
     fetchArticles();
   }, [topic]);
 
-  if (!articles.length) return <Spinner />;
+  if (!articles.length) return <div>추가 기사가 없습니다.</div>;
 
   const visibleArticles = articles.slice(0, visibleCount);
   const selectedArticle = articles.find((a) => a.article_id === selectedId);
