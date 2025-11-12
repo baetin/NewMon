@@ -39,4 +39,14 @@ export const examples = [
       original: "삼성전자는 올해 3분기 실적 발표를 통해...",
     },
   },
+  {
+    id: 5,
+    image_url: "https://placehold.co/800x400",
+    title: "삼성전자, 5분기 실적 발표",
+    summary: "📊 반도체 회복세로 영업이익 증가",
+    compare: {
+      ai_summary: "반도체 시장 회복으로 영업이익 상승",
+      original: "삼성전자는 올해 3분기 실적 발표를 통해...",
+    },
+  },
 ];

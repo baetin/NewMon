@@ -17,13 +17,17 @@ import {
 } from "react-icons/md";
 
 export const MainArticle: React.FC = () => {
-  const [slideIndex, setSlideIndex] = useState(0);
+  const [slideIndex, setSlideIndex] = useState(0); // 현재 슬라이드 인덱스
+  const [restTimer, setRestTimer] = useState(0); // 타이머 리셋용
+  const [isPaused, setIsPaused] = useState(false); // 슬라이드 일시정지
 
   const handlePrev = () => {
     setSlideIndex((prev) => (prev === 0 ? examples.length - 1 : prev - 1));
+    setRestTimer((prev) => prev + 1);
   };
   const handleNext = () => {
     setSlideIndex((prev) => (prev === examples.length - 1 ? 0 : prev + 1));
+    setRestTimer((prev) => prev + 1);
   };
   const moveDot = (index: number) => {
     setSlideIndex(index);
@@ -31,16 +35,22 @@ export const MainArticle: React.FC = () => {
 
   // 무한 슬라이드
   useEffect(() => {
+    if (isPaused) return;
+
     const interval = setInterval(() => {
       handleNext();
-    }, 5000);
+      console.log(isPaused);
+    }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [restTimer, isPaused]);
 
   const article = examples[slideIndex];
 
   return (
-    <SlideWrapper>
+    <SlideWrapper
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <ArrowButton direction="left" onClick={handlePrev}>
         <MdOutlineArrowBackIos size={28} />
       </ArrowButton>

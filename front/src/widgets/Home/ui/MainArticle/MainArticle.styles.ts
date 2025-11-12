@@ -75,7 +75,7 @@ export const ArrowButton = styled.button<{ direction: "left" | "right" }>`
 
 export const DotContainer = styled.div`
   position: absolute;
-  bottom: 15px;
+  bottom: 10px;
   display: flex;
 `;
 
