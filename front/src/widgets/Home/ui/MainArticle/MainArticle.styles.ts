@@ -1,4 +1,15 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+export const SlideWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover button {
+    opacity: 1;
+    visibility: visible;
+  }
+`;
 
 export const ArticleContainer = styled.div`
   display: flex;
@@ -27,4 +38,51 @@ export const CompareBox = styled.div`
   border-radius: 10px;
   padding: 12px;
   font-size: 0.9rem;
+`;
+
+export const ArrowButton = styled.button<{ direction: "left" | "right" }>`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+
+  opacity: 0;
+  visibility: hidden;
+
+  ${({ direction }) =>
+    direction === "left"
+      ? css`
+          left: 10px;
+        `
+      : css`
+          right: 10px;
+        `}
+  &:hover {
+    background: rgba(230, 230, 230, 0.9);
+    display: flex;
+  }
+`;
+
+export const DotContainer = styled.div`
+  position: absolute;
+  bottom: 10px;
+  display: flex;
+`;
+
+export const Dot = styled.div<{ $active: boolean }>`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 5px;
+  background: ${({ $active }) => ($active ? "#333" : "#ccc")};
 `;

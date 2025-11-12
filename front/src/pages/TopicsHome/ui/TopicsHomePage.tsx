@@ -25,7 +25,7 @@ const TopicsHomePage: React.FC = () => {
         if (!topic) return;
         const topicId = topicMap[topic.toLowerCase()];
         const data = await getArticles(topicId);
-        setArticles(data);
+        setArticles(data[0].articles);
         console.log("불러온 데이터 : ", data);
       } catch (error) {
         console.error("기사 불러오기 실패:", error);
