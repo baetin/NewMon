@@ -1,3 +1,5 @@
+import { atom } from "recoil";
+
 export const examples = [
   {
     id: 1,
@@ -50,3 +52,13 @@ export const examples = [
     },
   },
 ];
+
+export const examplesState = atom({
+  key: "exampleState",
+  default: examples,
+});
+
+export const slideIndexSate = atom({
+  key: "slideIndexState",
+  default: 0,
+});

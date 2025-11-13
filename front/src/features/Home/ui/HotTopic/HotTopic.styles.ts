@@ -9,15 +9,15 @@ export const HotTopicContainer = styled(MainRightSectionStyles)`
     flex-direction: column;
     gap: 8px;
   }
+`;
+export const TopicItem = styled.li<{ $active: boolean }>`
+  font-size: 0.95rem;
+  color: ${({ theme, $active }) => ($active ? theme.colors.secondary : "#333")};
+  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
+  transition: color 0.2s ease;
+  cursor: pointer;
 
-  li {
-    font-size: 0.95rem;
-    color: #333;
-    cursor: pointer;
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.secondary};
-    }
+  &:hover {
+    color: ${({ theme }) => theme.colors.secondary};
   }
 `;
