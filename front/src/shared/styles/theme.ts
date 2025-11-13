@@ -9,12 +9,7 @@ export const theme = {
       light: "#FFFFFF",
     },
   },
-  fontSizes: {
-    title: "24px",
-    subtitle: "18px",
-    body: "16px",
-    small: "14px",
-  },
+
   fontWeights: {
     regular: 400,
     medium: 500,

@@ -40,7 +40,9 @@ export const ExpandedCard = styled(motion.div)`
   h2 {
     margin: 0 0 1rem 0;
   }
-
+  span {
+    font-size: 0.9rem;
+  }
   p:first-of-type {
     color: #555;
     line-height: 1.3;

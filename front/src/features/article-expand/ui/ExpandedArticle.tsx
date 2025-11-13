@@ -30,6 +30,7 @@ const ExpandedArticle: React.FC<ExpandedArticleProps> = ({
           <AiOutlineClose size={30} onClick={() => onClose()} />
         </CloseBtn>
         <h2>{article.title}</h2>
+        <span>출처 : {article.source === "hankyung" ? "한국경제" : "X"}</span>
         <img
           src={article.image_url}
           alt={article.title}
