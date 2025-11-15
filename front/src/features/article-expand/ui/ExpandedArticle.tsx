@@ -1,4 +1,4 @@
-import type { ArticleType } from "../../../shared/types/Article.types";
+import type { ArticleDataTypes } from "../../../shared/types/Article.types";
 import {
   ExpandedCard,
   Overlay,
@@ -8,7 +8,7 @@ import {
 import { AiOutlineClose } from "react-icons/ai";
 
 interface ExpandedArticleProps {
-  article: ArticleType;
+  article: ArticleDataTypes;
   onClose: () => void;
 }
 
@@ -23,7 +23,7 @@ const ExpandedArticle: React.FC<ExpandedArticleProps> = ({
       exit={{ opacity: 0 }}
     >
       <ExpandedCard
-        layoutId={`card-${article.id}`}
+        layoutId={`card-${article.article_id}`}
         transition={{ type: "spring", stiffness: 150, damping: 18 }}
       >
         <CloseBtn>
@@ -31,7 +31,7 @@ const ExpandedArticle: React.FC<ExpandedArticleProps> = ({
         </CloseBtn>
         <h2>{article.title}</h2>
         <img
-          src={article.image}
+          src={article.image_url}
           alt={article.title}
           style={{
             width: "100%",
@@ -41,9 +41,9 @@ const ExpandedArticle: React.FC<ExpandedArticleProps> = ({
           }}
         />
 
-        <p>AI 요약 : {article.summary}</p>
-        {article.article && (
-          <MainArticle>본문 기사 : {article.article}</MainArticle>
+        <p>AI 요약 : {article.summary_text}</p>
+        {article.article_id && (
+          <MainArticle>본문 기사 : {article.full_text}</MainArticle>
         )}
       </ExpandedCard>
     </Overlay>

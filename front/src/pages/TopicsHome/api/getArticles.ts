@@ -2,9 +2,15 @@ import axios from "axios";
 import type { ArticleDataTypes } from "../../../shared/types/Article.types";
 import type { TopicType } from "../../../shared/types/Topics.types";
 
+interface GetArticlesResponseProps {
+  articles: ArticleDataTypes[];
+  totalCount?: number;
+  totalPages?: number;
+}
+
 export const getArticles = async (
   topicId: TopicType
-): Promise<ArticleDataTypes[]> => {
+): Promise<GetArticlesResponseProps[]> => {
   try {
     const response = await axios.get(`/api/articles?topicId=${topicId}`);
     const data = response.data;
