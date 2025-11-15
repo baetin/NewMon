@@ -98,3 +98,5 @@ export const LoginButton = styled(ButtonBase)`
     background-color: ${({ theme }) => theme.colors.secondary};
   }
 `;
+
+export const LogoutButton = styled(LoginButton)``;

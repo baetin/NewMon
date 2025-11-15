@@ -13,6 +13,7 @@ const LoginPage = lazy(() => import("../../pages/Login/LoginPage"));
 const InterestSelectPage = lazy(
   () => import("../../pages/InterestSelect/ui/InterestSelect")
 );
+
 const NotFoundPage = lazy(() => import("../../pages/NotFound/NotFoundPage"));
 
 // Suspense 래퍼

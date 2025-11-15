@@ -1,8 +1,17 @@
+import type { CredentialResponse } from "@react-oauth/google";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-// import { jwtDecode } from "jwt-decode";
 
-export const handleSuccess = async (res: any) => {
+// import { useNavigate } from "react-router-dom";
+
+interface GoogleLoginProps {
+  res: CredentialResponse;
+  setLoginUser: (user: { userId: string; userName: string }) => void;
+}
+
+export const handleSuccess = async ({
+  res,
+  setLoginUser,
+}: GoogleLoginProps) => {
   // const navigate = useNavigate();
 
   if (!res.credential) {
@@ -16,10 +25,16 @@ export const handleSuccess = async (res: any) => {
     });
     console.log("백엔드 응답:", response.data);
 
-    // const decoded = jwtDecode(res.credential);
-    // console.log("✅ 디코딩 성공:", decoded);
     if (response.data.token) {
-      localStorage.setItem("google_jwt", response.data.token);
+      sessionStorage.setItem("accessToken", response.data.token);
+      sessionStorage.setItem("user", JSON.stringify(response.data.user));
+
+      setLoginUser({
+        userId: response.data.userId,
+        userName: response.data.userName,
+      });
+
+      // 로그인 후 메인 페이지로 이동
       // navigate("/");
     }
   } catch (err) {
