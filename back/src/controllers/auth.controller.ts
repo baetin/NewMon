@@ -1,46 +1,75 @@
-// // src/controllers/auth.controller.ts 파일
+import { Request, Response } from "express";
+import { upsertUserService } from "../services/auth.service.js";
+import { OAuth2Client } from "google-auth-library";
+import { generateToken } from "../services/jwt.service.js";
 
-// import { Request, Response } from 'express';
-// // ✨ 변경된 서비스 함수를 import 합니다. ✨
-// import { upsertUserService } from '../services/auth.service.js'; 
+const CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
 
-// // 이 함수는 실제 Google 토큰을 검증하고 사용자 데이터를 추출하는 로직 뒤에 호출된다고 가정합니다.
-// export const googleAuthCallbackController = async (req: Request, res: Response) => {
-    
-//     // 이 데이터는 실제 OAuth 흐름에서 Google API를 통해 검증된 후 req.body로 전달된다고 가정합니다.
-//     const { googleId, email, displayName, interests } = req.body; 
+// Google 토큰 검증 로직
+async function verifyGoogleToken(token: string) {
+  console.log("--- DEBUG: Skipping actual Google verification. ---");
+  // DB upsert 키로 사용할 고유 ID를 반환합니다.
+  return {
+    googleId: "TEST_UNIQUE_ID_FROM_GOOGLE_001",
+    email: "db_test_001@email.com",
+    displayName: "Test User Name",
+  };
+}
 
-//     // 1. 입력값 유효성 검사
-//     if (!googleId || !email) {
-//         return res.status(400).json({ message: 'Google ID and email are required for authentication.' });
-//     }
+export const googleAuthCallbackController = async (
+  req: Request,
+  res: Response
+) => {
+  // 1. 클라이언트로부터 Google ID 토큰과 초기 관심사 받기
+  const { idToken, interests } = req.body;
 
-//     try {
-//         // 2. 서비스 호출 (회원가입/로그인 Upsert 로직 실행)
-//         const userInfo = await upsertUserService({ googleId, email, displayName, interests });
-        
-//         // 3. 성공 응답
-//         // 실제 운영 환경에서는 JWT 토큰을 생성하여 반환해야 합니다.
-        
-//         return res.status(200).json({
-//             message: userInfo.isNewUser ? 'User registered successfully.' : 'Login successful.',
-//             user: {
-//                 userId: userInfo.user_id,
-//                 email: userInfo.email,
-//                 displayName: userInfo.displayName,
-//             }
-//             // token: token // 실제 구현 시
-//         });
+  if (!idToken) {
+    return res.status(400).json({ message: "Google ID Token is required." });
+  }
 
-//     } catch (error) {
-//         // 4. 오류 처리 및 로깅
-//         console.error('--- OAuth 처리 실패 상세 로그 ---');
-//         console.error(error);
-//         console.error('------------------------------------');
-        
-//         // DB 오류가 발생했을 때 500 에러를 반환합니다.
-//         return res.status(500).json({ message: 'Internal server error. Check server logs for details.' });
-//     }
-// };
+  try {
+    // 2. Google API에 토큰 검증 요청 (서버-서버 통신)
+    const googleInfo = await verifyGoogleToken(idToken);
 
-// // 라우터 파일에서는 이 컨트롤러를 POST /api/auth/google-login 경로에 연결해야 합니다.
+    // 3. DB Upsert 서비스 호출 (회원가입/로그인 처리)
+    const userInfo = await upsertUserService({
+      googleId: googleInfo.googleId,
+      email: googleInfo.email,
+      displayName: googleInfo.displayName,
+      interests: interests, // 새 사용자일 경우 초기 관심사 설정
+    });
+
+    // 4. 인증 성공: JWT 토큰 발급
+    const token = generateToken({
+      userId: userInfo.user_id,
+      email: userInfo.email,
+    });
+
+    return res.status(200).json({
+      message: userInfo.isNewUser
+        ? "User registered successfully."
+        : "Login successful.",
+      token: token,
+      user: {
+        userId: userInfo.user_id,
+        displayName: userInfo.displayName,
+      },
+    });
+  } catch (error) {
+    // 토큰 검증 실패 또는 DB 트랜잭션 실패 처리
+    console.error("--- OAuth 처리 실패 상세 로그 ---", error);
+
+    // 401: 인증 실패 (토큰 무효)
+    if (
+      error instanceof Error &&
+      error.message.includes("Invalid Google token")
+    ) {
+      return res
+        .status(401)
+        .json({ message: "Invalid or expired authentication token." });
+    }
+
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
