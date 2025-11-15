@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Container, Main } from "./MainLayout.styles";
-import { MainNavbar } from "../../shared/ui";
+import { MainNavbar, Footer } from "../../shared/ui";
 
 export const MainLayout = () => {
   return (
@@ -9,7 +9,7 @@ export const MainLayout = () => {
       <Main>
         <Outlet />
       </Main>
-      {/* <Footer /> */}
+      <Footer />
     </Container>
   );
 };

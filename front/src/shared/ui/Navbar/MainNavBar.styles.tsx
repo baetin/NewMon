@@ -9,10 +9,11 @@ export const Container = styled.nav`
   padding: 12px 40px;
   background-color: ${({ theme }) =>
     `${theme.colors.background}CC`}; /* 투명도 80% 정도 */
+
   backdrop-filter: blur(12px); /* 배경 콘텐츠 블러 */
   -webkit-backdrop-filter: blur(12px); /* Safari 호환용 */
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.text.sub};
   position: sticky;
   top: 0;
   z-index: 100;
