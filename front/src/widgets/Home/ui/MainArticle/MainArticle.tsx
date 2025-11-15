@@ -41,7 +41,6 @@ export const MainArticle: React.FC = () => {
     if (isPaused) return;
     const interval = setInterval(() => {
       handleNext();
-      console.log(isPaused);
     }, 4000);
     return () => clearInterval(interval);
   }, [restTimer, isPaused]);
