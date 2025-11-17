@@ -21,7 +21,7 @@ export const handleSuccess = async ({
 
   try {
     const response = await axios.post("/api/auth/google-login", {
-      credential: res.credential,
+      idToken: res.credential,
     });
     console.log("백엔드 응답:", response.data);
 

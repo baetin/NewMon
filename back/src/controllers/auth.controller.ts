@@ -9,7 +9,9 @@ const client = new OAuth2Client(CLIENT_ID);
 // Google 토큰 검증 로직
 async function verifyGoogleToken(token: string) {
   console.log("--- DEBUG: Skipping actual Google verification. ---");
-  // DB upsert 키로 사용할 고유 ID를 반환합니다.
+  // 실제 토큰 검증이 성공했을 때와 같은 Payload 구조를 반환합니다.
+
+  // ✨ 주의: 이 값들은 클라이언트가 보낸 토큰에 담겨있다고 가정하는 고정된 더미 데이터입니다.
   return {
     googleId: "TEST_UNIQUE_ID_FROM_GOOGLE_001",
     email: "db_test_001@email.com",
@@ -21,15 +23,15 @@ export const googleAuthCallbackController = async (
   req: Request,
   res: Response
 ) => {
-  // 1. 클라이언트로부터 Google ID 토큰과 초기 관심사 받기
-  const { idToken, interests } = req.body;
+  // 1. 클라이언트로부터 Google ID 토큰만 받기
+  const { idToken } = req.body; // ✨ interests 필드 제거 ✨
 
   if (!idToken) {
     return res.status(400).json({ message: "Google ID Token is required." });
   }
 
   try {
-    // 2. Google API에 토큰 검증 요청 (서버-서버 통신)
+    // 2. Google API에 토큰 검증 요청 (더미 함수 실행)
     const googleInfo = await verifyGoogleToken(idToken);
 
     // 3. DB Upsert 서비스 호출 (회원가입/로그인 처리)
@@ -37,7 +39,7 @@ export const googleAuthCallbackController = async (
       googleId: googleInfo.googleId,
       email: googleInfo.email,
       displayName: googleInfo.displayName,
-      interests: interests, // 새 사용자일 경우 초기 관심사 설정
+      // ✨ interests 필드를 제거하고 호출합니다. ✨
     });
 
     // 4. 인증 성공: JWT 토큰 발급
