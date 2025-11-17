@@ -73,11 +73,41 @@ export const NavItem = styled(Link)`
 `;
 
 export const RightSection = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
 `;
 
+export const UserNameControllContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+`;
+
+export const SelectDropDownContainer = styled.div`
+  position: absolute; /* 부모를 기준으로 위치 지정 */
+  top: 100%; /* 버튼 바로 아래에 나타나게 */
+  /* right: 0; */
+  background-color: ${({ theme }) => theme.colors.background};
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  min-width: 120px;
+  z-index: 1000;
+
+  p {
+    margin: 0;
+    padding: 8px 16px;
+    cursor: pointer;
+    &:hover {
+      background-color: #f2f2f2;
+    }
+  }
+`;
 export const ButtonBase = styled.div`
   display: flex;
   align-items: center;
@@ -98,5 +128,3 @@ export const LoginButton = styled(ButtonBase)`
     background-color: ${({ theme }) => theme.colors.secondary};
   }
 `;
-
-export const LogoutButton = styled(LoginButton)``;

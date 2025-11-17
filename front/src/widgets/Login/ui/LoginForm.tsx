@@ -3,15 +3,16 @@ import type React from "react";
 import { handleError, handleSuccess } from "../api/handleLogin";
 import mainLogo from "../../../shared/assets/mainLogo.png";
 import { Card, Container, GoogleButtonWrapper, Logo } from "./LoginForm.styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { LoginUserState } from "../../../shared/model/loginUserState";
 
 const LoginForm: React.FC = () => {
   const setLoginUser = useSetRecoilState(LoginUserState);
+  const navigate = useNavigate();
 
   const onLoginSuccess = (res: CredentialResponse) => {
-    handleSuccess({ res, setLoginUser });
+    handleSuccess({ res, setLoginUser, navigate });
   };
 
   return (

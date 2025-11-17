@@ -1,5 +1,6 @@
 import mainLogo from "../../assets/mainLogo.png";
-import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { FaSignInAlt } from "react-icons/fa";
+import { IoMdArrowDropdown } from "react-icons/io";
 import { topics } from "../../model/topics";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -10,16 +11,37 @@ import {
   Logo,
   RightSection,
   LoginButton,
-  LogoutButton,
+  UserNameControllContainer,
+  SelectDropDownContainer,
 } from "./MainNavBar.styles";
 import { useRecoilValue } from "recoil";
 import { LoginUserState } from "../../model/loginUserState";
 
-export const MainNavbar: React.FC = () => {
+interface IsClickedProps {
+  isClicked: boolean;
+  setIsClicked: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const MainNavbar: React.FC<IsClickedProps> = ({
+  isClicked,
+  setIsClicked,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const loginUser = useRecoilValue(LoginUserState); // 로그인 됐는지 확인할때
+
+  const onClick = () => {
+    setIsClicked((prev) => !prev);
+  };
+  const onLogoutCLick = () => {
+    confirm("로그아웃 하시겠습니까?");
+    console.log("로그아웃 되었습니다.");
+    // api 가져오기
+  };
+  const onChangeInforClick = () => {
+    console.log("회원 정보 수정 페이지로 이동했습니다.");
+  };
 
   return (
     <Container>
@@ -44,15 +66,25 @@ export const MainNavbar: React.FC = () => {
         ))}
       </CenterSection>
 
-      {/* 오른쪽: 로그인 버튼 */}
+      {/* 오른쪽: 로그인, 로그아웃 드롭다운 버튼 */}
       <RightSection>
-        {loginUser.displayName ? (
+        {!loginUser.displayName ? (
           <>
-            <p>{loginUser.displayName}님</p>
-            <LogoutButton>
-              <FaSignOutAlt size={16} />
-              로그아웃
-            </LogoutButton>
+            <UserNameControllContainer
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick();
+              }}
+            >
+              <span>{loginUser.displayName}님</span>
+              <IoMdArrowDropdown size={30} />
+            </UserNameControllContainer>
+            {isClicked && (
+              <SelectDropDownContainer onClick={(e) => e.stopPropagation()}>
+                <p onClick={onLogoutCLick}>로그아웃</p>
+                <p onClick={onChangeInforClick}>정보 수정</p>
+              </SelectDropDownContainer>
+            )}
           </>
         ) : (
           <LoginButton onClick={() => navigate("/login")}>

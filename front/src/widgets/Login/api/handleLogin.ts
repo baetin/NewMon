@@ -1,19 +1,21 @@
 import type { CredentialResponse } from "@react-oauth/google";
 import axios from "axios";
 
-// import { useNavigate } from "react-router-dom";
-
 interface GoogleLoginProps {
   res: CredentialResponse;
-  setLoginUser: (user: { userId: string; displayName: string }) => void;
+  setLoginUser: (user: {
+    userId: string;
+    displayName: string;
+    isNewUser: boolean;
+  }) => void;
+  navigate: (path: string) => void;
 }
 
 export const handleSuccess = async ({
   res,
   setLoginUser,
+  navigate,
 }: GoogleLoginProps) => {
-  // const navigate = useNavigate();
-
   if (!res.credential) {
     console.error("❌ 구글 로그인 credential이 없습니다!");
     return;
@@ -28,14 +30,23 @@ export const handleSuccess = async ({
     if (response.data.token) {
       sessionStorage.setItem("accessToken", response.data.token);
       sessionStorage.setItem("user", JSON.stringify(response.data.user));
+      sessionStorage.setItem(
+        "isNewUser",
+        JSON.stringify(response.data.user.isNewUser)
+      );
 
       setLoginUser({
         userId: response.data.user.userId,
         displayName: response.data.user.displayName,
+        isNewUser: response.data.user.isNewUser,
       });
 
       // 로그인 후 메인 페이지로 이동
-      // navigate("/");
+      const isNewUser = JSON.parse(
+        sessionStorage.getItem("isNewUser") || "false"
+      );
+
+      isNewUser ? navigate("/") : navigate("/interest-select");
     }
   } catch (err) {
     console.error("❌ 구글 로그인 처리 실패:", err);

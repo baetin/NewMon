@@ -5,5 +5,6 @@ export const LoginUserState = atom({
   default: {
     userId: "",
     displayName: "",
+    isNewUser: null as boolean | null,
   },
 });
