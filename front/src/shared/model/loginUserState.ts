@@ -4,6 +4,6 @@ export const LoginUserState = atom({
   key: "LoginUserState",
   default: {
     userId: "",
-    userName: "",
+    displayName: "",
   },
 });

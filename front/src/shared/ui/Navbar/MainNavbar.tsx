@@ -46,9 +46,9 @@ export const MainNavbar: React.FC = () => {
 
       {/* 오른쪽: 로그인 버튼 */}
       <RightSection>
-        {loginUser.userName ? (
+        {loginUser.displayName ? (
           <>
-            <p>{loginUser.userName}님</p>
+            <p>{loginUser.displayName}님</p>
             <LogoutButton>
               <FaSignOutAlt size={16} />
               로그아웃

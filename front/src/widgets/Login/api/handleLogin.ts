@@ -5,7 +5,7 @@ import axios from "axios";
 
 interface GoogleLoginProps {
   res: CredentialResponse;
-  setLoginUser: (user: { userId: string; userName: string }) => void;
+  setLoginUser: (user: { userId: string; displayName: string }) => void;
 }
 
 export const handleSuccess = async ({
@@ -30,8 +30,8 @@ export const handleSuccess = async ({
       sessionStorage.setItem("user", JSON.stringify(response.data.user));
 
       setLoginUser({
-        userId: response.data.userId,
-        userName: response.data.userName,
+        userId: response.data.user.userId,
+        displayName: response.data.user.displayName,
       });
 
       // 로그인 후 메인 페이지로 이동
