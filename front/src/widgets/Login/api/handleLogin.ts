@@ -5,7 +5,7 @@ import axios from "axios";
 
 interface GoogleLoginProps {
   res: CredentialResponse;
-  setLoginUser: (user: { userId: string; userName: string }) => void;
+  setLoginUser: (user: { userId: string; displayName: string }) => void;
 }
 
 export const handleSuccess = async ({
@@ -21,7 +21,7 @@ export const handleSuccess = async ({
 
   try {
     const response = await axios.post("/api/auth/google-login", {
-      credential: res.credential,
+      idToken: res.credential,
     });
     console.log("백엔드 응답:", response.data);
 
@@ -30,8 +30,8 @@ export const handleSuccess = async ({
       sessionStorage.setItem("user", JSON.stringify(response.data.user));
 
       setLoginUser({
-        userId: response.data.userId,
-        userName: response.data.userName,
+        userId: response.data.user.userId,
+        displayName: response.data.user.displayName,
       });
 
       // 로그인 후 메인 페이지로 이동
