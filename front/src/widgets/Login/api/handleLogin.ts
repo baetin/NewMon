@@ -51,6 +51,7 @@ export const handleSuccess = async ({
     return response.data;
   } catch (err) {
     console.error("❌ 구글 로그인 처리 실패:", err);
+    alert("에러로 인해 로그인에 실패 했습니다.");
   }
 };
 
