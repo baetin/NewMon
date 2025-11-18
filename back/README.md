@@ -8,3 +8,7 @@
 # npm install -D @types/jsonwebtoken
 
 # npm install google-auth-library express typescript ts-node @types/express
+
+# npm install -D @types/cookie-parser
+
+# 수정

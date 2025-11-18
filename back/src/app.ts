@@ -1,4 +1,6 @@
 import express, { Application } from "express";
+import session from 'express-session'; // 세션 관리
+import cookieParser from 'cookie-parser'; // 쿠키 파서
 import articleRouter from "./routes/article.router.js";
 import db from "./utils/db.js"; // DB 연결 풀 인스턴스를 가져옴
 import authRoutes from "./routes/auth.router.js";
@@ -8,6 +10,21 @@ import * as dotenv from "dotenv";
 dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
+
+// 1. 쿠키 파서 설정 (세션을 사용하기 위해 필요)
+app.use(cookieParser());
+
+// 2. 세션 설정 (userId를 서버 메모리/DB에 저장하고 ID만 쿠키로 클라이언트에 전송)
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your_session_secret_key_change_me', // .env 파일의 SESSION_SECRET 사용
+    resave: false, 
+    saveUninitialized: false, 
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7일 유지
+        httpOnly: true, 
+        secure: false, // 로컬 환경이므로 false
+    }
+}));
 
 // ----------------------------------------------------------------
 // 1. 미들웨어 설정 (중복 제거 및 JSON 파싱)
