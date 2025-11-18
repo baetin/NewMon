@@ -9,9 +9,12 @@ import {
 } from "./InterestSelect.styles";
 import { topics } from "../../../shared/model/topics";
 import { handleUserInterests } from "../api/handleUserInterests";
+import { useNavigate } from "react-router-dom";
 
 const InterestSelectPage = () => {
   const [selected, setSelected] = useState<number[]>([]);
+
+  const navigate = useNavigate();
 
   const toggleInterest = (interest: number) => {
     setSelected((prev) => {
@@ -26,7 +29,7 @@ const InterestSelectPage = () => {
   };
 
   const handleSubmit = async () => {
-    await handleUserInterests(selected);
+    await handleUserInterests({ interests: selected, navigate });
   };
 
   return (
