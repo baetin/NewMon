@@ -11,7 +11,7 @@ interface GoogleLoginProps {
   navigate: (path: string) => void;
 }
 
-export const handleSuccess = async ({
+export const handleLogin = async ({
   res,
   setLoginUser,
   navigate,
@@ -22,36 +22,33 @@ export const handleSuccess = async ({
   }
 
   try {
-    const response = await axios.post("/api/auth/google-login", {
-      idToken: res.credential,
-    });
+    const response = await axios.post(
+      "/api/auth/google-login",
+      {
+        idToken: res.credential,
+      },
+      {
+        withCredentials: true,
+      }
+    );
     console.log("백엔드 응답:", response.data);
 
-    if (response.data.token) {
-      sessionStorage.setItem("accessToken", response.data.token);
-      sessionStorage.setItem("user", JSON.stringify(response.data.user));
-      sessionStorage.setItem(
-        "isNewUser",
-        JSON.stringify(response.data.isNewUser)
-      );
+    if (response.status === 200 || response.status === 201) {
+      const { user, isNewUser } = response.data;
 
       setLoginUser({
-        userId: response.data.user.userId,
-        displayName: response.data.user.displayName,
-        isNewUser: response.data.isNewUser,
+        userId: user.userId,
+        displayName: user.displayName,
+        isNewUser: isNewUser,
       });
-
-      // 로그인 후 메인 페이지로 이동
-      const isNewUser = JSON.parse(
-        sessionStorage.getItem("isNewUser") || "false"
-      );
 
       isNewUser ? navigate("/interest-select") : navigate("/");
     }
+
     return response.data;
   } catch (err) {
     console.error("❌ 구글 로그인 처리 실패:", err);
-    alert("에러로 인해 로그인에 실패 했습니다.");
+    alert("시스템 에러로 인해 로그인에 실패 했습니다.");
   }
 };
 

@@ -30,7 +30,7 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [loginUser, setLognUser] = useRecoilState(LoginUserState); // 로그인 됐는지 확인할때
+  const [loginUser, setLoginUser] = useRecoilState(LoginUserState); // 로그인 됐는지 확인할때
 
   const onClick = () => {
     setIsClicked((prev) => !prev);
@@ -41,7 +41,7 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
     if (!result) return;
 
     await handleLogout();
-    setLognUser({ userId: "", displayName: "", isNewUser: null });
+    setLoginUser({ userId: "", displayName: "", isNewUser: null });
   };
 
   const onChangeInforClick = () => {

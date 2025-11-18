@@ -1,6 +1,6 @@
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import type React from "react";
-import { handleError, handleSuccess } from "../api/handleLogin";
+import { handleError, handleLogin } from "../api/handleLogin";
 import mainLogo from "../../../shared/assets/mainLogo.png";
 import { Card, Container, GoogleButtonWrapper, Logo } from "./LoginForm.styles";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
 
   const onLoginSuccess = (res: CredentialResponse) => {
-    handleSuccess({ res, setLoginUser, navigate });
+    handleLogin({ res, setLoginUser, navigate });
   };
 
   return (
