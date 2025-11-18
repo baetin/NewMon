@@ -1,13 +1,19 @@
 // src/types/express-request.d.ts
 
 import { JwtPayload } from "jsonwebtoken";
+import "express-session"; // express-session 타입을 가져와야 확장이 가능합니다.
 
-// Express 모듈을 확장하여 req 객체에 userId 속성을 추가합니다.
+declare module "express-session" {
+  interface SessionData {
+    userId: number; // 세션에 저장할 데이터 타입 정의
+  }
+}
+
 declare global {
   namespace Express {
     interface Request {
       userId?: number;
-      user?: JwtPayload; // JWT 페이로드 전체를 담고 싶다면 추가
+      user?: JwtPayload;
     }
   }
 }
