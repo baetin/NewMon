@@ -1,7 +1,7 @@
 import mainLogo from "../../assets/mainLogo.png";
-import { FaSignInAlt } from "react-icons/fa";
+import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { topics } from "../../model/topics";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Container,
   LeftSection,
@@ -10,15 +10,21 @@ import {
   Logo,
   RightSection,
   LoginButton,
+  LogoutButton,
 } from "./MainNavBar.styles";
+import { useRecoilValue } from "recoil";
+import { LoginUserState } from "../../model/loginUserState";
 
 export const MainNavbar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const loginUser = useRecoilValue(LoginUserState); // 로그인 됐는지 확인할때
 
   return (
     <Container>
       {/* 왼쪽: 로고 */}
-      <LeftSection href="/">
+      <LeftSection as={Link} to="/">
         <Logo src={mainLogo} alt="Main Logo" />
       </LeftSection>
 
@@ -40,10 +46,20 @@ export const MainNavbar: React.FC = () => {
 
       {/* 오른쪽: 로그인 버튼 */}
       <RightSection>
-        <LoginButton onClick={() => (window.location.href = "/login")}>
-          <FaSignInAlt size={16} />
-          로그인
-        </LoginButton>
+        {loginUser.displayName ? (
+          <>
+            <p>{loginUser.displayName}님</p>
+            <LogoutButton>
+              <FaSignOutAlt size={16} />
+              로그아웃
+            </LogoutButton>
+          </>
+        ) : (
+          <LoginButton onClick={() => navigate("/login")}>
+            <FaSignInAlt size={16} />
+            로그인
+          </LoginButton>
+        )}
       </RightSection>
     </Container>
   );
