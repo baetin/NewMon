@@ -32,13 +32,13 @@ export const handleSuccess = async ({
       sessionStorage.setItem("user", JSON.stringify(response.data.user));
       sessionStorage.setItem(
         "isNewUser",
-        JSON.stringify(response.data.user.isNewUser)
+        JSON.stringify(response.data.isNewUser)
       );
 
       setLoginUser({
         userId: response.data.user.userId,
         displayName: response.data.user.displayName,
-        isNewUser: response.data.user.isNewUser,
+        isNewUser: response.data.isNewUser,
       });
 
       // 로그인 후 메인 페이지로 이동
@@ -46,11 +46,12 @@ export const handleSuccess = async ({
         sessionStorage.getItem("isNewUser") || "false"
       );
 
-      isNewUser ? navigate("/") : navigate("/interest-select");
+      isNewUser ? navigate("/interest-select") : navigate("/");
     }
     return response.data;
   } catch (err) {
     console.error("❌ 구글 로그인 처리 실패:", err);
+    alert("에러로 인해 로그인에 실패 했습니다.");
   }
 };
 

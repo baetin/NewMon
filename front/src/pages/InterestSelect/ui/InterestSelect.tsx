@@ -8,11 +8,12 @@ import {
   Card,
 } from "./InterestSelect.styles";
 import { topics } from "../../../shared/model/topics";
+import { handleUserInterests } from "../api/handleUserInterests";
 
 const InterestSelectPage = () => {
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<number[]>([]);
 
-  const toggleInterest = (interest: string) => {
+  const toggleInterest = (interest: number) => {
     setSelected((prev) => {
       if (prev.includes(interest)) {
         return prev.filter((i) => i !== interest);
@@ -25,8 +26,7 @@ const InterestSelectPage = () => {
   };
 
   const handleSubmit = async () => {
-    // api 필요
-    console.log("clear");
+    await handleUserInterests(selected);
   };
 
   return (
@@ -37,8 +37,8 @@ const InterestSelectPage = () => {
           {topics.map((topic) => (
             <InterestItem
               key={topic.label}
-              selected={selected.includes(topic.label)}
-              onClick={() => toggleInterest(topic.label)}
+              selected={selected.includes(topic.topicId)}
+              onClick={() => toggleInterest(topic.topicId)}
             >
               {topic.label}
             </InterestItem>

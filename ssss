@@ -1,0 +1,287 @@
+[33mcommit f20597a6a1eef72eaf0b26af275a72157f8ca2b9[m[33m ([m[1;32mmain[m[33m)[m
+Merge: 629d261 b835231
+Author: 김태빈 <121278869+baetin@users.noreply.github.com>
+Date:   Mon Nov 10 04:24:27 2025 +0900
+
+    Merge pull request #7 from baetin/temp_fix
+    
+    Temp fix
+
+[33mcommit b835231f443d2d657ae3a12a5fa8d87fd91031a0[m
+Merge: 76930fb 629d261
+Author: 김태빈 <121278869+baetin@users.noreply.github.com>
+Date:   Mon Nov 10 04:24:19 2025 +0900
+
+    Merge branch 'main' into temp_fix
+
+[33mcommit 76930fb5a60332968b3f02a6b6dfcfa3f384a2ea[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Thu Nov 6 01:21:26 2025 +0900
+
+    1106 날씨 추가, topic페이지 flex수정
+
+[33mcommit b08cdd36dd3839a89545e18f3b758ff3347d6a3e[m
+Author: taebin <baetin@naver.com>
+Date:   Mon Nov 10 03:58:25 2025 +0900
+
+    오류수정
+
+[33mcommit 8c2185738de6edcad9fbbe4c21210b0893d7e71f[m
+Author: taebin <baetin@naver.com>
+Date:   Mon Nov 10 03:01:03 2025 +0900
+
+    조회 삭제
+
+[33mcommit 629d2618b31990f8bb25b8da29fbe449785f4096[m
+Merge: fb4d51f a915cc1
+Author: 최지환 <76509336+jihwan2001@users.noreply.github.com>
+Date:   Thu Nov 6 01:22:05 2025 +0900
+
+    Merge pull request #6 from baetin/jihwan
+    
+    Jihwan
+
+[33mcommit a915cc121f43bd7cab045ece925e27c8d7df2d91[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Thu Nov 6 01:21:26 2025 +0900
+
+    1106 날씨 추가, topic페이지 flex수정
+
+[33mcommit 31a1955ac56b9f5997278b0629dac4444c79af34[m
+Merge: db8e1c7 2c13e51
+Author: taebin <baetin@naver.com>
+Date:   Fri Oct 31 09:20:02 2025 +0900
+
+    Merge branch 'jihwan' of https://github.com/baetin/NewMon into jihwan
+
+[33mcommit 1aafd2e70f17ce7418f4f5ac18fddcbe511b3bee[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Sat Oct 25 01:27:08 2025 +0900
+
+    1024 메인 페이지 수정 및 다른 곳들 css수정
+
+[33mcommit 2c13e519ec684ffeb8f3e8f2cb115b7321022950[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Sat Oct 25 01:27:08 2025 +0900
+
+    1024 메인 페이지 수정 및 다른 곳들 css수정
+
+[33mcommit db8e1c7e47157348d35d758295cc663464fecab2[m
+Merge: b0b92de 207bf85
+Author: taebin <baetin@naver.com>
+Date:   Wed Oct 22 19:14:08 2025 +0900
+
+    Merge branch 'jihwan' of https://github.com/baetin/NewMon into jihwan
+
+[33mcommit de36ac740d0aaf2445e952d7c86578ef1dc3a934[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 22 19:12:13 2025 +0900
+
+    1022 로그인, 메인화면
+
+[33mcommit 207bf85d4b94f1fa6b863c8abe51e2fdc24c3d60[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 22 19:12:13 2025 +0900
+
+    1022 로그인, 메인화면
+
+[33mcommit fb4d51fe5d46bb985b03d62c7dd605a970f0d700[m
+Merge: 53ed03d a1af4db
+Author: 최지환 <76509336+jihwan2001@users.noreply.github.com>
+Date:   Wed Oct 8 00:24:56 2025 +0900
+
+    Merge pull request #5 from baetin/jihwan
+    
+    Jihwan
+
+[33mcommit a1af4dbc113be48597be80c3c79ac53fe1c68f73[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 8 00:23:51 2025 +0900
+
+    back merge
+
+[33mcommit 915894436cc0856f7e4afbf96102c99b252704d0[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 8 00:23:51 2025 +0900
+
+    back merge
+
+[33mcommit 8515fb2b4954df79c6f17e48c249682aceb23a0a[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 8 00:22:35 2025 +0900
+
+    README 수정
+
+[33mcommit 672e04d52c34311f1847dc2eb2707dd0834ca30a[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 8 00:22:35 2025 +0900
+
+    README 수정
+
+[33mcommit 36ac235f25c065736bcae7ddb9fe71a817691b1b[m
+Merge: 5c20300 53ed03d
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 8 00:15:49 2025 +0900
+
+    Merge remote-tracking branch 'origin/main' into jihwan
+
+[33mcommit d61fec10f9b3044804837a91e26a0ab5d7dc1339[m
+Merge: 698819c 9d19800
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 8 00:15:49 2025 +0900
+
+    Merge remote-tracking branch 'origin/main' into jihwan
+
+[33mcommit 5c203007cff9c847f1e0bbdd78a566b0e0a4cf1b[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 8 00:14:31 2025 +0900
+
+    feat: 네비게이션 바 추가와 메인화면 간단 구현
+
+[33mcommit 698819ce895f87cd45f507d09f9ca7c809c2f821[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Oct 8 00:14:31 2025 +0900
+
+    feat: 네비게이션 바 추가와 메인화면 간단 구현
+
+[33mcommit b0b92dec65d637637cccb5de1b1a20a16b6cfd75[m
+Author: taebin <baetin@naver.com>
+Date:   Mon Oct 6 23:20:23 2025 +0900
+
+    회원가입 완료
+
+[33mcommit 53ed03d55000ed6be85e9c321684f124ef786803[m
+Merge: dda3771 a7419a4
+Author: 김태빈 <121278869+baetin@users.noreply.github.com>
+Date:   Sun Oct 5 17:23:40 2025 +0900
+
+    Merge pull request #4 from baetin/taebin
+    
+    도커 및 postgresql 적용
+
+[33mcommit 9d19800caaad84ae45252ca3db7a190aa71303a1[m
+Merge: 643bdb4 470008b
+Author: 김태빈 <121278869+baetin@users.noreply.github.com>
+Date:   Sun Oct 5 17:23:40 2025 +0900
+
+    Merge pull request #4 from baetin/taebin
+    
+    도커 및 postgresql 적용
+
+[33mcommit 470008bbdc8f7852c2a12427410ccd9494e327f2[m
+Author: taebin <baetin@naver.com>
+Date:   Sun Oct 5 17:22:47 2025 +0900
+
+    도커 및 postgresql 적용
+
+[33mcommit a7419a4e8d4e6c36faed81704085998b5b344104[m
+Author: taebin <baetin@naver.com>
+Date:   Sun Oct 5 17:22:47 2025 +0900
+
+    도커 및 postgresql 적용
+
+[33mcommit dda377113c5e2a39135a73a3bb9f49cf1f2a0d8e[m
+Merge: 16f1ef6 f9d84ab
+Author: 최지환 <76509336+jihwan2001@users.noreply.github.com>
+Date:   Wed Sep 24 23:39:08 2025 +0900
+
+    Merge pull request #3 from baetin/jihwan
+    
+    0924 front
+
+[33mcommit 643bdb4dcfa6fd80e873bc8988940e3ffe52a1a2[m
+Merge: 5658229 490137f
+Author: 최지환 <76509336+jihwan2001@users.noreply.github.com>
+Date:   Wed Sep 24 23:39:08 2025 +0900
+
+    Merge pull request #3 from baetin/jihwan
+    
+    0924 front
+
+[33mcommit f9d84abb0b45f425411abe8dea51a74b145586bf[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Sep 24 23:36:14 2025 +0900
+
+    0924 front
+
+[33mcommit 490137ff3c3d45380f9137c5dc719cf76de3d2a1[m
+Author: jihwan2001 <coghtoy@naver.com>
+Date:   Wed Sep 24 23:36:14 2025 +0900
+
+    0924 front
+
+[33mcommit 16f1ef662f49ea6d4a6a140072d4b49409df2f56[m
+Merge: 84d3fdd 769a49e
+Author: 김태빈 <121278869+baetin@users.noreply.github.com>
+Date:   Tue Sep 23 11:33:15 2025 +0900
+
+    Merge pull request #2 from baetin/taebin
+    
+    Taebin
+
+[33mcommit 56582294ccbfdd5cdc3f359a5e0f57fea9b9cbe3[m
+Merge: 26cd737 b2f6c59
+Author: 김태빈 <121278869+baetin@users.noreply.github.com>
+Date:   Tue Sep 23 11:33:15 2025 +0900
+
+    Merge pull request #2 from baetin/taebin
+    
+    Taebin
+
+[33mcommit 769a49ed49ec73a6a171d62dae90a1ea8eb71562[m
+Merge: 6bdb03f 84d3fdd
+Author: taebin <baetin@naver.com>
+Date:   Tue Sep 23 11:30:41 2025 +0900
+
+    Merge branch 'main' of https://github.com/baetin/NewMon into taebin
+
+[33mcommit b2f6c59e1d3acf24cd9872c5e0b24a1412ded57c[m
+Merge: a568de7 26cd737
+Author: taebin <baetin@naver.com>
+Date:   Tue Sep 23 11:30:41 2025 +0900
+
+    Merge branch 'main' of https://github.com/baetin/NewMon into taebin
+
+[33mcommit 6bdb03fed3f445e019738eb2ecc6080042cf68e3[m
+Author: taebin <baetin@naver.com>
+Date:   Tue Sep 23 11:30:13 2025 +0900
+
+    파일구조 생성
+
+[33mcommit a568de7d0bccecf2162a5fc9e2d46afc4c1519c7[m
+Author: taebin <baetin@naver.com>
+Date:   Tue Sep 23 11:30:13 2025 +0900
+
+    파일구조 생성
+
+[33mcommit 84d3fddb7530769d66b8d81f6fcd6ec1b124cc19[m
+Merge: e49dfb1 d419862
+Author: ljw010523-maker <ljw010523@gmail.com>
+Date:   Tue Sep 23 11:11:42 2025 +0900
+
+    Merge pull request #1 from baetin/jungwoo
+    
+    ㄹ
+
+[33mcommit 26cd73733dfe598150d2088a9631b5855ca72477[m
+Merge: e49dfb1 d419862
+Author: ljw010523-maker <ljw010523@gmail.com>
+Date:   Tue Sep 23 11:11:42 2025 +0900
+
+    Merge pull request #1 from baetin/jungwoo
+    
+    ㄹ
+
+[33mcommit d419862bd9b05e72a96a6258aad8f62700fc46b2[m[33m ([m[1;31morigin/jungwoo[m[33m)[m
+Author: jungwoo <ljw010523@naver.com>
+Date:   Tue Sep 23 11:08:26 2025 +0900
+
+    ㄹ
+
+[33mcommit e49dfb19a40192fe6527e83703ca34960b96a92c[m
+Author: jungwoo <ljw010523@naver.com>
+Date:   Tue Sep 23 11:02:39 2025 +0900
+
+    감사를표함
+
+[33mcommit bba768e611fc62b014778e6ed58c42fd43639ab1[
