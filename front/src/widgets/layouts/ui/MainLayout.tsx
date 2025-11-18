@@ -9,15 +9,14 @@ import { LoginUserState } from "../../../shared/model/loginUserState";
 
 export const MainLayout = () => {
   const [isClicked, setIsClicked] = useState(false);
-  const [, setUser] = useState(null);
   const setLoginUser = useSetRecoilState(LoginUserState);
 
   useEffect(() => {
     const checkSession = async () => {
       const result = await handleSessionCheck();
       const user = result?.user || null;
-      setUser(user); // 로컬 state
       setLoginUser(user || { userId: "", displayName: "", isNewUser: null }); // Recoil 사용해서 저장
+      console.log("세션 체크 결과:", result);
     };
 
     checkSession();
