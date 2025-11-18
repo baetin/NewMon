@@ -4,52 +4,52 @@ import { OAuth2Client } from "google-auth-library";
 import { generateToken } from "../services/jwt.service.js";
 
 //실제 사용 코드
-// const CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID;
-// const client = new OAuth2Client(CLIENT_ID);
+const CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
 
 
 
-// // Google 토큰 검증 로직
-// async function verifyGoogleToken(token: string) {
-//   if (!CLIENT_ID) {
-//     throw new Error("GOOGLE_CLIENT_ID environment variable is not set.");
-//   }
+// Google 토큰 검증 로직
+async function verifyGoogleToken(token: string) {
+  if (!CLIENT_ID) {
+    throw new Error("GOOGLE_CLIENT_ID environment variable is not set.");
+  }
 
-//   try {
-//     const ticket = await client.verifyIdToken({
-//       idToken: token, // 클라이언트가 보낸 토큰을 검증
-//       audience: CLIENT_ID, // 이 토큰이 우리의 앱을 위해 발행되었는지 확인
-//     });
-//     const payload = ticket.getPayload();
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token, // 클라이언트가 보낸 토큰을 검증
+      audience: CLIENT_ID, // 이 토큰이 우리의 앱을 위해 발행되었는지 확인
+    });
+    const payload = ticket.getPayload();
 
-//     if (!payload || !payload.sub || !payload.email) {
-//       throw new Error("Invalid Google token payload.");
-//     }
+    if (!payload || !payload.sub || !payload.email) {
+      throw new Error("Invalid Google token payload.");
+    }
 
-//     // 실제 Google Payload에서 사용자 정보를 추출하여 반환
-//     return {
-//       googleId: payload.sub, // Google의 고유 ID (DB Upsert 키)
-//       email: payload.email,
-//       displayName: payload.name || payload.email,
-//     };
-//   } catch (error) {
-//     console.error("Google Token Verification Failed:", error);
-//     throw new Error("Invalid Google token."); // 401 에러 유도
-//   }
-// }
+    // 실제 Google Payload에서 사용자 정보를 추출하여 반환
+    return {
+      googleId: payload.sub, // Google의 고유 ID (DB Upsert 키)
+      email: payload.email,
+      displayName: payload.name || payload.email,
+    };
+  } catch (error) {
+    console.error("Google Token Verification Failed:", error);
+    throw new Error("Invalid Google token."); // 401 에러 유도
+  }
+}
 //---------------------------------------------------------------
 
-
-async function verifyGoogleToken(token: string) {
-    console.log("--- DEBUG: Bypassing actual Google verification. ---");
-    // DB Upsert 키로 사용할 고정 ID를 반환합니다.
-    return {
-        // 이미 DB에 저장된 고정 ID를 반환 (Upsert 로직 유지를 위해 필요)
-        googleId: "TEST_UNIQUE_ID_FROM_GOOGLE_001", 
-        email: "db_test_001@email.com",
-        displayName: "Test User Name",
-    };
-}
+// //테스트용
+// async function verifyGoogleToken(token: string) {
+//     console.log("--- DEBUG: Bypassing actual Google verification. ---");
+//     // DB Upsert 키로 사용할 고정 ID를 반환합니다.
+//     return {
+//         // 이미 DB에 저장된 고정 ID를 반환 (Upsert 로직 유지를 위해 필요)
+//         googleId: "TEST_UNIQUE_ID_FROM_GOOGLE_001", 
+//         email: "db_test_001@email.com",
+//         displayName: "Test User Name",
+//     };
+// }
 
 export const googleAuthCallbackController = async (
   req: Request,

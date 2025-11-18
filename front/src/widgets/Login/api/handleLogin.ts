@@ -3,7 +3,11 @@ import axios from "axios";
 
 interface GoogleLoginProps {
   res: CredentialResponse;
-  setLoginUser: (user: { userId: string; displayName: string }) => void;
+  setLoginUser: (user: {
+    userId: string;
+    displayName: string;
+    isNewUser: boolean;
+  }) => void;
   navigate: (path: string) => void;
 }
 
@@ -26,15 +30,25 @@ export const handleSuccess = async ({
     if (response.data.token) {
       sessionStorage.setItem("accessToken", response.data.token);
       sessionStorage.setItem("user", JSON.stringify(response.data.user));
+      sessionStorage.setItem(
+        "isNewUser",
+        JSON.stringify(response.data.isNewUser)
+      );
 
       setLoginUser({
         userId: response.data.user.userId,
         displayName: response.data.user.displayName,
+        isNewUser: response.data.isNewUser,
       });
 
       // 로그인 후 메인 페이지로 이동
-      navigate("/");
+      const isNewUser = JSON.parse(
+        sessionStorage.getItem("isNewUser") || "false"
+      );
+
+      isNewUser ? navigate("/interest-select") : navigate("/");
     }
+    return response.data;
   } catch (err) {
     console.error("❌ 구글 로그인 처리 실패:", err);
   }
