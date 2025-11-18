@@ -1,52 +1,74 @@
 import pool from "../utils/db.js";
-import { PoolClient } from "pg"; // pg 클라이언트 타입 정의를 위해 import
+import { PoolClient } from "pg";
 
-// Google에서 전달받는 사용자 데이터의 타입 정의
 interface OAuthUserData {
   googleId: string;
   email: string;
   displayName: string;
 }
 
-// 회원가입과 로그인을 동시에 처리하는 Upsert 함수
 export const upsertUserService = async (data: OAuthUserData) => {
-  const { googleId, email, displayName } = data; // interests 제거
+  const { googleId, email, displayName } = data;
   const client: PoolClient = await pool.connect();
 
   try {
     await client.query("BEGIN");
 
-    // 1. User Upsert (조회 및 생성/업데이트)
-    const upsertQuery = `
+    // 1. SELECT: 기존 사용자가 있는지 확인
+    const selectQuery = `SELECT user_id, email, display_name FROM "user" WHERE google_id = $1`;
+    const existingUserResult = await client.query(selectQuery, [googleId]);
+
+    let userId: number;
+    let isNewUser: boolean;
+    let finalUserInfo;
+
+    if (
+      existingUserResult &&
+      typeof existingUserResult.rowCount === "number" &&
+      existingUserResult.rowCount > 0
+    ) {
+      // [A] 기존 사용자: UPDATE 실행 (로그인)
+      const updateQuery = `
+            UPDATE "user" SET display_name = $2 
+            WHERE google_id = $1 
+            RETURNING user_id, email, display_name;
+        `;
+      const updateResult = await client.query(updateQuery, [
+        googleId,
+        displayName,
+      ]);
+
+      finalUserInfo = updateResult.rows[0];
+      isNewUser = false;
+    } else {
+      // [B] 신규 사용자: INSERT 실행 (회원가입)
+      const insertQuery = `
             INSERT INTO "user" (google_id, email, display_name)
             VALUES ($1, $2, $3)
-            ON CONFLICT (google_id) DO UPDATE 
-            SET display_name = $3 
-            RETURNING user_id, display_name, email;
+            RETURNING user_id, email, display_name;
         `;
+      const insertResult = await client.query(insertQuery, [
+        googleId,
+        email,
+        displayName,
+      ]);
 
-    const res = await client.query(upsertQuery, [googleId, email, displayName]);
-
-    const userId: number = res.rows[0].user_id;
-    // 명령어가 'INSERT'이면 새 사용자, 아니면 기존 사용자입니다.
-    let isNewUser: boolean = res.command === "INSERT";
-
-    // 2. 관심 분야 연결 로직 제거
-    // (이제 별도의 API POST /api/user/interests를 통해 처리됩니다.)
-    // if (isNewUser && interests && interests.length > 0) { ... } 로직 전체 제거
+      finalUserInfo = insertResult.rows[0];
+      isNewUser = true;
+    }
 
     await client.query("COMMIT");
 
-    // 3. 인증 성공 후 반환
+    // 2. 인증 성공 후 반환
     return {
-      user_id: userId,
-      email: res.rows[0].email,
-      displayName: res.rows[0].display_name,
-      isNewUser: isNewUser, // 회원가입 여부 반환
+      user_id: finalUserInfo.user_id,
+      email: finalUserInfo.email,
+      displayName: finalUserInfo.display_name,
+      isNewUser: isNewUser,
     };
   } catch (error) {
     await client.query("ROLLBACK");
-    console.error("SQL Upsert Error:", error);
+    console.error("SQL Upsert Error (SELECT/INSERT/UPDATE):", error);
     throw error;
   } finally {
     client.release();

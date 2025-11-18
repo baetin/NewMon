@@ -1,18 +1,13 @@
-// // src/types/express.d.ts
+// src/types/express-request.d.ts
 
-// // upsertUserService가 반환하는 사용자 객체의 타입과 일치해야 합니다.
-// interface AuthUser {
-//     user_id: number;
-//     email: string;
-//     displayName: string;
-//     isNewUser: boolean;
-// }
+import { JwtPayload } from "jsonwebtoken";
 
-// declare namespace Express {
-//     interface User extends AuthUser {} // Passport에서 사용하는 User 타입 정의
-    
-//     interface Request {
-//         // req.user의 타입을 AuthUser로 확장
-//         user?: AuthUser; 
-//     }
-// }
+// Express 모듈을 확장하여 req 객체에 userId 속성을 추가합니다.
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: number;
+      user?: JwtPayload; // JWT 페이로드 전체를 담고 싶다면 추가
+    }
+  }
+}
