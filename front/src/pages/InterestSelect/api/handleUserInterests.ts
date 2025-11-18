@@ -17,7 +17,7 @@ export const handleUserInterests = async ({
       { interests },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // oauth 프레임워크에서 사용하는 토큰 인증 방식 / 유효한 토큰인지 확인
         },
       }
     );

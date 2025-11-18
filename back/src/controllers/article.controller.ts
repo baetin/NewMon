@@ -41,12 +41,10 @@ export const articleController = {
       if (error.message.includes("Topic not found")) {
         return res.status(404).json({ message: error.message });
       }
-      res
-        .status(500)
-        .json({
-          message: "기사 목록 조회 중 서버 오류 발생",
-          detail: error.message,
-        });
+      res.status(500).json({
+        message: "기사 목록 조회 중 서버 오류 발생",
+        detail: error.message,
+      });
     }
   },
 
@@ -80,12 +78,10 @@ export const articleController = {
       if (error.message.includes("Topic not found")) {
         return res.status(404).json({ message: error.message });
       }
-      res
-        .status(500)
-        .json({
-          message: "기사 상세 조회 중 오류 발생",
-          detail: error.message,
-        });
+      res.status(500).json({
+        message: "기사 상세 조회 중 오류 발생",
+        detail: error.message,
+      });
     }
   },
 
@@ -108,18 +104,14 @@ export const articleController = {
       );
 
       if (rowCount === 0) {
-        return res
-          .status(404)
-          .json({
-            message: `기사 ID ${id}를 찾을 수 없거나 삭제할 수 없습니다.`,
-          });
+        return res.status(404).json({
+          message: `기사 ID ${id}를 찾을 수 없거나 삭제할 수 없습니다.`,
+        });
       }
 
-      res
-        .status(200)
-        .json({
-          message: `기사 ID ${id}가 성공적으로 삭제되었습니다. (Topic ID: ${topicIdNum})`,
-        });
+      res.status(200).json({
+        message: `기사 ID ${id}가 성공적으로 삭제되었습니다. (Topic ID: ${topicIdNum})`,
+      });
     } catch (error: any) {
       console.error(error);
       if (error.message.includes("Topic not found")) {

@@ -1,7 +1,7 @@
-import mainLogo from "../../assets/mainLogo.png";
+import mainLogo from "../../../shared/assets/mainLogo.png";
 import { FaSignInAlt } from "react-icons/fa";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { topics } from "../../model/topics";
+import { topics } from "../../../shared/model/topics";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Container,
@@ -15,8 +15,8 @@ import {
   SelectDropDownContainer,
 } from "./MainNavBar.styles";
 import { useRecoilState } from "recoil";
-import { LoginUserState } from "../../model/loginUserState";
-import { handleLogout } from "../../../widgets/Login/api/handleLogout";
+import { LoginUserState } from "../../../shared/model/loginUserState";
+import { handleLogout } from "../api/handleLogout";
 
 interface IsClickedProps {
   isClicked: boolean;
@@ -77,7 +77,7 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
           <>
             <UserNameControllContainer
               onClick={(e) => {
-                e.stopPropagation();
+                e.stopPropagation(); // 이벤트 버블링 방지
                 onClick();
               }}
             >
