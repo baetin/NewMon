@@ -32,7 +32,8 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
 
   const [loginUser, setLoginUser] = useRecoilState(LoginUserState); // 로그인 됐는지 확인할때
 
-  const onClick = () => {
+  const toggleDropdown = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
     setIsClicked((prev) => !prev);
   };
 
@@ -75,12 +76,7 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
       <RightSection>
         {loginUser.displayName ? (
           <>
-            <UserNameControllContainer
-              onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
-                onClick();
-              }}
-            >
+            <UserNameControllContainer onClick={toggleDropdown}>
               <span>{loginUser.displayName}님</span>
 
               <IoMdArrowDropdown size={30} />
