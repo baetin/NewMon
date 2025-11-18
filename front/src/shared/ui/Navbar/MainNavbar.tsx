@@ -68,7 +68,7 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
 
       {/* 오른쪽: 로그인, 로그아웃 드롭다운 버튼 */}
       <RightSection>
-        {!loginUser.displayName ? (
+        {loginUser.displayName ? (
           <>
             <UserNameControllContainer
               onClick={(e) => {
@@ -76,7 +76,9 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
                 onClick();
               }}
             >
-              <span>{loginUser.displayName}님</span>
+              <span>
+                {loginUser.displayName ? loginUser.displayName : "???"}님
+              </span>
               <IoMdArrowDropdown size={30} />
             </UserNameControllContainer>
             {isClicked && (
