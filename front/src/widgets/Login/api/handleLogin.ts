@@ -48,6 +48,7 @@ export const handleSuccess = async ({
 
       isNewUser ? navigate("/") : navigate("/interest-select");
     }
+    return response.data;
   } catch (err) {
     console.error("❌ 구글 로그인 처리 실패:", err);
   }

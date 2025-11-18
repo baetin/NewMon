@@ -14,8 +14,9 @@ import {
   UserNameControllContainer,
   SelectDropDownContainer,
 } from "./MainNavBar.styles";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { LoginUserState } from "../../model/loginUserState";
+import { handleLogout } from "../../../widgets/Login/api/handleLogout";
 
 interface IsClickedProps {
   isClicked: boolean;
@@ -29,16 +30,20 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
 
-  const loginUser = useRecoilValue(LoginUserState); // 로그인 됐는지 확인할때
+  const [loginUser, setLognUser] = useRecoilState(LoginUserState); // 로그인 됐는지 확인할때
 
   const onClick = () => {
     setIsClicked((prev) => !prev);
   };
-  const onLogoutCLick = () => {
-    confirm("로그아웃 하시겠습니까?");
-    console.log("로그아웃 되었습니다.");
-    // api 가져오기
+
+  const onLogoutCLick = async () => {
+    const result = confirm("로그아웃 하시겠습니까?");
+    if (!result) return;
+
+    await handleLogout();
+    setLognUser({ userId: "", displayName: "", isNewUser: null });
   };
+
   const onChangeInforClick = () => {
     console.log("회원 정보 수정 페이지로 이동했습니다.");
   };
@@ -77,7 +82,7 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
               }}
             >
               <span>
-                {loginUser.displayName ? loginUser.displayName : "???"}님
+                {loginUser?.displayName ? loginUser.displayName : "???"}님
               </span>
               <IoMdArrowDropdown size={30} />
             </UserNameControllContainer>
