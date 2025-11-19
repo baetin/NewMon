@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 // 2. 세션 설정 (userId를 서버 메모리/DB에 저장하고 ID만 쿠키로 클라이언트에 전송)
 app.use(session({
-    secret: process.env.SESSION_SECRET || '!@#$A_Very_Long_Random_String_For_My_Session_3817fHDKL', 
+    secret: process.env.SESSION_SECRET || 'fallback_key',
     resave: false, 
     saveUninitialized: false, 
     cookie: { /* ... */ }
