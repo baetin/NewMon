@@ -22,9 +22,8 @@ export const MainLayout = () => {
 
       setLoginUser((prev) => ({
         // 세션 체크 시 displayName이 없으면 이전 Recoil 값 유지
+        ...prev,
         userId: result.user?.userId || result.userId,
-        displayName: prev.displayName || "유저",
-        isNewUser: prev.isNewUser,
       }));
     };
 
