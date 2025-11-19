@@ -73,8 +73,7 @@ export const googleAuthCallbackController = async (req: Request, res: Response) 
     });
 
     // 3. ✨ 인증 성공: 사용자 ID를 세션에 저장 ✨
-    req.session.userId = userInfo.user_id;
-    req.session.displayName = userInfo.displayName;
+    (req.session as any).userId = userInfo.user_id;
 
     // 4. 응답 분기 처리
     return res.status(userInfo.isNewUser ? 201 : 200).json({
