@@ -14,9 +14,21 @@ export const MainLayout = () => {
   useEffect(() => {
     const checkSession = async () => {
       const result = await handleSessionCheck();
-      const user = result?.user || null;
-      setLoginUser(user || { userId: "", displayName: "", isNewUser: null }); // Recoil 사용해서 저장
-      console.log("세션 체크 결과:", result);
+
+      if (!result?.isAuthenticated) {
+        setLoginUser({ userId: "", displayName: "", isNewUser: null });
+        return;
+      }
+
+      const user = result.user
+        ? {
+            userId: result.user.userId,
+            displayName: result.user.displayName,
+            isNewUser: false,
+          }
+        : { userId: result.userId, displayName: "유저", isNewUser: false };
+
+      setLoginUser(user);
     };
 
     checkSession();
