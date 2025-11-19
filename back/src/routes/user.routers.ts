@@ -8,6 +8,7 @@ const userRouter = Router();
 
 // ✨ POST /api/user/interests - 관심 주제 업데이트 ✨
 userRouter.post("/interests", authMiddleware, userController.updateInterests);
+userRouter.get('/status', authMiddleware, userController.checkAuthStatus);
 
 // 참고: GET /profile이나 PUT /profile 같은 불필요한 경로는 제거합니다.
 

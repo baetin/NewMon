@@ -16,44 +16,50 @@ declare global {
   }
 }
 
-// Google 토큰 검증 로직
+// // Google 토큰 검증 로직
 async function verifyGoogleToken(token: string) {
-  if (!CLIENT_ID) {
-    throw new Error("GOOGLE_CLIENT_ID environment variable is not set.");
-  }
-
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: CLIENT_ID,
-    });
-    const payload = ticket.getPayload();
-
-    if (!payload || !payload.sub || !payload.email) {
-      throw new Error("Invalid Google token payload.");
+    if (!CLIENT_ID) {
+        throw new Error("GOOGLE_CLIENT_ID environment variable is not set.");
     }
 
-    // Google Payload에서 사용자 정보를 추출하여 반환
-    return {
-      googleId: payload.sub,
-      email: payload.email,
-      displayName: payload.name || payload.email,
-    };
-  } catch (error) {
-    console.error("Google Token Verification Failed:", error);
-    throw new Error("Invalid Google token."); // 401 에러 유도
-  }
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: token, 
+            audience: CLIENT_ID, 
+        });
+        const payload = ticket.getPayload();
+
+        if (!payload || !payload.sub || !payload.email) {
+            throw new Error("Invalid Google token payload.");
+        }
+
+        // Google Payload에서 사용자 정보를 추출하여 반환
+        return {
+            googleId: payload.sub,
+            email: payload.email,
+            displayName: payload.name || payload.email,
+        };
+    } catch (error) {
+        console.error("Google Token Verification Failed:", error);
+        throw new Error("Invalid Google token."); // 401 에러 유도
+    }
 }
+// //--------------------------------------------------------------------------
 
-export const googleAuthCallbackController = async (
-  req: Request,
-  res: Response
-) => {
-  const { idToken } = req.body;
+// //테스트용
+// async function verifyGoogleToken(token: string) {
+//     console.log("--- DEBUG: Bypassing actual Google verification. ---");
+//     // DB Upsert 키로 사용할 고정 ID를 반환합니다.
+//     return {
+//         // 이미 DB에 저장된 고정 ID를 반환 (Upsert 로직 유지를 위해 필요)
+//         googleId: "TEST_UNIQUE_ID_FROM_GOOGLE_001", 
+//         email: "db_test_001@email.com",
+//         displayName: "Test User Name",
+//     };
+// }
 
-  if (!idToken) {
-    return res.status(400).json({ message: "Google ID Token is required." });
-  }
+export const googleAuthCallbackController = async (req: Request, res: Response) => {
+    const { idToken } = req.body;
 
   try {
     // 1. Google API에 토큰 검증 요청
@@ -67,7 +73,8 @@ export const googleAuthCallbackController = async (
     });
 
     // 3. ✨ 인증 성공: 사용자 ID를 세션에 저장 ✨
-    (req.session as any).userId = userInfo.user_id;
+    req.session.userId = userInfo.user_id;
+    req.session.displayName = userInfo.displayName;
 
     // 4. 응답 분기 처리
     return res.status(userInfo.isNewUser ? 201 : 200).json({
