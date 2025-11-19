@@ -1,9 +1,19 @@
-import 'express-session';
+// src/types/express-request.d.ts
 
-declare module 'express-session' {
-    // SessionData 인터페이스에 userId와 displayName 속성을 추가합니다.
-    interface SessionData {
-        userId: number;       
-        displayName: string;  
+import { JwtPayload } from "jsonwebtoken";
+import "express-session"; // express-session 타입을 가져와야 확장이 가능합니다.
+
+declare module "express-session" {
+  interface SessionData {
+    userId: number; // 세션에 저장할 데이터 타입 정의
+  }
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: number;
+      user?: JwtPayload;
     }
+  }
 }
