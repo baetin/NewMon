@@ -4,7 +4,7 @@ import axios from "axios";
 interface GoogleLoginProps {
   res: CredentialResponse;
   setLoginUser: (user: {
-    userId: string;
+    userId: number;
     displayName: string;
     isNewUser: boolean;
   }) => void;
