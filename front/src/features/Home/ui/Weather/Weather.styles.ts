@@ -8,3 +8,12 @@ export const WeatherContainer = styled(MainRightSectionStyles)`
   flex-direction: column;
   align-items: center;
 `;
+
+export const NoticeText = styled.span`
+  white-space: pre-line;
+  word-break: keep-all;
+  margin: 8px 0;
+  color: ${({ theme }) => theme.colors.text.main};
+  font-size: 14px;
+  text-align: center;
+`;
