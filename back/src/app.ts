@@ -24,7 +24,7 @@ app.use(cookieParser());
 
 // 3. 세션 설정 (쿠키 파서 다음에 와야 쿠키를 읽어 세션 ID를 파악할 수 있음)
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your_session_secret_key_change_me', 
+    secret: process.env.SESSION_SECRET || '!@#$A_Very_Long_Random_String_For_My_Session_3817fHDKL', 
     resave: false, 
     saveUninitialized: false, 
     cookie: {
