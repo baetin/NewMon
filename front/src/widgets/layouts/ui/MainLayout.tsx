@@ -20,12 +20,15 @@ export const MainLayout = () => {
         return;
       }
 
-      setLoginUser((prev) => ({
-        // 세션 체크 시 displayName이 없으면 이전 Recoil 값 유지
-        userId: result.user?.userId || result.userId,
-        displayName: prev.displayName || "유저",
-        isNewUser: prev.isNewUser,
-      }));
+      const user = result.user
+        ? {
+            userId: result.user.userId,
+            displayName: result.user.displayName,
+            isNewUser: false,
+          }
+        : { userId: result.userId, displayName: "유저", isNewUser: false };
+
+      setLoginUser(user);
     };
 
     checkSession();
