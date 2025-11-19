@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { updateInterests } from "../services/user.service.js"; 
+import { updateInterests, getUserProfile } from "../services/user.service.js"; 
 
 // 이 코드는 authMiddleware가 req.userId를 추가했음을 전제합니다.
 // (타입 확장은 이미 전역 파일이나 미들웨어 파일에 되어 있다고 가정)
@@ -8,23 +8,31 @@ export const userController = {
     
     // 1. [R] 인증 상태 확인: GET /api/user/status
     async checkAuthStatus(req: Request, res: Response) {
-        // authMiddleware가 성공적으로 통과하면 req.userId에 사용자 ID가 설정됩니다.
-        const userId = req.userId; 
+        const userId = req.userId; // authMiddleware에서 설정됨
 
-        // 인증 실패 검증 (미들웨어가 처리하지만, 안전을 위해)
         if (!userId) {
             return res.status(401).json({ isAuthenticated: false, message: "No active session. Please log in." });
         }
 
         try {
-            // 사용자 ID가 존재한다는 것은 세션이 유효하다는 증거입니다.
+            // 1. ✨ DB에서 userId를 기반으로 최신 프로필 정보 조회 ✨
+            const userProfile = await getUserProfile(userId);
+
+            if (!userProfile) {
+                 // 토큰은 유효하지만 DB에서 사용자가 삭제된 경우
+                 return res.status(404).json({ isAuthenticated: false, message: "User profile not found." });
+            }
+
+            // 2. 인증 성공 및 DB 정보와 함께 상태 반환
             return res.status(200).json({
                 isAuthenticated: true,
-                userId: userId,
+                userId: userProfile.userId,
+                displayName: userProfile.displayName, // ✨ DB에서 조회된 displayName 반환 ✨
                 message: "Session is active."
             });
         } catch (error) {
             console.error("Error during session status check:", error);
+            // DB 조회 실패 시 500 에러 반환
             return res.status(500).json({ message: "Internal server error during check." });
         }
     },
