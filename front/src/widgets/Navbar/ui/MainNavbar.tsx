@@ -41,7 +41,7 @@ export const MainNavbar: React.FC<IsClickedProps> = ({
     if (!result) return;
 
     await handleLogout();
-    setLoginUser({ userId: "", displayName: "", isNewUser: null });
+    setLoginUser({ userId: 0, displayName: "", isNewUser: null });
   };
 
   const onChangeInforClick = () => {

@@ -16,19 +16,15 @@ export const MainLayout = () => {
       const result = await handleSessionCheck();
 
       if (!result?.isAuthenticated) {
-        setLoginUser({ userId: "", displayName: "", isNewUser: null });
+        setLoginUser({ userId: 0, displayName: "", isNewUser: null });
         return;
       }
 
-      const user = result.user
-        ? {
-            userId: result.user.userId,
-            displayName: result.user.displayName,
-            isNewUser: false,
-          }
-        : { userId: result.userId, displayName: "유저", isNewUser: false };
-
-      setLoginUser(user);
+      setLoginUser((prev) => ({
+        userId: result.userId,
+        displayName: result.displayName || "유저",
+        isNewUser: prev.isNewUser,
+      }));
     };
 
     checkSession();
