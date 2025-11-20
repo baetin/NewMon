@@ -6,7 +6,7 @@ import db from "./utils/db.js"; // DB 연결 풀 인스턴스를 가져옴
 import authRoutes from "./routes/auth.router.js";
 import userRouter from "./routes/user.routers.js";
 import * as dotenv from "dotenv";
-
+import startCronJob from "./services/scheduler.service.js";
 dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
@@ -60,4 +60,5 @@ app.listen(PORT, async () => {
 
   // 서버 시작 후 DB 연결 테스트 호출
   await testDatabaseConnection();
+  startCronJob();
 });
