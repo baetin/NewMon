@@ -6,7 +6,7 @@ import {
 import { MainArticle } from "../../../widgets/Home/ui/MainArticle/MainArticle";
 import { MainRightSection } from "../../../widgets/Home/ui/MainRightSection/MainRightSection";
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
   return (
     <Container>
       <Left>

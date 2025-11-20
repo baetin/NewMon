@@ -35,7 +35,7 @@ const InterestSelectPage = () => {
   return (
     <Container>
       <Card>
-        <Title>관심 분야를 2개 선택하세요</Title>
+        <Title>관심 분야를 2개 선택하세요.</Title>
         <InterestList>
           {topics.map((topic) => (
             <InterestItem

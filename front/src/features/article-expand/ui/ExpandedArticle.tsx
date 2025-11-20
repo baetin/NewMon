@@ -12,10 +12,7 @@ interface ExpandedArticleProps {
   onClose: () => void;
 }
 
-const ExpandedArticle: React.FC<ExpandedArticleProps> = ({
-  article,
-  onClose,
-}) => {
+const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
   return (
     <Overlay
       initial={{ opacity: 0 }}

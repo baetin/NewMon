@@ -1,6 +1,6 @@
-export interface SessionCheckProps {
+import type { LoginUser } from "../../../shared/types/loginUser.types";
+
+export interface SessionCheckProps extends LoginUser {
   isAuthenticated: boolean;
-  userId: number;
   message: string;
-  displayName: string;
 }

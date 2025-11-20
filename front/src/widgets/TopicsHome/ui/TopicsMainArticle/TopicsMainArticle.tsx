@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArticleContainer,
@@ -15,8 +15,8 @@ interface ArticleDataProps {
   article: ArticleDataTypes;
 }
 
-const TopicsMainArticle: React.FC<ArticleDataProps> = ({ article }) => {
-  const [selected, setSelected] = useState<boolean>(false);
+const TopicsMainArticle = ({ article }: ArticleDataProps) => {
+  const [selected, setSelected] = useState(false);
 
   if (!article) return <Spinner />;
 

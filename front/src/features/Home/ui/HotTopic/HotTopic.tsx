@@ -1,4 +1,3 @@
-import React from "react";
 import { HotTopicContainer, TopicItem } from "./HotTopic.styles";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -6,7 +5,7 @@ import {
   slideIndexSate,
 } from "../../../../widgets/Home/model/examplesState";
 
-export const HotTopicList: React.FC = () => {
+export const HotTopicList = () => {
   const examples = useRecoilValue(examplesState); // recoil 상태에서 데이터 가져오기
   const [slideIndex, setSlideIndex] = useRecoilState(slideIndexSate); // 현재 슬라이드 인덱스
 

@@ -1,7 +1,6 @@
-import React from "react";
 import { FooterContainer, FooterLink } from "./Footeer.styles";
 
-export const Footer: React.FC = () => {
+export const Footer = () => {
   return (
     <FooterContainer>
       <p>© 2025 NewMon — AI로 배우는 뉴스 & 경제</p>
