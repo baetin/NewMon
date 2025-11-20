@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import type React from "react";
 
-const NotFoundPage: React.FC = () => {
+const NotFoundPage = () => {
   return (
     <Container>
       <Title>404</Title>

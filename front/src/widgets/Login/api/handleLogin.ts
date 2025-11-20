@@ -1,13 +1,10 @@
 import type { CredentialResponse } from "@react-oauth/google";
 import axios from "axios";
+import type { LoginUser } from "../../../shared/types/loginUser.types";
 
 interface GoogleLoginProps {
   res: CredentialResponse;
-  setLoginUser: (user: {
-    userId: number;
-    displayName: string;
-    isNewUser: boolean;
-  }) => void;
+  setLoginUser: (user: LoginUser) => void;
   navigate: (path: string) => void;
 }
 

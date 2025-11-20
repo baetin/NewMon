@@ -23,10 +23,7 @@ interface IsClickedProps {
   setIsClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const MainNavbar: React.FC<IsClickedProps> = ({
-  isClicked,
-  setIsClicked,
-}) => {
+export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 

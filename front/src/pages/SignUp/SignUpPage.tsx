@@ -1,6 +1,4 @@
-import type React from "react";
-
-const SignUpPage: React.FC = () => {
+const SignUpPage = () => {
   return <></>;
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import {
   ListContainer,
@@ -16,7 +16,7 @@ interface ArticleDataProps {
   articles: ArticleDataTypes[];
 }
 
-const TopicsSubArticleList: React.FC<ArticleDataProps> = ({ articles }) => {
+const TopicsSubArticleList = ({ articles }: ArticleDataProps) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(4);
 

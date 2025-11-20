@@ -2,7 +2,11 @@ import { MdOutlineKeyboardDoubleArrowDown } from "react-icons/md";
 import { CircleButton, Container } from "./SeeMore.styles";
 import { useEffect, useState } from "react";
 
-export const SeeMore = ({ onClick }: { onClick: () => void }) => {
+interface SeeMoreProps {
+  onClick: () => void;
+}
+
+export const SeeMore = ({ onClick }: SeeMoreProps) => {
   const [moveUpDown, setMoveUpDown] = useState(false);
 
   useEffect(() => {

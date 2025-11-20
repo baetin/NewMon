@@ -1,4 +1,3 @@
-import type React from "react";
 import TopicsMainArticle from "../../../widgets/TopicsHome/ui/TopicsMainArticle/TopicsMainArticle";
 import TopicsSubArticleList from "../../../widgets/TopicsHome/ui/TopicsSubArticleList/TopicsSubArticleList";
 import {
@@ -13,7 +12,7 @@ import { topicMap } from "../model/topics.constants";
 import { useParams } from "react-router-dom";
 import { Spinner } from "../../../shared/ui";
 
-const TopicsHomePage: React.FC = () => {
+const TopicsHomePage = () => {
   const [articles, setArticles] = useState<ArticleDataTypes[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
