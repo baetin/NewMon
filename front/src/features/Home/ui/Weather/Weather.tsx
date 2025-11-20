@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { WeatherContainer } from "./Weather.styles";
+import { NoticeText, WeatherContainer } from "./Weather.styles";
 import { fetchWeather } from "../../api/Weather/getWeather";
 import { Spinner } from "../../../../shared/ui";
 
@@ -10,10 +10,12 @@ export const Weather: React.FC = () => {
     icon: string;
     name: string;
   } | null>(null);
+
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
-    const savedWeather = localStorage.getItem("weather");
+    const savedWeather = sessionStorage.getItem("weather");
     if (savedWeather) {
       setWeather(JSON.parse(savedWeather));
     }
@@ -36,8 +38,8 @@ export const Weather: React.FC = () => {
           try {
             const data = await fetchWeather(seoul.lat, seoul.lon);
             setWeather(data);
-            setError(
-              "위치 접근을 허용해야 사용자 지역의 날씨를 볼 수 있습니다. NewMon에서는 서울 날씨를 보여줍니다."
+            setNotice(
+              "위치 접근을 허용해야 사용자 지역의 날씨를 볼 수 있습니다.\nNewMon 에서는 서울의 온도를 제공합니다."
             );
           } catch (error) {
             setError("서울 날씨를 불러오지 못했습니다.");
@@ -52,21 +54,27 @@ export const Weather: React.FC = () => {
   return (
     <WeatherContainer>
       <h3>Today's Weather</h3>
+
       {error ? (
         <div>{error}</div>
       ) : weather ? (
         <>
+          {notice && <NoticeText>{notice}</NoticeText>}
+
           <span>📍 {weather.name}</span>
           <img
             src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
             alt="weather icon"
           />
+
           <span>{weather.desc}</span>
           <span>{weather.temp.toFixed(1)}℃</span>
         </>
       ) : (
-        // <span>현재 위치의 날씨를 불러오는 중...</span>
-        <Spinner />
+        <>
+          <span>현재 위치의 날씨를 불러오는 중...</span>
+          <Spinner />
+        </>
       )}
     </WeatherContainer>
   );
