@@ -10,9 +10,9 @@ import { useSessionCheckQuery } from "../hooks/useSessionCheckQuery";
 export const MainLayout = () => {
   const [isClicked, setIsClicked] = useState(false);
   const setLoginUser = useSetRecoilState(LoginUserState);
-  const { data: sessionData, isError } = useSessionCheckQuery();
+  const { data: sessionData } = useSessionCheckQuery();
 
-  if (isError) alert("세션이 만료되었습니다.");
+  // if (isError) alert("세션이 만료되었습니다.");
 
   useEffect(() => {
     if (!sessionData) return;
