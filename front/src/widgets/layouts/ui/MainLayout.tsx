@@ -3,32 +3,31 @@ import { Container, Main } from "./MainLayout.styles";
 import { Footer } from "../../../shared/ui";
 import { useEffect, useState } from "react";
 import { MainNavbar } from "../../Navbar/ui/MainNavbar";
-import { handleSessionCheck } from "../api/handleSessionCheck";
 import { useSetRecoilState } from "recoil";
 import { LoginUserState } from "../../../shared/model/loginUserState";
+import { useSessionCheckQuery } from "../hooks/useSessionCheckQuery";
 
 export const MainLayout = () => {
   const [isClicked, setIsClicked] = useState(false);
   const setLoginUser = useSetRecoilState(LoginUserState);
+  const { data: sessionData, isError } = useSessionCheckQuery();
+
+  if (isError) alert("세션이 만료되었습니다.");
 
   useEffect(() => {
-    const checkSession = async () => {
-      const result = await handleSessionCheck();
+    if (!sessionData) return;
 
-      if (!result?.isAuthenticated) {
-        setLoginUser({ userId: 0, displayName: "", isNewUser: null });
-        return;
-      }
+    if (!sessionData.isAuthenticated) {
+      setLoginUser({ userId: 0, displayName: "", isNewUser: null });
+      return;
+    }
 
-      setLoginUser((prev) => ({
-        userId: result.userId,
-        displayName: result.displayName || "유저",
-        isNewUser: prev.isNewUser,
-      }));
-    };
-
-    checkSession();
-  }, []);
+    setLoginUser((prev) => ({
+      userId: sessionData.userId,
+      displayName: sessionData.displayName || "유저",
+      isNewUser: prev.isNewUser,
+    }));
+  }, [sessionData]);
 
   return (
     <Container onClick={() => setIsClicked(false)}>

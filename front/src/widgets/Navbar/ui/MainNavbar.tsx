@@ -16,7 +16,7 @@ import {
 } from "./MainNavBar.styles";
 import { useRecoilState } from "recoil";
 import { LoginUserState } from "../../../shared/model/loginUserState";
-import { handleLogout } from "../api/handleLogout";
+import { useLogoutMutation } from "../hooks/useLogoutMutation";
 
 interface IsClickedProps {
   isClicked: boolean;
@@ -29,16 +29,25 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
 
   const [loginUser, setLoginUser] = useRecoilState(LoginUserState); // 로그인 됐는지 확인할때
 
+  const { mutate: logoutMutate, isPending } = useLogoutMutation();
+
   const onClick = () => {
     setIsClicked((prev) => !prev);
   };
 
-  const onLogoutCLick = async () => {
+  const onLogoutClick = () => {
     const result = confirm("로그아웃 하시겠습니까?");
     if (!result) return;
 
-    await handleLogout();
-    setLoginUser({ userId: 0, displayName: "", isNewUser: null });
+    logoutMutate(undefined, {
+      onSuccess: () => {
+        setLoginUser({ userId: 0, displayName: "", isNewUser: null });
+        // navigate("/");
+      },
+      onError: () => {
+        alert("로그아웃 중 오류가 발생했습니다.");
+      },
+    });
   };
 
   const onChangeInforClick = () => {
@@ -84,7 +93,9 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
             </UserNameControllContainer>
             {isClicked && (
               <SelectDropDownContainer onClick={(e) => e.stopPropagation()}>
-                <p onClick={onLogoutCLick}>로그아웃</p>
+                <p onClick={onLogoutClick}>
+                  {isPending ? "로그아웃 중..." : "로그아웃"}
+                </p>{" "}
                 <p onClick={onChangeInforClick}>정보 수정</p>
               </SelectDropDownContainer>
             )}
