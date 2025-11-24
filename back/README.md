@@ -12,3 +12,5 @@
 # npm install -D @types/cookie-parser
 
 # npm install express express-session cookie-parser pg pg-format google-auth-library dotenv node-cron csv-parser
+
+# npm install --save-dev @types/pg-format
