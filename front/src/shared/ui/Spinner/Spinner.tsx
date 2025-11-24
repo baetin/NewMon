@@ -1,7 +1,6 @@
-import React from "react";
 import styled, { keyframes } from "styled-components";
 
-export const Spinner: React.FC = () => <Loader />;
+export const Spinner = () => <Loader />;
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
@@ -15,5 +14,5 @@ const Loader = styled.div`
   width: 60px;
   height: 60px;
   animation: ${spin} 1s linear infinite;
-  margin: 200px auto; /* 화면 중앙에 위치 */
+  margin: 200px auto;
 `;

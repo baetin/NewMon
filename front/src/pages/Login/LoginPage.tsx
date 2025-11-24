@@ -1,6 +1,6 @@
 import LoginForm from "../../widgets/Login/ui/LoginForm";
 
-const LoginPage: React.FC = () => {
+const LoginPage = () => {
   return <LoginForm />;
 };
 

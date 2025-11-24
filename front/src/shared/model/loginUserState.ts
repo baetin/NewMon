@@ -1,10 +1,7 @@
 import { atom } from "recoil";
+import type { LoginUser } from "../types/loginUser.types";
 
-export const LoginUserState = atom<{
-  userId: number;
-  displayName: string;
-  isNewUser: boolean | null;
-}>({
+export const LoginUserState = atom<LoginUser>({
   key: "LoginUserState",
   default: {
     userId: 0,

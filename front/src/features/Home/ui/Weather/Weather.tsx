@@ -3,7 +3,7 @@ import { NoticeText, WeatherContainer } from "./Weather.styles";
 import { fetchWeather } from "../../api/Weather/getWeather";
 import { Spinner } from "../../../../shared/ui";
 
-export const Weather: React.FC = () => {
+export const Weather = () => {
   const [weather, setWeather] = useState<{
     temp: number;
     desc: string;
