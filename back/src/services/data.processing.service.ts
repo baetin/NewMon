@@ -4,6 +4,7 @@ import db from '../utils/db.js';
 import format from 'pg-format'; 
 import { PoolClient } from 'pg';
 //import { parse } from 'path';
+// 야호
 
 export const TOPIC_ID_TO_TABLE = {
           1: 'topic_economic_article',
