@@ -1,0 +1,24 @@
+# HTTP & Crawling
+httpx>=0.27.0
+feedparser>=6.0.10
+trafilatura>=1.12.0
+readability-lxml>=0.8.1
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+
+# Date/Time
+python-dateutil>=2.9.0
+
+# NLP & Summarization
+transformers>=4.40.0
+torch>=2.2.0
+sentence-transformers>=2.6.0
+scikit-learn>=1.4.0
+
+# Ollama (로컬 LLM) - httpx는 이미 위에 있음
+
+# Korean Processing (optional)
+# py-hanspell>=1.1
+
+# Data Processing
+numpy>=1.26.0
