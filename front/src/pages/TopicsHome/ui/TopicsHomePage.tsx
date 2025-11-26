@@ -5,40 +5,24 @@ import {
   TopicsLeft,
   Right,
 } from "../../../shared/styles/articleContents.styles";
-import { useEffect, useState } from "react";
-import type { ArticleDataTypes } from "../../../shared/types/Article.types";
-import { getArticles } from "../api/getArticles";
 import { topicMap } from "../model/topics.constants";
 import { useParams } from "react-router-dom";
 import { Spinner } from "../../../shared/ui";
+import { useArticlesQuery } from "../hooks/useArticlesQuery";
 
 const TopicsHomePage = () => {
-  const [articles, setArticles] = useState<ArticleDataTypes[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
   const { topic } = useParams<{ topic: string }>();
+  const topicId = topic ? topicMap[topic.toLowerCase()] : null;
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        if (!topic) return;
-        const topicId = topicMap[topic.toLowerCase()];
-        const data = await getArticles(topicId);
-        setArticles(data[0].articles);
-        console.log("불러온 데이터 : ", data);
-      } catch (error) {
-        console.error("기사 불러오기 실패:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  if (!topicId) return <div>올바른 주제를 선택해주세요.</div>;
 
-    fetchArticles();
-  }, [topic]);
+  const { data, isPending, isError } = useArticlesQuery(topicId!);
 
-  if (loading) return <Spinner />;
-  if (!articles.length) return <div>게시글이 없습니다.</div>;
+  if (isPending) return <Spinner />;
+  if (isError) return <div>오류가 발생했습니다. 다시 시도해주세요.</div>;
+  if (!data || !data.articles?.length) return <div>게시글이 없습니다.</div>;
 
+  const { articles } = data;
   const mainArticle = articles[0];
   const subArticles = articles.slice(1);
 

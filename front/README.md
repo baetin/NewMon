@@ -17,3 +17,5 @@
 # npm install recharts
 
 # npm install recoil
+
+# npm install @tanstack/react-query

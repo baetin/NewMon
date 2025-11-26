@@ -8,13 +8,14 @@ import {
   Card,
 } from "./InterestSelect.styles";
 import { topics } from "../../../shared/model/topics";
-import { handleUserInterests } from "../api/handleUserInterests";
 import { useNavigate } from "react-router-dom";
+import { useUserInterestsMutation } from "../hooks/useUserInterestsMutation";
 
 const InterestSelectPage = () => {
   const [selected, setSelected] = useState<number[]>([]);
 
   const navigate = useNavigate();
+  const { mutate, isPending } = useUserInterestsMutation(navigate);
 
   const toggleInterest = (interest: number) => {
     setSelected((prev) => {
@@ -28,9 +29,7 @@ const InterestSelectPage = () => {
     });
   };
 
-  const handleSubmit = async () => {
-    await handleUserInterests({ interests: selected, navigate });
-  };
+  const handleSubmit = () => mutate({ interests: selected });
 
   return (
     <Container>
@@ -47,8 +46,11 @@ const InterestSelectPage = () => {
             </InterestItem>
           ))}
         </InterestList>
-        <SubmitButton disabled={selected.length !== 2} onClick={handleSubmit}>
-          선택 완료
+        <SubmitButton
+          disabled={selected.length !== 2 || isPending}
+          onClick={handleSubmit}
+        >
+          {isPending ? "저장 중..." : "선택 완료"}
         </SubmitButton>
       </Card>
     </Container>
