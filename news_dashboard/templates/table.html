@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>📄 스냅샷 테이블</h2>
+
+<div style="margin-bottom: 16px; padding: 16px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+  <strong>파일:</strong> <code>{{ snapshot }}</code>
+  <span style="margin-left: 16px; color: #64748b;">|</span>
+  <strong style="margin-left: 16px;">기사 수:</strong> <span style="color: #3b82f6; font-weight: 600;">{{ rows|length }}</span>개
+</div>
+
+{% if rows %}
+<table>
+  <thead>
+    <tr>
+      <th style="width: 120px;">Article ID</th>
+      <th>제목</th>
+      <th style="width: 100px;">카테고리</th>
+      <th style="width: 140px;">게시일</th>
+      <th style="width: 140px;">수정일</th>
+      <th style="width: 120px;">상태</th>
+      <th style="width: 60px; text-align: center;">편집</th>
+      <th style="width: 100px;">소스</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for r in rows %}
+    <tr>
+      <td>
+        <code style="font-size: 11px;">
+          {{ (r.article_id or r.url_hash)[:16] }}…
+        </code>
+      </td>
+      <td><strong>{{ r.title[:120] }}</strong></td>
+      <td>
+        <span class="badge badge-unchanged" style="background: #e0f2fe; color: #075985;">
+          {{ r.category or '—' }}
+        </span>
+      </td>
+      <td style="font-size: 12px; color: #64748b;">
+        {{ r.published_at[:16] if r.published_at else '—' }}
+      </td>
+      <td style="font-size: 12px; color: #64748b;">
+        {{ r.modified_at[:16] if r.modified_at else '—' }}
+      </td>
+      <td>
+        {% if r.update_status %}
+          {% if 'updated' in r.update_status %}
+            <span class="badge badge-updated">{{ r.update_status }}</span>
+          {% elif r.update_status == 'new' %}
+            <span class="badge badge-new">{{ r.update_status }}</span>
+          {% else %}
+            <span class="badge badge-unchanged">{{ r.update_status }}</span>
+          {% endif %}
+        {% else %}
+          <span style="color: #94a3b8;">—</span>
+        {% endif %}
+      </td>
+      <td style="text-align: center;">
+        {% if r.edited == 'O' %}
+          <span style="color: #f59e0b; font-size: 16px; font-weight: bold;" title="편집됨">✓</span>
+        {% else %}
+          <span style="color: #cbd5e1; font-size: 16px;" title="미편집">—</span>
+        {% endif %}
+      </td>
+      <td style="font-size: 13px; color: #64748b;">{{ r.source or '—' }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <div class="empty-state">
+    <p>기사가 없습니다.</p>
+  </div>
+{% endif %}
+{% endblock %}

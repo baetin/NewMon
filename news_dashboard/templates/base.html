@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title or "News Dashboard" }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <h1>📰 News Diff Dashboard</h1>
+  <nav>
+    <a href="{{ url_for('index') }}">홈</a>
+    <a href="{{ url_for('table') }}">현재 스냅샷 테이블</a>
+    <a href="{{ url_for('compare') }}">스냅샷 비교</a>
+  </nav>
+  <form method="post" action="{{ url_for('run_now') }}" style="margin-top:8px">
+    <button>지금 크롤링 + 스냅샷</button>
+  </form>
+</header>
+<main>
+  {% block content %}{% endblock %}
+</main>
+<footer style="padding:8px 16px;">
+  <small>Made for JW — shows edited/updated articles and diffs between runs.</small>
+</footer>
+</body>
+</html>

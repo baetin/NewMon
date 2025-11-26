@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>🔍 스냅샷 비교</h2>
+
+{% if snapshots|length < 2 %}
+  <div class="empty-state">
+    <p style="font-size: 18px; margin-bottom: 12px;">⏳ 비교할 스냅샷이 부족합니다</p>
+    <p>최소 2개의 스냅샷이 필요합니다. 현재: <strong>{{ snapshots|length }}개</strong></p>
+    <p style="margin-top: 16px; color: #94a3b8;">크롤링 버튼을 눌러 스냅샷을 더 생성하세요.</p>
+  </div>
+{% else %}
+  <form method="get">
+    <label>
+      이전 스냅샷 (A):
+      <select name="a">
+        {% for s in snapshots %}
+          <option value="{{ s }}" {% if s==a %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      최신 스냅샷 (B):
+      <select name="b">
+        {% for s in snapshots %}
+          <option value="{{ s }}" {% if s==b %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">비교하기</button>
+  </form>
+
+  {% if rows %}
+    <div style="margin-bottom: 16px; padding: 16px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <strong>비교 결과:</strong> 총 <strong style="color: #3b82f6;">{{ rows|length }}</strong>개 기사
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 100px;">ID</th>
+          <th>제목</th>
+          <th style="width: 60px; text-align: center;">A</th>
+          <th style="width: 60px; text-align: center;">B</th>
+          <th style="width: 120px;">A 상태</th>
+          <th style="width: 120px;">B 상태</th>
+          <th style="width: 100px; text-align: center;">상세</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td><code style="font-size: 11px;">{{ r.key[:12] }}…</code></td>
+          <td><strong>{{ r.title }}</strong></td>
+          <td style="text-align: center;">
+            {% if r.in_a %}
+              <span style="color: #10b981; font-size: 18px;" title="A에 존재">✓</span>
+            {% else %}
+              <span style="color: #ef4444; font-size: 18px;" title="A에 없음">✗</span>
+            {% endif %}
+          </td>
+          <td style="text-align: center;">
+            {% if r.in_b %}
+              <span style="color: #10b981; font-size: 18px;" title="B에 존재">✓</span>
+            {% else %}
+              <span style="color: #ef4444; font-size: 18px;" title="B에 없음">✗</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if r.status_a %}
+              <span class="badge {% if 'update' in r.status_a %}badge-updated{% else %}badge-unchanged{% endif %}">
+                {{ r.status_a }}
+              </span>
+            {% else %}
+              <span style="color: #94a3b8;">—</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if r.status_b %}
+              <span class="badge {% if 'update' in r.status_b %}badge-updated{% else %}badge-unchanged{% endif %}">
+                {{ r.status_b }}
+              </span>
+            {% else %}
+              <span style="color: #94a3b8;">—</span>
+            {% endif %}
+          </td>
+          <td style="text-align: center;">
+            <a href="{{ url_for('article', key=r.key) }}?a={{ a }}&b={{ b }}" style="font-weight: 600;">
+              Diff 보기 →
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endif %}
+{% endblock %}

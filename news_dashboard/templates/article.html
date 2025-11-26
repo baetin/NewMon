@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="margin-bottom: 24px;">
+  <a href="{{ url_for('compare') }}?a={{ a }}&b={{ b }}" style="color: #64748b; font-size: 14px;">
+    ← 비교 목록으로 돌아가기
+  </a>
+</div>
+
+<h2>📰 기사 상세 비교</h2>
+
+<div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px;">
+  <h3 style="margin: 0 0 16px 0; color: #0f172a; font-size: 20px;">{{ title }}</h3>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+    <code style="flex: 1; min-width: 200px;">{{ url_hash }}</code>
+    {% if meta.url %}
+      <a href="{{ meta.url }}" target="_blank" style="color: #3b82f6;">원문 보기 ↗</a>
+    {% endif %}
+  </div>
+  <div style="padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #64748b;">
+    <strong>A:</strong> {{ a }} &nbsp;|&nbsp; <strong>B:</strong> {{ b }}
+  </div>
+</div>
+
+<div class="meta">
+  <h3 style="margin-top: 0; font-size: 16px; color: #0f172a;">메타데이터 비교</h3>
+  <table style="width: 100%; box-shadow: none; margin-top: 16px;">
+    <thead style="background: #f1f5f9;">
+      <tr>
+        <th style="width: 150px;">필드</th>
+        <th>A (이전)</th>
+        <th>B (최신)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Article ID</strong></td>
+        <td><code style="font-size: 11px;">{{ meta.article_id_a or '—' }}</code></td>
+        <td><code style="font-size: 11px;">{{ meta.article_id_b or '—' }}</code></td>
+      </tr>
+      <tr>
+        <td><strong>게시일</strong></td>
+        <td style="color: #64748b; font-size: 13px;">{{ meta.published_a or '—' }}</td>
+        <td style="color: #64748b; font-size: 13px;">{{ meta.published_b or '—' }}</td>
+      </tr>
+      <tr>
+        <td><strong>수정일</strong></td>
+        <td style="color: #64748b; font-size: 13px;">{{ meta.modified_a or '—' }}</td>
+        <td style="color: #64748b; font-size: 13px;">
+          {% if meta.modified_b and meta.modified_b != meta.modified_a %}
+            <strong style="color: #f59e0b;">{{ meta.modified_b }}</strong> ⚠️
+          {% else %}
+            {{ meta.modified_b or '—' }}
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>상태</strong></td>
+        <td>
+          {% if meta.status_a %}
+            <span class="badge {% if 'update' in meta.status_a %}badge-updated{% else %}badge-unchanged{% endif %}">
+              {{ meta.status_a }}
+            </span>
+          {% else %}—{% endif %}
+        </td>
+        <td>
+          {% if meta.status_b %}
+            <span class="badge {% if 'update' in meta.status_b %}badge-updated{% else %}badge-unchanged{% endif %}">
+              {{ meta.status_b }}
+            </span>
+          {% else %}—{% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>편집 여부</strong></td>
+        <td>
+          {% if meta.edited_a == 'O' %}
+            <span style="color: #f59e0b; font-weight: bold;">✓ 편집됨</span>
+          {% else %}
+            <span style="color: #cbd5e1;">미편집</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if meta.edited_b == 'O' %}
+            <span style="color: #f59e0b; font-weight: bold;">✓ 편집됨</span>
+          {% else %}
+            <span style="color: #cbd5e1;">미편집</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>소스</strong></td>
+        <td colspan="2" style="text-align: center; color: #64748b;">{{ meta.source or '—' }}</td>
+      </tr>
+      <tr>
+        <td><strong>카테고리</strong></td>
+        <td colspan="2" style="text-align: center;">
+          <span class="badge badge-unchanged" style="background: #e0f2fe; color: #075985;">
+            {{ meta.category or '—' }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>📝 본문 변경 사항 (Diff)</h3>
+<div class="diff">{{ diff_html | safe }}</div>
+{% endblock %}
