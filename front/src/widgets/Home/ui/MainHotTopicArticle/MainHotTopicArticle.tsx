@@ -24,36 +24,32 @@ export const MainHotTopicArticle = () => {
   const [isPaused, setIsPaused] = useState(false);
   const fallbackImg = "https://placehold.co/800x400";
 
-  const { data: hotTopicData, isPending } = useHotTopicQuery();
-
-  //  데이터 없을 때 예외 처리
-  if (!hotTopicData || hotTopicData.length === 0 || isPending) {
-    return <p>Loading...</p>;
-  }
+  const { data: hotTopicData, isLoading } = useHotTopicQuery();
 
   const handlePrev = () => {
+    if (!hotTopicData) return;
     setSlideIndex((prev) => (prev === 0 ? hotTopicData.length - 1 : prev - 1));
     setRestTimer((prev) => prev + 1);
   };
 
   const handleNext = () => {
+    if (!hotTopicData) return;
     setSlideIndex((prev) => (prev === hotTopicData.length - 1 ? 0 : prev + 1));
     setRestTimer((prev) => prev + 1);
   };
 
-  const moveDot = (index: number) => {
-    setSlideIndex(index);
-  };
+  const moveDot = (index: number) => setSlideIndex(index);
 
-  //  자동 슬라이드
+  // 자동 슬라이드
   useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
-      handleNext();
-    }, 4000);
-
+    if (isPaused || !hotTopicData) return;
+    const interval = setInterval(() => handleNext(), 4000);
     return () => clearInterval(interval);
-  }, [restTimer, isPaused]);
+  }, [restTimer, isPaused, hotTopicData]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!hotTopicData || hotTopicData.length === 0)
+    return <p>데이터가 없습니다.</p>;
 
   const article = hotTopicData[slideIndex];
 
