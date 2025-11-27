@@ -3,10 +3,12 @@ import session from 'express-session'; // 세션 관리
 import cookieParser from 'cookie-parser'; // 쿠키 파서
 import articleRouter from "./routes/article.router.js";
 import db from "./utils/db.js"; // DB 연결 풀 인스턴스를 가져옴
-import authRoutes from "./routes/auth.router.js";
+import authRouter from "./routes/auth.router.js";
 import userRouter from "./routes/user.routers.js";
+import crawlRouter from './routes/crawl.router.js';
+import mainRouter from "./routes/main.router.js";
 import * as dotenv from "dotenv";
-
+import startCronJob from "./services/scheduler.service.js";
 dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
@@ -48,9 +50,11 @@ const testDatabaseConnection = async () => {
 // 3. 라우터 연결
 // ----------------------------------------------------------------
 // 모든 인증 경로는 /api/auth 아래로 연결
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRouter);
 app.use("/api/articles", articleRouter);
 app.use("/api/user", userRouter);
+app.use("/api/crawl", crawlRouter);
+app.use("/api/main", mainRouter);
 
 // ----------------------------------------------------------------
 // 4. 서버 시작 및 DB 연결 테스트
@@ -60,4 +64,5 @@ app.listen(PORT, async () => {
 
   // 서버 시작 후 DB 연결 테스트 호출
   await testDatabaseConnection();
+  startCronJob();
 });
