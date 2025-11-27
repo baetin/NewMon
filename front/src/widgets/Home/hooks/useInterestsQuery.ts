@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { getInterestsArticles } from "../api/getInterestsArticles";
 
-export const useInterestsQuerty = () => {
+export const useInterestsQuery = () => {
   return useQuery({
-    queryKey: ["hotTopicArticles"],
+    queryKey: ["interestsTopicArticles"],
     queryFn: getInterestsArticles,
     staleTime: 1000 * 60 * 3,
   });

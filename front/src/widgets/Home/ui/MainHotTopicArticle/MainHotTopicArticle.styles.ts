@@ -19,7 +19,9 @@ export const ArticleContainer = styled.div`
 
 export const Image = styled.img`
   width: 100%;
+  max-width: 800px;
   height: auto;
+  min-height: 400px;
   border-radius: 12px;
 `;
 

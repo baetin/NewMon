@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil";
 import { interestsSlideIndexSate } from "../../../../widgets/Home/model/examplesState";
 import { HotTopicContainer, TopicItem } from "../Topic.styles";
-import { useInterestsQuerty } from "../../../../widgets/Home/hooks/useInterestsQuerty";
+import { useInterestsQuerty } from "../../../../widgets/Home/hooks/useInterestsQuery";
 
 export const InterestTopic = () => {
   const { data: interestsTopicData, isLoading } = useInterestsQuerty();
