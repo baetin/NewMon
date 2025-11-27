@@ -2,7 +2,6 @@ import pool from '../utils/db.js';
 import { PoolClient } from 'pg';
 import format from 'pg-format'; 
 
-// 이 함수는 모든 서비스에서 필요하므로 유지합니다.
 const getTopicToTableNameMap = async (client: PoolClient): Promise<Record<number, string>> => {
     const topicMapResult = await client.query(`SELECT topic_id, topic_name FROM public.topic`);
     
@@ -19,9 +18,7 @@ const getTopicToTableNameMap = async (client: PoolClient): Promise<Record<number
     }, {});
 };
 
-// ----------------------------------------------------
-// 1. 핫 토픽 조회 서비스 (새 함수)
-// ----------------------------------------------------
+// 이 함수는 모든 서비스에서 필요하므로 유지합니다.
 export const getHotTopics = async (): Promise<any[]> => {
     const client: PoolClient = await pool.connect();
     
@@ -38,7 +35,7 @@ export const getHotTopics = async (): Promise<any[]> => {
             
             return `
                 (SELECT 
-                    article_id, title, summary_text, image_url, published_date, 
+                    article_id, title, summary_text, full_text, image_url, published_date, -- ✨ full_text 추가 ✨
                     ${safeTopicTableValue} AS topic_table 
                 FROM public.${safeTableName}
                 ORDER BY published_date DESC 
@@ -75,43 +72,57 @@ export const getPersonalizedFeed = async (userId: number): Promise<any[]> => {
     try {
         const topicToTableNameMap = await getTopicToTableNameMap(client);
         
-        // 사용자 관심 주제 ID 조회 (최대 2개만 선택)
+        // ----------------------------------------------------
+        // 1. 사용자 관심 주제 ID 조회 (최대 2개만 선택)
+        // ----------------------------------------------------
+        
         const interestResult = await client.query(
             `SELECT topic_id FROM public.userinterest WHERE user_id = $1`, 
             [userId]
         );
+        
         const interestedTopicIds = interestResult.rows
                                                  .map(row => row.topic_id)
-                                                 .slice(0, 2); // 최대 2개만 선택
+                                                 .slice(0, 2); 
         
-        if (interestedTopicIds.length === 0) return [];
-            
-        const personalizedQueries = interestedTopicIds.map(topicId => {
+        if (interestedTopicIds.length === 0) {
+            client.release();
+            return []; // 관심 주제가 없으면 빈 배열 반환
+        }
+        
+        // ----------------------------------------------------
+        // 2. 개인화 피드 쿼리 생성 및 실행
+        // ----------------------------------------------------
+        
+        // ✨ 수정: personalizedQueries 변수를 여기서 선언 및 할당합니다. ✨
+        const personalizedQueries = interestedTopicIds.map(topicId => { 
             const tableName = topicToTableNameMap[topicId];
             if (!tableName) return null;
             
             const safeTableName = client.escapeIdentifier(tableName); 
             
-            // 해당 관심 테이블에서 무작위 3개씩 조회 (총 6개 확보)
+            // 해당 관심 테이블에서 무작위 3개씩 조회
             return `
                 (SELECT 
-                    article_id, title, summary_text, image_url, published_date, 
+                    article_id, title, summary_text, full_text, image_url, published_date, 
                     ${topicId} AS topic_id,
                     (SELECT topic_name FROM public.topic WHERE topic_id = ${topicId}) AS topic_name
                 FROM public.${safeTableName} 
                 ORDER BY RANDOM() 
                 LIMIT 3)
             `;
-        }).filter(q => q !== null);
+        }).filter(q => q !== null); 
 
-        // 모든 개인화 쿼리 통합 및 실행
+        
+        // 3. 모든 개인화 쿼리 통합 및 실행
         if (personalizedQueries.length > 0) {
             const finalPersonalizedQuery = personalizedQueries.join(' UNION ALL ');
             const personalizedResult = await client.query(finalPersonalizedQuery);
             personalizedFeed = personalizedResult.rows; 
         }
         
-        return personalizedFeed; // 배열 자체를 반환
+        // ✨ 최종 반환 ✨
+        return personalizedFeed; 
     } catch (error) {
         console.error("Error fetching personalized feed data:", error);
         throw error; 

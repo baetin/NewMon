@@ -95,7 +95,7 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
               <SelectDropDownContainer onClick={(e) => e.stopPropagation()}>
                 <p onClick={onLogoutClick}>
                   {isPending ? "로그아웃 중..." : "로그아웃"}
-                </p>{" "}
+                </p>
                 <p onClick={onChangeInforClick}>정보 수정</p>
               </SelectDropDownContainer>
             )}
