@@ -4,7 +4,7 @@ import { MainRightSectionStyles } from "../../../shared/styles/mainRightSection.
 export const HotTopicContainer = styled(MainRightSectionStyles)`
   position: relative;
 
-  ul {
+  p {
     display: flex;
     flex-direction: column;
     gap: 8px;
