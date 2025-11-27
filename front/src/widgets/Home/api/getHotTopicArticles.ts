@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { TopicArticle } from "../model/HotTopicArticle.types";
+import type { TopicArticle } from "../model/TopicArticle.types";
 
 export const getHotTopicArticles = async (): Promise<TopicArticle[]> => {
   try {
