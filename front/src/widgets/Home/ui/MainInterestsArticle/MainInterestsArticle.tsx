@@ -17,47 +17,45 @@ import {
 import { useRecoilState } from "recoil";
 import { interestsSlideIndexSate } from "../../model/examplesState";
 import { useInterestsQuerty } from "../../hooks/useInterestsQuerty";
-
 export const MainInterestsArticle = () => {
-  const [slideIndex, setSlideIndex] = useRecoilState(interestsSlideIndexSate); // 현재 슬라이드 인덱스
-  const [restTimer, setRestTimer] = useState(0); // 타이머 리셋용
-  const [isPaused, setIsPaused] = useState(false); // 슬라이드 일시정지
+  const [slideIndex, setSlideIndex] = useRecoilState(interestsSlideIndexSate);
+  const [restTimer, setRestTimer] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const fallbackImg = "https://placehold.co/800x400";
 
-  const { data: InterestsTopicData, isPending } = useInterestsQuerty();
-
-  //  데이터 없을 때 예외 처리
-  if (!InterestsTopicData || InterestsTopicData.length === 0 || isPending) {
-    return <p>Loading...</p>;
-  }
-  // const newExamples = useRecoilValue(newExamplesState); // recoil 상태에서 데이터 가져오기 (로그인 후 사용자 맞춤)
+  const { data: interestsTopicData, isLoading } = useInterestsQuerty();
 
   const handlePrev = () => {
+    if (!interestsTopicData) return;
     setSlideIndex((prev) =>
-      prev === 0 ? InterestsTopicData.length - 1 : prev - 1
+      prev === 0 ? interestsTopicData.length - 1 : prev - 1
     );
     setRestTimer((prev) => prev + 1);
   };
+
   const handleNext = () => {
+    if (!interestsTopicData) return;
     setSlideIndex((prev) =>
-      prev === InterestsTopicData.length - 1 ? 0 : prev + 1
+      prev === interestsTopicData.length - 1 ? 0 : prev + 1
     );
     setRestTimer((prev) => prev + 1);
   };
-  const moveDot = (index: number) => {
-    setSlideIndex(index);
-  };
 
-  // 무한 슬라이드
+  const moveDot = (index: number) => setSlideIndex(index);
+
+  // 자동 슬라이드
   useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
-      handleNext();
-    }, 4000);
+    if (isPaused || !interestsTopicData) return;
+    const interval = setInterval(() => handleNext(), 4000);
     return () => clearInterval(interval);
-  }, [restTimer, isPaused]);
+  }, [restTimer, isPaused, interestsTopicData]);
 
-  const article = InterestsTopicData[slideIndex];
+  // 로딩 / 빈 데이터 처리
+  if (isLoading) return <p>Loading...</p>;
+  if (!interestsTopicData || interestsTopicData.length === 0)
+    return <p>데이터가 없습니다.</p>;
+
+  const article = interestsTopicData[slideIndex];
 
   return (
     <SlideWrapper
@@ -75,12 +73,12 @@ export const MainInterestsArticle = () => {
         <CompareBox>
           <h4>AI 요약 vs 원문 비교</h4>
           <p>AI 요약: {article.summary_text}</p>
-          {/* <p>원문: {article.compare.original}</p> */}
+          {/* <p>원문: {article.original}</p> */}
         </CompareBox>
       </ArticleContainer>
 
       <DotContainer>
-        {InterestsTopicData.map((_, index) => (
+        {interestsTopicData.map((_, index) => (
           <Dot
             key={index}
             $active={slideIndex === index}

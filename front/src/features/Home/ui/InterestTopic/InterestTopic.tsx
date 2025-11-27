@@ -4,31 +4,33 @@ import { HotTopicContainer, TopicItem } from "../Topic.styles";
 import { useInterestsQuerty } from "../../../../widgets/Home/hooks/useInterestsQuerty";
 
 export const InterestTopic = () => {
-  const { data: InterestsTopicData, isPending } = useInterestsQuerty();
-  const [slideIndex, setSlideIndex] = useRecoilState(interestsSlideIndexSate); // 현재 슬라이드 인덱스
+  const { data: interestsTopicData, isLoading } = useInterestsQuerty();
+  const [slideIndex, setSlideIndex] = useRecoilState(interestsSlideIndexSate);
 
-  if (isPending || !InterestsTopicData || InterestsTopicData.length === 0) {
-    return <p>Loading...</p>;
-  }
-
-  const handleTopicClick = (index: number) => {
-    setSlideIndex(index);
-  };
+  const handleTopicClick = (index: number) => setSlideIndex(index);
 
   return (
     <HotTopicContainer>
       <h3>🔥 Your Interest Topic</h3>
-      <ul>
-        {InterestsTopicData.map((topic, i) => (
-          <TopicItem
-            key={topic.article_id}
-            $active={i === slideIndex}
-            onClick={() => handleTopicClick(i)}
-          >
-            {topic.title}
-          </TopicItem>
-        ))}
-      </ul>
+
+      {isLoading && <p>Loading...</p>}
+      {!isLoading && interestsTopicData && interestsTopicData.length === 0 && (
+        <p>데이터가 없습니다.</p>
+      )}
+      {!isLoading && interestsTopicData && interestsTopicData.length > 0 && (
+        <ul>
+          {interestsTopicData.map((topic, i) => (
+            <TopicItem
+              key={topic.article_id}
+              $active={i === slideIndex}
+              onClick={() => handleTopicClick(i)}
+            >
+              {topic.title}
+            </TopicItem>
+          ))}
+        </ul>
+      )}
+
       <p>갱신시간 기준</p>
     </HotTopicContainer>
   );
