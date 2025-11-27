@@ -16,14 +16,14 @@ import {
 } from "react-icons/md";
 import { useRecoilState } from "recoil";
 import { interestsSlideIndexSate } from "../../model/examplesState";
-import { useInterestsQuerty } from "../../hooks/useInterestsQuerty";
+import { useInterestsQuery } from "../../hooks/useInterestsQuery";
 export const MainInterestsArticle = () => {
   const [slideIndex, setSlideIndex] = useRecoilState(interestsSlideIndexSate);
   const [restTimer, setRestTimer] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const fallbackImg = "https://placehold.co/800x400";
 
-  const { data: interestsTopicData, isLoading } = useInterestsQuerty();
+  const { data: interestsTopicData, isLoading } = useInterestsQuery();
 
   const handlePrev = () => {
     if (!interestsTopicData) return;
