@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-// // Google 토큰 검증 로직
+// Google 토큰 검증 로직
 async function verifyGoogleToken(token: string) {
     if (!CLIENT_ID) {
         throw new Error("GOOGLE_CLIENT_ID environment variable is not set.");

@@ -6,6 +6,7 @@ import db from "./utils/db.js"; // DB 연결 풀 인스턴스를 가져옴
 import authRouter from "./routes/auth.router.js";
 import userRouter from "./routes/user.routers.js";
 import crawlRouter from './routes/crawl.router.js';
+import mainRouter from "./routes/main.router.js";
 import * as dotenv from "dotenv";
 import startCronJob from "./services/scheduler.service.js";
 dotenv.config();
@@ -53,6 +54,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/articles", articleRouter);
 app.use("/api/user", userRouter);
 app.use("/api/crawl", crawlRouter);
+app.use("/api/main", mainRouter);
 
 // ----------------------------------------------------------------
 // 4. 서버 시작 및 DB 연결 테스트
