@@ -9,48 +9,53 @@ import {
   SlideWrapper,
   DotContainer,
   Dot,
-} from "./MainArticle.styles";
+} from "./MainHotTopicArticle.styles";
 import {
   MdOutlineArrowBackIos,
   MdOutlineArrowForwardIos,
 } from "react-icons/md";
-import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  examplesState,
-  // newExamplesState,
-  slideIndexSate,
-} from "../../model/examplesState";
+import { useRecoilState } from "recoil";
+import { hotTopicSlideIndexSate } from "../../model/examplesState";
+import { useHotTopicQuery } from "../../hooks/useHotTopicQuery";
 
-export const MainArticle = () => {
-  const [slideIndex, setSlideIndex] = useRecoilState(slideIndexSate); // 현재 슬라이드 인덱스
+export const MainHotTopicArticle = () => {
+  const [slideIndex, setSlideIndex] = useRecoilState(hotTopicSlideIndexSate);
+  const [restTimer, setRestTimer] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const fallbackImg = "https://placehold.co/800x400";
 
-  const [restTimer, setRestTimer] = useState(0); // 타이머 리셋용
-  const [isPaused, setIsPaused] = useState(false); // 슬라이드 일시정지
-  const examples = useRecoilValue(examplesState); // recoil 상태에서 데이터 가져오기 (로그인 전 탑 100)
-  // const newExamples = useRecoilValue(newExamplesState); // recoil 상태에서 데이터 가져오기 (로그인 후 사용자 맞춤)
+  const { data: hotTopicData, isPending } = useHotTopicQuery();
+
+  //  데이터 없을 때 예외 처리
+  if (!hotTopicData || hotTopicData.length === 0 || isPending) {
+    return <p>Loading...</p>;
+  }
 
   const handlePrev = () => {
-    setSlideIndex((prev) => (prev === 0 ? examples.length - 1 : prev - 1));
+    setSlideIndex((prev) => (prev === 0 ? hotTopicData.length - 1 : prev - 1));
     setRestTimer((prev) => prev + 1);
   };
+
   const handleNext = () => {
-    setSlideIndex((prev) => (prev === examples.length - 1 ? 0 : prev + 1));
+    setSlideIndex((prev) => (prev === hotTopicData.length - 1 ? 0 : prev + 1));
     setRestTimer((prev) => prev + 1);
   };
+
   const moveDot = (index: number) => {
     setSlideIndex(index);
   };
 
-  // 무한 슬라이드
+  //  자동 슬라이드
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
       handleNext();
     }, 4000);
+
     return () => clearInterval(interval);
   }, [restTimer, isPaused]);
 
-  const article = examples[slideIndex];
+  const article = hotTopicData[slideIndex];
 
   return (
     <SlideWrapper
@@ -62,18 +67,19 @@ export const MainArticle = () => {
       </ArrowButton>
 
       <ArticleContainer>
-        <Image src={article.image_url} alt="메인 기사" />
+        <Image src={article?.image_url || fallbackImg} alt="메인 기사" />
         <Title>{article.title}</Title>
-        <Summary>{article.summary}</Summary>
+        <Summary>{article.summary_text}</Summary>
+
         <CompareBox>
           <h4>AI 요약 vs 원문 비교</h4>
-          <p>AI 요약: {article.compare.ai_summary}</p>
-          <p>원문: {article.compare.original}</p>
+          <p>AI 요약: {article.summary_text}</p>
+          {/* <p>원문: {article.original}</p> */}
         </CompareBox>
       </ArticleContainer>
 
       <DotContainer>
-        {examples.map((_, index) => (
+        {hotTopicData.map((_, index) => (
           <Dot
             key={index}
             $active={slideIndex === index}
