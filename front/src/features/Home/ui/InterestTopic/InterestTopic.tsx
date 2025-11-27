@@ -1,10 +1,10 @@
 import { useRecoilState } from "recoil";
 import { interestsSlideIndexSate } from "../../../../widgets/Home/model/examplesState";
 import { HotTopicContainer, TopicItem } from "../Topic.styles";
-import { useInterestsQuerty } from "../../../../widgets/Home/hooks/useInterestsQuery";
+import { useInterestsQuery } from "../../../../widgets/Home/hooks/useInterestsQuery";
 
 export const InterestTopic = () => {
-  const { data: interestsTopicData, isLoading } = useInterestsQuerty();
+  const { data: interestsTopicData, isLoading } = useInterestsQuery();
   const [slideIndex, setSlideIndex] = useRecoilState(interestsSlideIndexSate);
 
   const handleTopicClick = (index: number) => setSlideIndex(index);

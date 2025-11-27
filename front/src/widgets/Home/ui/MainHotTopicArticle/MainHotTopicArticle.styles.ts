@@ -20,9 +20,9 @@ export const ArticleContainer = styled.div`
 export const Image = styled.img`
   width: 100%;
   max-width: 800px;
-  height: auto;
-  min-height: 400px;
   border-radius: 12px;
+  object-fit: cover;
+  aspect-ratio: 2 / 1; // 가로:세로 비율 = 2:1
 `;
 
 export const Title = styled.h2`
