@@ -73,7 +73,7 @@ export const MainInterestsArticle = () => {
         <CompareBox>
           <h4>AI 요약 vs 원문 비교</h4>
           <p>AI 요약: {article.summary_text}</p>
-          {/* <p>원문: {article.original}</p> */}
+          <p>원문: {article.full_text}</p>
         </CompareBox>
       </ArticleContainer>
 
