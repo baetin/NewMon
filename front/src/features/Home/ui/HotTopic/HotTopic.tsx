@@ -1,13 +1,15 @@
-import { HotTopicContainer, TopicItem } from "./HotTopic.styles";
-import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  examplesState,
-  slideIndexSate,
-} from "../../../../widgets/Home/model/examplesState";
+import { HotTopicContainer, TopicItem } from "../Topic.styles";
+import { useRecoilState } from "recoil";
+import { hotTopicSlideIndexSate } from "../../../../widgets/Home/model/examplesState";
+import { useHotTopicQuery } from "../../../../widgets/Home/hooks/useHotTopicQuery";
 
 export const HotTopicList = () => {
-  const examples = useRecoilValue(examplesState); // recoil 상태에서 데이터 가져오기
-  const [slideIndex, setSlideIndex] = useRecoilState(slideIndexSate); // 현재 슬라이드 인덱스
+  const { data: hotTopicData, isPending } = useHotTopicQuery();
+  const [slideIndex, setSlideIndex] = useRecoilState(hotTopicSlideIndexSate); // 현재 슬라이드 인덱스
+
+  if (isPending || !hotTopicData || hotTopicData.length === 0) {
+    return <p>Loading...</p>;
+  }
 
   const handleTopicClick = (index: number) => {
     setSlideIndex(index);
@@ -17,9 +19,9 @@ export const HotTopicList = () => {
     <HotTopicContainer>
       <h3>🔥 Hot Topic</h3>
       <ul>
-        {examples.map((topic, i) => (
+        {hotTopicData.map((topic, i) => (
           <TopicItem
-            key={topic.id}
+            key={topic.article_id}
             $active={i === slideIndex}
             onClick={() => handleTopicClick(i)}
           >

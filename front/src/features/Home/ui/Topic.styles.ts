@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MainRightSectionStyles } from "../../../../shared/styles/mainRightSection.styles";
+import { MainRightSectionStyles } from "../../../shared/styles/mainRightSection.styles";
 
 export const HotTopicContainer = styled(MainRightSectionStyles)`
   position: relative;
