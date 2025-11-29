@@ -2,9 +2,13 @@ import styled, { css } from "styled-components";
 
 export const SlideWrapper = styled.div`
   position: relative;
+  width: 100%; // 화면 너비 기준
+  max-width: 1200px; // 필요에 따라 슬라이드 최대 너비
+  margin: 0 auto; // 가운데 정렬
   display: flex;
   align-items: center;
   justify-content: center;
+
   &:hover button {
     opacity: 1;
     visibility: visible;
@@ -15,6 +19,13 @@ export const ArticleContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+`;
+
+export const ImageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 `;
 
 export const Image = styled.img`
@@ -37,6 +48,10 @@ export const Summary = styled.p`
 
 export const CompareBox = styled.div`
   background: #f9f9f9;
+  width: 100%;
+  max-width: 800px;
+  max-height: 400px;
+  overflow-y: auto;
   border-radius: 10px;
   padding: 12px;
   font-size: 0.9rem;
@@ -44,7 +59,7 @@ export const CompareBox = styled.div`
 
 export const ArrowButton = styled.button<{ direction: "left" | "right" }>`
   position: absolute;
-  top: 50%;
+  top: 70%;
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.8);
   border: none;
@@ -64,10 +79,10 @@ export const ArrowButton = styled.button<{ direction: "left" | "right" }>`
   ${({ direction }) =>
     direction === "left"
       ? css`
-          left: 10px;
+          left: -50px;
         `
       : css`
-          right: 10px;
+          right: -50px;
         `}
   &:hover {
     background: rgba(230, 230, 230, 0.9);

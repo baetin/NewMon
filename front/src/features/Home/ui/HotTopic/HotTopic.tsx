@@ -15,7 +15,7 @@ export const HotTopicList = () => {
 
       {isLoading && <p>Loading...</p>}
       {!isLoading && hotTopicData && hotTopicData.length === 0 && (
-        <p>데이터가 없습니다.</p>
+        <div>데이터가 없습니다.</div>
       )}
       {!isLoading && hotTopicData && hotTopicData.length > 0 && (
         <ul>
