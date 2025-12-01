@@ -9,6 +9,7 @@ import {
   SlideWrapper,
   DotContainer,
   Dot,
+  ImageWrapper,
 } from "./MainHotTopicArticle.styles";
 import {
   MdOutlineArrowBackIos,
@@ -58,15 +59,21 @@ export const MainHotTopicArticle = () => {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <ArrowButton direction="left" onClick={handlePrev}>
-        <MdOutlineArrowBackIos size={28} />
-      </ArrowButton>
-
       <ArticleContainer>
-        <Image src={article?.image_url || fallbackImg} alt="메인 기사" />
+        <ImageWrapper>
+          <ArrowButton direction="left" onClick={handlePrev}>
+            <MdOutlineArrowBackIos size={28} />
+          </ArrowButton>
+
+          <Image src={article?.image_url || fallbackImg} alt="메인 기사" />
+
+          <ArrowButton direction="right" onClick={handleNext}>
+            <MdOutlineArrowForwardIos size={28} />
+          </ArrowButton>
+        </ImageWrapper>
+
         <Title>{article.title}</Title>
         <Summary>{article.summary_text}</Summary>
-
         <CompareBox>
           <h4>AI 요약 vs 원문 비교</h4>
           <p>AI 요약: {article.summary_text}</p>
@@ -83,10 +90,6 @@ export const MainHotTopicArticle = () => {
           />
         ))}
       </DotContainer>
-
-      <ArrowButton direction="right" onClick={handleNext}>
-        <MdOutlineArrowForwardIos size={28} />
-      </ArrowButton>
     </SlideWrapper>
   );
 };
