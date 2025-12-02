@@ -22,3 +22,6 @@ scikit-learn>=1.4.0
 
 # Data Processing
 numpy>=1.26.0
+
+# Web Dashboard
+flask>=3.0.0

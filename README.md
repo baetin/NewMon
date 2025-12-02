@@ -26,10 +26,13 @@ git checkout feature/dedupe-and-summary
 pip install -r requirements.txt
 ```
 
-### 3. Flask 설치 (추가 필요)
-```bash
-pip install flask>=3.0.0
-```
+**필수 패키지:**
+- httpx, feedparser, trafilatura (크롤링)
+- transformers, torch, sentence-transformers (AI 요약)
+- flask (웹 대시보드)
+- beautifulsoup4, lxml (HTML 파싱)
+- python-dateutil (날짜 처리)
+- numpy, scikit-learn (데이터 처리)
 
 ## 사용 방법
 
