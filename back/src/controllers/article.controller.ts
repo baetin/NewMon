@@ -50,10 +50,12 @@ export const articleController = {
 
   // 2. [R] 기사 상세 조회: GET /api/articles/:topicId/:id
   async readArticleDetail(req: Request, res: Response) {
+    // req.params에서 topicId와 id를 구조 분해 할당
     const { topicId, id } = req.params;
     const topicIdNum = parseInt(topicId);
     const articleId = parseInt(id);
 
+    // 1. 유효성 검증
     if (isNaN(topicIdNum) || isNaN(articleId) || topicIdNum <= 0) {
       return res
         .status(400)
@@ -61,6 +63,7 @@ export const articleController = {
     }
 
     try {
+      // 2. 서비스 호출 (full_text와 previous_full_text를 모두 포함한 객체를 기대)
       const article = await ArticleService.getArticleDetail(
         topicIdNum,
         articleId
@@ -72,18 +75,20 @@ export const articleController = {
           .json({ message: `기사 ID ${id}를 찾을 수 없습니다.` });
       }
 
+      // 3. 응답: 두 텍스트 버전이 포함된 기사 객체를 클라이언트에게 반환
       res.status(200).json(article);
-    } catch (error: any) {
-      console.error(error);
+    } catch (error: any) { // 명시적 'any' 타입 캐스팅은 TypeScript 오류를 줄입니다.
+      console.error("Error in readArticleDetail:", error);
+      
       if (error.message.includes("Topic not found")) {
         return res.status(404).json({ message: error.message });
       }
       res.status(500).json({
-        message: "기사 상세 조회 중 오류 발생",
+        message: "기사 상세 조회 중 서버 오류 발생",
         detail: error.message,
       });
     }
-  },
+},
 
   // 3. [D] 기사 삭제: DELETE /api/articles/:topicId/:id
   async deleteArticle(req: Request, res: Response) {

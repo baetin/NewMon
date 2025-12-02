@@ -1,5 +1,6 @@
 import db from "../utils/db.js";
 import { QueryResult } from "pg";
+import pool from '../utils/db.js';
 // import format from "pg-format"; // ✨ SQL 식별자를 안전하게 인용하기 위해 추가 ✨
 // import type { ArticleEntity, ArticleListResult } from "../utils/types.js"; // 타입 정의는 그대로 가정
 
@@ -127,19 +128,34 @@ export const ArticleService = {
   },
 
   // [R] 기사 상세 조회 로직
-  async getArticleDetail(topicId: number, id: number): Promise<any | null> {
+  async getArticleDetail(
+    topicId: number,
+    id: number
+): Promise<any | null> {
     const { tableName } = await getTableDetails(topicId);
-    const safeTableName = `"${tableName}"`;
+    
+    // 테이블 이름은 이미 getTableDetails에서 소문자로 처리되었으므로, 
+    // SQL에서 큰따옴표로 감싸서 대소문자 충돌을 방지합니다.
+    const safeTableName = `"${tableName}"`; 
 
-    const query = `SELECT * FROM public.${safeTableName} WHERE article_id = $1`;
+    // ✨ 수정: 모든 컬럼(*)과 previous_full_text 컬럼을 명시적으로 선택합니다. ✨
+    const query = `
+        SELECT 
+            T.*, 
+            T.previous_full_text  
+        FROM public.${safeTableName} AS T
+        WHERE T.article_id = $1
+    `; 
+    
     const result = await db.query(query, [id]);
 
     if (result.rowCount === 0) {
       return null;
     }
-    return result.rows[0];
-  },
-
+    
+    // 응답은 모든 기사 정보와 함께 두 버전의 텍스트를 포함합니다.
+    return result.rows[0]; 
+},
   // [D] 기사 삭제 로직
   async deleteArticle(topicId: number, id: number): Promise<number> {
     const { tableName } = await getTableDetails(topicId);
