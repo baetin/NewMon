@@ -4,9 +4,9 @@ SOURCE_ID = "hankyung"
 # 카테고리별 RSS (economy/society/it/sports)
 FEEDS = {
     # "https://www.hankyung.com/feed/economy": "economy",
-    # "https://www.hankyung.com/feed/society": "society",
+     "https://www.hankyung.com/feed/society": "society",
     # "https://www.hankyung.com/feed/it":       "it",
-    "https://www.hankyung.com/feed/sports":   "sports",
+    # "https://www.hankyung.com/feed/sports":   "sports",
 }
 
 # 피드(카테고리)별 최대 기사 개수
