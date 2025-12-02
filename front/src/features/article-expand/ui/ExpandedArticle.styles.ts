@@ -64,3 +64,16 @@ export const CloseBtn = styled.div`
   right: 30px;
   cursor: pointer;
 `;
+
+export const SubInforContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-size: 0.9rem;
+  .written {
+    background-color: #ffc8c8;
+  }
+  .modified {
+    background-color: yellow;
+  }
+`;
