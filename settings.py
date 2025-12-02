@@ -12,6 +12,14 @@ FEEDS = {
 # 피드(카테고리)별 최대 기사 개수
 PER_FEED_LIMIT = 5
 
+# 카테고리 숫자 매핑
+CATEGORY_MAP = {
+    "economy": 1,
+    "society": 2,
+    "it": 3,
+    "sports": 4,
+}
+
 # ==== 스케줄러 설정 ====
 AUTO_COLLECT_INTERVAL = 1800  # 일반 수집 간격 (초) - 30분 = 1800초
 UPDATE_CHECK_HOURS = [12, 15, 18, 21]  # 수정 여부 판단 시각 (시) - 12시, 3시, 6시, 9시

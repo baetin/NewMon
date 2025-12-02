@@ -18,7 +18,9 @@ from settings import (
     # 인기 기사/트렌딩 설정
     COLLECT_TRENDING_TOPICS, TRENDING_LIMIT,
     # 재크롤링 설정
-    RECRAWL_EXISTING_ARTICLES, RECRAWL_HOURS_LIMIT, RECRAWL_MAX_ARTICLES
+    RECRAWL_EXISTING_ARTICLES, RECRAWL_HOURS_LIMIT, RECRAWL_MAX_ARTICLES,
+    # 카테고리 매핑
+    CATEGORY_MAP
 )
 
 # sentence-transformers / sklearn은 선택 설치
@@ -655,7 +657,7 @@ def run_once():
                 "article_id": article_id,
                 "source": SOURCE_ID,
                 "url_hash": url_hash,
-                "category": category,
+                "category": CATEGORY_MAP.get(category, 0),
                 "published_date": published_at,          # 변경: published_at → published_date
                 "crawled_at": rss_pub_iso,               # 변경: rss_published_at → crawled_at
                 "modified_at": modified_at,
