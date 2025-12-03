@@ -37,6 +37,10 @@ export const AppRouter = createBrowserRouter([
   },
   { path: "/login", element: withSuspense(LoginPage) },
   { path: "/interest-select", element: withSuspense(InterestSelectPage) },
+  {
+    path: "/change-user-info",
+    element: withSuspense(InterestSelectPage),
+  },
   { path: "/change-user-info", element: withSuspense(ChangeUserInfoPage) },
   { path: "*", element: withSuspense(NotFoundPage) },
 ]);
