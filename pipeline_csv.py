@@ -323,6 +323,8 @@ def _load_previous_articles() -> dict:
                     row["summary"] = row["summary_text"]
                 if "image_url" in row:
                     row["image_main"] = row["image_url"]
+                if "image_original_url" in row:
+                    row["image_original_url"] = row["image_original_url"]
 
                 article_id = row.get("article_id")
                 if article_id:
@@ -666,7 +668,8 @@ def run_once():
                 "full_text": content,                    # 변경: content → full_text
                 "author": author,
                 "summary_text": summary,                 # 변경: summary → summary_text
-                "image_url": art.get("image_main") or "", # 변경: image_main → image_url
+                "image_url": art.get("image_main") or "", # 변경: image_main → image_url (로컬 경로 우선)
+                "image_original_url": art.get("image_original_url") or "",  # 원본 웹 URL
                 "update_status": update_status,
                 "edited": edited,
                 "content_hash": chash,
@@ -740,7 +743,7 @@ def export_csv(rows):
             "source","url_hash","category",
             "published_date","crawled_at","modified_at",
             "title","focus_area","full_text","author","summary_text",
-            "image_url",
+            "image_url","image_original_url",
             "update_status","edited","content_hash",
             "change_kind","changed_fields","minutes_since_first","minutes_since_prev","change_summary","diff_text",
             "trending_topics"
@@ -754,7 +757,7 @@ def export_csv(rows):
                 r.get("focus_area",""),
                 (r["full_text"] or "").replace("\n"," ").strip(),
                 r["author"], r["summary_text"],
-                r["image_url"],
+                r["image_url"], r.get("image_original_url",""),
                 r["update_status"], r["edited"], r["content_hash"],
                 r.get("change_kind",""), r.get("changed_fields",""),
                 r.get("minutes_since_first",""), r.get("minutes_since_prev",""),

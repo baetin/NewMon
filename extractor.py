@@ -566,6 +566,7 @@ def extract_full_article(url: str) -> dict:
         "modified_at":  mod.isoformat() if mod else "",
         "canonical_url": canonical_url,  # ★ 추가: pipeline에서 article_id 생성에 사용
         "etag": etag,                    # 선택: 나중에 조건부 요청시 활용
-        "image_main": img_saved or img_main,
+        "image_main": img_saved or img_main,  # 로컬 파일 경로 또는 웹 URL
+        "image_original_url": img_main,       # 원본 웹 URL (대표 이미지)
         "image_urls": img_list,
     }
