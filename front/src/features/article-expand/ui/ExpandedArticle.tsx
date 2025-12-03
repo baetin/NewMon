@@ -32,7 +32,7 @@ const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
         <SubInforContainer>
           <p>출처 : {article.source === "hankyung" ? "한국경제" : "X"}</p>
           <p className="written">입력 : {article.published_date}</p>
-          <p className="modified">수정 : {article.crawled_at}</p>
+          <p className="modified">수정 : {article.modified_at}</p>
         </SubInforContainer>
         <img
           src={article.image_url}
@@ -50,7 +50,7 @@ const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
           <MainArticle>
             본문 기사 :{" "}
             <DiffHighlightText
-              before={article.before_text}
+              previous={article.previous_full_text}
               full={article.full_text}
             />
           </MainArticle>
