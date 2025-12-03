@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Spinner } from "../../shared/ui";
 import { MainLayout } from "../../widgets/layouts";
 import { createBrowserRouter } from "react-router-dom";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 // 페이지 lazy import
 
@@ -12,9 +13,6 @@ const TopicsHomePage = lazy(
 const LoginPage = lazy(() => import("../../pages/Login/LoginPage"));
 const InterestSelectPage = lazy(
   () => import("../../pages/InterestSelect/ui/InterestSelect")
-);
-const ChangeUserInfoPage = lazy(
-  () => import("../../pages/ChangeUserInfo/ui/ChangeUserInfoPage")
 );
 
 const NotFoundPage = lazy(() => import("../../pages/NotFound/NotFoundPage"));
@@ -36,11 +34,17 @@ export const AppRouter = createBrowserRouter([
     ],
   },
   { path: "/login", element: withSuspense(LoginPage) },
-  { path: "/interest-select", element: withSuspense(InterestSelectPage) },
+  {
+    path: "/interest-select",
+    element: (
+      <ProtectedRoute>{withSuspense(InterestSelectPage)}</ProtectedRoute>
+    ),
+  },
   {
     path: "/change-user-info",
-    element: withSuspense(InterestSelectPage),
+    element: (
+      <ProtectedRoute>{withSuspense(InterestSelectPage)}</ProtectedRoute>
+    ),
   },
-  { path: "/change-user-info", element: withSuspense(ChangeUserInfoPage) },
   { path: "*", element: withSuspense(NotFoundPage) },
 ]);
