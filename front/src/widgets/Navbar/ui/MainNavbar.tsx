@@ -55,7 +55,6 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
   };
 
   const onChangeInforClick = () => {
-    console.log("회원 정보 수정 페이지로 이동했습니다.");
     navigate("/change-user-info");
   };
 
