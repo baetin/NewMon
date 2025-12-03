@@ -17,6 +17,7 @@ import {
 import { useRecoilState } from "recoil";
 import { LoginUserState } from "../../../shared/model/loginUserState";
 import { useLogoutMutation } from "../hooks/useLogoutMutation";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IsClickedProps {
   isClicked: boolean;
@@ -31,6 +32,8 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
 
   const { mutate: logoutMutate, isPending } = useLogoutMutation();
 
+  const queryClient = useQueryClient();
+
   const onClick = () => {
     setIsClicked((prev) => !prev);
   };
@@ -42,7 +45,8 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
     logoutMutate(undefined, {
       onSuccess: () => {
         setLoginUser({ userId: 0, displayName: "", isNewUser: null });
-        // navigate("/");
+        queryClient.clear();
+        navigate("/");
       },
       onError: () => {
         alert("로그아웃 중 오류가 발생했습니다.");
@@ -52,6 +56,7 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
 
   const onChangeInforClick = () => {
     console.log("회원 정보 수정 페이지로 이동했습니다.");
+    navigate("/change-user-info");
   };
 
   return (

@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
 import { Container, Main } from "./MainLayout.styles";
-import { Footer } from "../../../shared/ui";
+import { Footer } from "../../../../shared/ui";
 import { useEffect, useState } from "react";
-import { MainNavbar } from "../../Navbar/ui/MainNavbar";
+import { MainNavbar } from "../../../Navbar/ui/MainNavbar";
 import { useSetRecoilState } from "recoil";
-import { LoginUserState } from "../../../shared/model/loginUserState";
-import { useSessionCheckQuery } from "../../../shared/hoooks/useSessionCheckQuery";
+import { LoginUserState } from "../../../../shared/model/loginUserState";
+import { useSessionCheckQuery } from "../../../../shared/hoooks/useSessionCheckQuery";
 
 export const MainLayout = () => {
   const [isClicked, setIsClicked] = useState(false);

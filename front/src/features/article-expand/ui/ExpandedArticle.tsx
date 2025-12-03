@@ -1,9 +1,11 @@
 import type { ArticleDataTypes } from "../../../shared/types/Article.types";
+import { DiffHighlightText } from "./DiffHighlightText";
 import {
   ExpandedCard,
   Overlay,
   MainArticle,
   CloseBtn,
+  SubInforContainer,
 } from "./ExpandedArticle.styles";
 import { AiOutlineClose } from "react-icons/ai";
 
@@ -27,7 +29,11 @@ const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
           <AiOutlineClose size={30} onClick={() => onClose()} />
         </CloseBtn>
         <h2>{article.title}</h2>
-        <span>출처 : {article.source === "hankyung" ? "한국경제" : "X"}</span>
+        <SubInforContainer>
+          <p>출처 : {article.source === "hankyung" ? "한국경제" : "X"}</p>
+          <p className="written">입력 : {article.published_date}</p>
+          <p className="modified">수정 : {article.modified_at}</p>
+        </SubInforContainer>
         <img
           src={article.image_url}
           alt={article.title}
@@ -41,7 +47,13 @@ const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
 
         <p>AI 요약 : {article.summary_text}</p>
         {article.article_id && (
-          <MainArticle>본문 기사 : {article.full_text}</MainArticle>
+          <MainArticle>
+            본문 기사 :{" "}
+            <DiffHighlightText
+              previous={article.previous_full_text}
+              full={article.full_text}
+            />
+          </MainArticle>
         )}
       </ExpandedCard>
     </Overlay>

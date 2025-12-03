@@ -13,6 +13,9 @@ const LoginPage = lazy(() => import("../../pages/Login/LoginPage"));
 const InterestSelectPage = lazy(
   () => import("../../pages/InterestSelect/ui/InterestSelect")
 );
+const ChangeUserInfoPage = lazy(
+  () => import("../../pages/ChangeUserInfo/ui/ChangeUserInfoPage")
+);
 
 const NotFoundPage = lazy(() => import("../../pages/NotFound/NotFoundPage"));
 
@@ -34,5 +37,6 @@ export const AppRouter = createBrowserRouter([
   },
   { path: "/login", element: withSuspense(LoginPage) },
   { path: "/interest-select", element: withSuspense(InterestSelectPage) },
+  { path: "/change-user-info", element: withSuspense(ChangeUserInfoPage) },
   { path: "*", element: withSuspense(NotFoundPage) },
 ]);
