@@ -15,6 +15,11 @@ interface ExpandedArticleProps {
 }
 
 const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
+  const formatDateTime = (isoString: string) => {
+    const [date, timeWithMs] = isoString.split("T");
+    const time = timeWithMs?.split(".")[0]; // HH:mm:ss 추출
+    return `${date} ${time ?? ""}`;
+  };
   return (
     <Overlay
       initial={{ opacity: 0 }}
@@ -31,8 +36,12 @@ const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
         <h2>{article.title}</h2>
         <SubInforContainer>
           <p>출처 : {article.source === "hankyung" ? "한국경제" : "X"}</p>
-          <p className="written">입력 : {article.published_date}</p>
-          <p className="modified">수정 : {article.modified_at}</p>
+          <p className="written">
+            입력 : {formatDateTime(article.published_date)}
+          </p>
+          <p className="modified">
+            수정 : {formatDateTime(article.modified_at)}
+          </p>
         </SubInforContainer>
         <img
           src={article.image_url}
