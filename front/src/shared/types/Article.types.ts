@@ -4,7 +4,7 @@ export interface ArticleDataTypes {
   summary_text: string;
   previous_full_text?: string;
   full_text: string;
-  image_url: string;
+  image_original_url: string;
   source: string;
   published_date: string;
   crawled_at: string;
