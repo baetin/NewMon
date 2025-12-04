@@ -58,7 +58,7 @@ export const MainHotTopicArticle = () => {
   const [isPaused, setIsPaused] = useState(false);
   const fallbackImg = "https://placehold.co/800x400";
 
-  const { data: hotTopicData, isLoading } = useHotTopicQuery();
+  const { data: hotTopicData, isFetching } = useHotTopicQuery();
   // const hotTopicData = mockHotTopicData;
   const handlePrev = () => {
     if (!hotTopicData) return;
@@ -81,7 +81,7 @@ export const MainHotTopicArticle = () => {
     return () => clearInterval(interval);
   }, [restTimer, isPaused, hotTopicData]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isFetching) return <p>Loading...</p>;
   if (!hotTopicData || hotTopicData.length === 0)
     return <p>데이터가 없습니다.</p>;
 
