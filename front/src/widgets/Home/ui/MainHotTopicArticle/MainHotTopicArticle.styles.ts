@@ -2,9 +2,9 @@ import styled, { css } from "styled-components";
 
 export const SlideWrapper = styled.div`
   position: relative;
-  width: 100%; // 화면 너비 기준
-  max-width: 1200px; // 필요에 따라 슬라이드 최대 너비
-  margin: 0 auto; // 가운데 정렬
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,7 +41,10 @@ export const Title = styled.h2`
   font-weight: bold;
 `;
 
-export const Summary = styled.p`
+export const Summary = styled.div`
+  width: 100%;
+  max-width: 800px;
+  max-height: 400px;
   font-size: 1rem;
   color: #555;
 `;
