@@ -1,6 +1,6 @@
 // article.controller.ts
 import { Request, Response } from "express";
-import { ArticleService } from "../services/article.service.js";
+import { ArticleService, searchArticlesByKeyword } from "../services/article.service.js";
 import { getPersonalizedArticles } from "../services/article.service.js";
 
 export const articleController = {
@@ -88,7 +88,7 @@ export const articleController = {
         detail: error.message,
       });
     }
-},
+  },
 
   // 3. [D] 기사 삭제: DELETE /api/articles/:topicId/:id
   async deleteArticle(req: Request, res: Response) {
@@ -127,7 +127,32 @@ export const articleController = {
         .json({ message: "기사 삭제 중 오류 발생", detail: error.message });
     }
   },
+async searchArticles(req: Request, res: Response) { 
+        const { topicId, keywordName, page, limit } = req.query;
+        const idNum = parseInt(topicId as string);
+        const keyword = keywordName as string;
+
+        // 1. 유효성 검증: topicId와 keywordName은 필수
+        if (isNaN(idNum) || !keyword || keyword.trim().length === 0) {
+            return res.status(400).json({ message: "Topic ID and keyword are required for search." });
+        }
+
+        try {
+            // 2. 키워드 검색 서비스 호출
+            const results = await searchArticlesByKeyword(
+                keyword, 
+                idNum, 
+                parseInt(page as string) || 1, 
+                parseInt(limit as string) || 10
+            );
+            res.status(200).json(results);
+        } catch (error) {
+            console.error("Search API Error:", error);
+            res.status(500).json({ message: "Search failed due to internal server error." });
+        }
+    }
 };
+  
 
 export const getPersonalizedFeed = async (req: Request, res: Response) => {
   const userId = req.userId; // JWT 미들웨어가 추가한 userId
@@ -148,4 +173,6 @@ export const getPersonalizedFeed = async (req: Request, res: Response) => {
     console.error("Personalized Feed Error:", error);
     return res.status(500).json({ message: "Failed to retrieve articles." });
   }
+  
 };
+

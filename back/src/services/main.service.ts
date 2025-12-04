@@ -35,7 +35,7 @@ export const getHotTopics = async (): Promise<any[]> => {
             
             return `
                 (SELECT 
-                    article_id, title, summary_text, full_text, image_url, published_date,previous_full_text, -- ✨ full_text 추가 ✨
+                    article_id, title, summary_text, full_text, image_original_url, published_date,previous_full_text, -- ✨ full_text 추가 ✨
                     ${safeTopicTableValue} AS topic_table 
                 FROM public.${safeTableName}
                 ORDER BY published_date DESC 
@@ -98,7 +98,7 @@ export const getPersonalizedFeed = async (userId: number): Promise<any[]> => {
             // 해당 관심 테이블에서 무작위 3개씩 조회
             return `
                 (SELECT 
-                    article_id, title, summary_text, full_text, image_url, published_date, 
+                    article_id, title, summary_text, full_text, image_original_url, published_date, 
                     previous_full_text,crawled_at, -- ✨ crawled_at 컬럼 추가 ✨
                     ${topicId} AS topic_id,
                     (SELECT topic_name FROM public.topic WHERE topic_id = ${topicId}) AS topic_name

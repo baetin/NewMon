@@ -43,14 +43,8 @@ export const ArticleService = {
     keywordName: string | undefined,
     page: number = 1,
     limit: number = 10
-  ): Promise<any> {
-    // ArticleListResult 대신 any 사용
+): Promise<any> {
     const { tableName } = await getTableDetails(topicId);
-
-    // ✨ 안전한 식별자 인용: format('%I')를 사용하지 않으므로 SQL 템플릿 리터럴로 직접 처리합니다.
-    // 하지만 테이블 이름을 쿼리 파라미터로 처리할 수 없으므로, 직접 삽입합니다 (매우 위험).
-    // => 안전을 위해 SQL 템플릿 리터럴 대신 직접 문자열 삽입을 허용하고, 테이블 이름이 안전함을 가정합니다.
-
     const offset = (page - 1) * limit;
     const isKeywordSearch = keywordName && keywordName.trim().length > 0;
 
@@ -58,72 +52,61 @@ export const ArticleService = {
     const keywordTable = "keyword";
 
     try {
-      let listQuery: string;
-      let countQuery: string;
-      let queryParams: any[];
+        let listQuery: string = '';
+        let countQuery: string = '';
+        
+        let queryParams: any[] = [];
+        let countParams: any[] = []; 
+        let listResult: QueryResult;
+        let countResult: QueryResult;
+            
 
-      // SQL 식별자 (테이블명)는 큰따옴표로 인용하여 대소문자 충돌을 방지합니다.
-      const safeTableName = `"${tableName}"`;
-      const safeArticleKeywordTable = `"${articleKeywordTable}"`;
-      const safeKeywordTable = `"${keywordTable}"`;
+        const safeTableName = `"${tableName}"`;
+        const safeArticleKeywordTable = `"${articleKeywordTable}"`;
+        const safeKeywordTable = `"${keywordTable}"`;
 
-      if (isKeywordSearch) {
-        // 경로 A: 키워드 검색 (해당 토픽 테이블만 검색)
-        listQuery = `
-          SELECT 
-            T.* FROM 
-            public.${safeTableName} AS T  
-          JOIN 
-            public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id
-          JOIN 
-            public.${safeKeywordTable} AS K ON AK.keyword_id = K.keyword_id
-          WHERE 
-            K.keyword_name = $1
-          ORDER BY 
-            T.crawled_at DESC
-          LIMIT $2 OFFSET $3; 
-        `;
-        countQuery = `
-          SELECT COUNT(T.article_id) 
-          FROM public.${safeTableName} AS T
-          JOIN public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id
-          JOIN public.${safeKeywordTable} AS K ON AK.keyword_id = K.keyword_id
-          WHERE K.keyword_name = $1;
-        `;
-        // $1: keywordName, $2: limit, $3: offset
-        queryParams = [keywordName, limit, offset];
-      } else {
-        // 경로 B: 토픽 전체 목록 조회
-        listQuery = `
-          SELECT * FROM public.${safeTableName} 
-          ORDER BY crawled_at DESC
-          LIMIT $1 OFFSET $2;
-        `;
-        countQuery = `
-          SELECT COUNT(*) 
-          FROM public.${safeTableName};
-        `;
-        // $1: limit, $2: offset
-        queryParams = [limit, offset];
-      }
 
-      const listResult: QueryResult = await db.query(listQuery, queryParams);
+                                  if (isKeywordSearch) {
+    // 경로 A: 키워드 검색
+    
+    // ✨ 수정: 쿼리 전체를 단일 행으로 통합하고 공백을 명시적으로 관리합니다. ✨
+    listQuery = `SELECT T.*, K.keyword_name FROM public.${safeTableName} AS T JOIN public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id JOIN public.${safeKeywordTable} AS K ON AK.keyword_id = K.keyword_id WHERE AK.topic_id = $1 AND K.keyword_name = $2 ORDER BY T.published_date DESC LIMIT $3 OFFSET $4;`;
+    
+    countQuery = `SELECT COUNT(T.article_id) FROM public.${safeTableName} AS T 
+    JOIN public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id JOIN public.${safeKeywordTable} 
+    AS K ON AK.keyword_id = K.keyword_id WHERE AK.topic_id = $1 AND K.keyword_name = $2;`;
+    
+    // ... (queryParams, countParams 정의 유지)
+        } else {
+            // 경로 B: 토픽 전체 목록 조회
+          listQuery = `SELECT * FROM public.${safeTableName} ORDER BY published_date DESC LIMIT $1 OFFSET $2;`;
+            
+            countQuery = `SELECT COUNT(*) FROM public.${safeTableName};`;
+            
+            queryParams = [limit, offset];
+            countParams = []; 
+}
+        
+        // 🚨 디버그 로그 출력 (쿼리 실행 직전)
+        console.log(`DEBUG: List Query: ${listQuery.substring(0, 100).replace(/\s+/g, ' ')}...`);
 
-      // countResult 쿼리
-      const countParams = isKeywordSearch ? [keywordName] : [];
-      const countResult: QueryResult = await db.query(countQuery, countParams);
+        // ✨ 3. 최종 쿼리 실행 (중복 코드는 모두 제거됨) ✨
+        listResult = await db.query(listQuery, queryParams);
+        countResult = await db.query(countQuery, countParams);
 
-      const totalCount: number = parseInt(countResult.rows[0].count);
-      const totalPages = Math.ceil(totalCount / limit);
+        // 결과 반환 (페이지네이션 포함)
+        const totalCount: number = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalCount / limit);
 
-      return {
-        articles: listResult.rows,
-        totalCount,
-        totalPages,
-      };
+        return {
+            articles: listResult.rows,
+            totalCount,
+            totalPages,
+            currentPage: page,
+        };
     } catch (error) {
-      console.error("Error fetching article list:", error);
-      throw error;
+        console.error("Error fetching article list:", error);
+        throw error;
     }
   },
 
@@ -236,4 +219,70 @@ export const getPersonalizedArticles = async (userId: number) => {
   const finalResult = await db.query(finalQuery);
 
   return finalResult.rows;
+};
+//검색
+
+export const searchArticlesByKeyword = async (
+    keywordName: string,
+    topicId: number,
+    page: number = 1,
+    limit: number = 10
+): Promise<any> => {
+    // 1. 토픽 ID로 테이블 이름 및 메타데이터 조회
+    const { tableName } = await getTableDetails(topicId);
+    const offset = (page - 1) * limit;
+    
+    // SQL 식별자 인용
+    const safeTableName = `"${tableName}"`;
+    const articleKeywordTable = `"articlekeyword"`;
+    const keywordTable = `"keyword"`;
+
+    try {
+        // 2. 쿼리 생성: 해당 토픽 테이블 + Keyword 테이블 JOIN
+        const queryParams = [topicId, keywordName, limit, offset]; 
+
+        // 목록 조회 쿼리 (Topic ID와 Keyword Name으로 필터링)
+        const listQuery = `
+            SELECT 
+                T.*, K.keyword_name 
+            FROM 
+                public.${safeTableName} AS T  
+            JOIN 
+                public.${articleKeywordTable} AS AK ON T.article_id = AK.article_id
+            JOIN 
+                public.${keywordTable} AS K ON AK.keyword_id = K.keyword_id
+            WHERE 
+                AK.topic_id = $1 AND K.keyword_name = $2 
+            ORDER BY 
+                T.published_date DESC
+            LIMIT $3 OFFSET $4; 
+        `;
+        
+        // 카운트 쿼리 (페이지네이션 계산용)
+        const countQuery = `
+            SELECT COUNT(T.article_id) 
+            FROM public.${safeTableName} AS T
+            JOIN public.${articleKeywordTable} AS AK ON T.article_id = AK.article_id
+            JOIN public.${keywordTable} AS K ON AK.keyword_id = K.keyword_id
+            WHERE AK.topic_id = $1 AND K.keyword_name = $2;
+        `;
+        
+        // 3. 쿼리 실행
+        const listResult = await db.query(listQuery, queryParams);
+        const countResult = await db.query(countQuery, [topicId, keywordName]);
+
+        // 4. 결과 반환
+        const totalCount: number = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return {
+            articles: listResult.rows,
+            totalCount,
+            totalPages,
+            currentPage: page
+        };
+    } catch (error) {
+        console.error("Error executing keyword search:", error);
+        throw error;
+    }
 };

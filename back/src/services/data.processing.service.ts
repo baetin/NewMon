@@ -23,7 +23,7 @@ const getTopicToTableNameMap = async (client: PoolClient): Promise<Record<number
 
 
 const CSV_INDEX = {
-    TITLE: 10, FULL_TEXT: 12, PUBLISHED_AT: 5, SOURCE_URL: 1, IMAGE_URL: 15, 
+    TITLE: 10, MODIFIED_AT: 11, FULL_TEXT: 12, PUBLISHED_AT: 5, SOURCE_URL: 1, image_original_url: 16, 
     SOURCE: 4, FOCUS_AREA: 6, CATEGORY_ID: 6 // ✨ CATEGORY_ID (G열)
 };
 
@@ -37,8 +37,8 @@ export const processAndSaveCsv = (filePath: string): Promise<number> => {
     const classifiedRecords = new Map<number, any[][]>(); 
 
     const insertColumns = [
-        'title', 'summary_text', 'full_text', 'image_url', 'source', 'published_date', 
-        'information_depth', 'focus_area', 'objectivity_score', 'source_url' 
+        'title', 'summary_text', 'full_text', 'image_original_url', 'source', 'published_date', 
+        'information_depth', 'focus_area', 'objectivity_score', 'source_url' ,'modified_at'
     ];
 
     return new Promise(async (resolve, reject) => {
@@ -65,11 +65,17 @@ export const processAndSaveCsv = (filePath: string): Promise<number> => {
                         return; 
                     }
 
+                    const modifiedValue = row[CSV_INDEX.MODIFIED_AT];
+                    const finalModifiedDate = (modifiedValue && new Date(modifiedValue).getTime() > 0)
+                        ? new Date(modifiedValue).toISOString()
+                        : new Date().toISOString();
+
                     // 10개 컬럼 매핑 순서 (DB 컬럼 목록과 일치)
                     const dataRow = [
                         safeValue(row[CSV_INDEX.TITLE]), safeValue(row[14]), safeValue(row[CSV_INDEX.FULL_TEXT]), 
-                        safeValue(row[CSV_INDEX.IMAGE_URL]), safeValue(row[CSV_INDEX.SOURCE]), finalPublishedDate, 
+                        safeValue(row[CSV_INDEX.image_original_url]), safeValue(row[CSV_INDEX.SOURCE]), finalPublishedDate, 
                         'BASIC', safeValue(row[CSV_INDEX.FOCUS_AREA]), 85.00, safeValue(row[CSV_INDEX.SOURCE_URL]),
+                        finalModifiedDate,
                     ];
 
                     // ✨ 토픽 ID별로 레코드를 분류하여 Map에 저장 ✨
@@ -95,15 +101,16 @@ export const processAndSaveCsv = (filePath: string): Promise<number> => {
     VALUES %L
     ON CONFLICT (source_url) DO UPDATE 
     SET 
-        -- 이전 값 참조 시에도 따옴표 없이 소문자 사용
+    
         previous_full_text = public.%s.full_text, 
-        
         title = EXCLUDED.title, full_text = EXCLUDED.full_text, 
-       image_url = EXCLUDED.image_url, source = EXCLUDED.source,
+        image_original_url = EXCLUDED.image_original_url, source = EXCLUDED.source,
         published_date = EXCLUDED.published_date, crawled_at = NOW(), 
-        update_time = NOW(), summary_text = NULL,
+        update_time = NOW(),
+        summary_text = EXCLUDED.summary_text,
         information_depth = EXCLUDED.information_depth, focus_area = EXCLUDED.focus_area,
-        objectivity_score = EXCLUDED.objectivity_score
+        objectivity_score = EXCLUDED.objectivity_score,
+        modified_at = EXCLUDED.modified_at
 `, 
     safeTableName, insertColumns.join(', '), records, safeTableName
 );
