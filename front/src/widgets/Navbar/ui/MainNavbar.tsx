@@ -14,10 +14,12 @@ import {
   UserNameControllContainer,
   SelectDropDownContainer,
 } from "./MainNavBar.styles";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { LoginUserState } from "../../../shared/model/loginUserState";
 import { useLogoutMutation } from "../hooks/useLogoutMutation";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSessionCheckQuery } from "../../../shared/hoooks/useSessionCheckQuery";
+import { SearchBar } from "../../../features/searchBar/ui/SearchBar";
 
 interface IsClickedProps {
   isClicked: boolean;
@@ -28,10 +30,11 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [loginUser, setLoginUser] = useRecoilState(LoginUserState); // 로그인 됐는지 확인할때
+  const setLoginUser = useSetRecoilState(LoginUserState); // 로그인 됐는지 확인할때
 
   const { mutate: logoutMutate, isPending } = useLogoutMutation();
-
+  const { data: sessionData, isPending: isSessionPending } =
+    useSessionCheckQuery();
   const queryClient = useQueryClient();
 
   const onClick = () => {
@@ -61,8 +64,8 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
   return (
     <Container>
       {/* 왼쪽: 로고 */}
-      <LeftSection as={Link} to="/">
-        <Logo src={mainLogo} alt="Main Logo" />
+      <LeftSection>
+        <Logo src={mainLogo} alt="Main Logo" onClick={() => navigate("/")} />
       </LeftSection>
 
       {/* 가운데: 주제 메뉴 */}
@@ -83,18 +86,18 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
 
       {/* 오른쪽: 로그인, 로그아웃 드롭다운 버튼 */}
       <RightSection>
-        {loginUser.displayName ? (
+        {!isSessionPending && sessionData?.isAuthenticated && (
           <>
             <UserNameControllContainer
               onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
+                e.stopPropagation();
                 onClick();
               }}
             >
-              <span>{loginUser.displayName}님</span>
-
+              <span>{sessionData.displayName}님</span>
               <IoMdArrowDropdown size={30} />
             </UserNameControllContainer>
+
             {isClicked && (
               <SelectDropDownContainer onClick={(e) => e.stopPropagation()}>
                 <p onClick={onLogoutClick}>
@@ -104,7 +107,10 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
               </SelectDropDownContainer>
             )}
           </>
-        ) : (
+        )}
+        {location.pathname.startsWith("/news") && <SearchBar />}
+
+        {!sessionData?.isAuthenticated && (
           <LoginButton onClick={() => navigate("/login")}>
             <FaSignInAlt size={16} />
             로그인

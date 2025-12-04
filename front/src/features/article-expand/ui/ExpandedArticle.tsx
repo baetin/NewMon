@@ -44,7 +44,7 @@ const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
           </p>
         </SubInforContainer>
         <img
-          src={article.image_url}
+          src={article.image_original_url}
           alt={article.title}
           style={{
             width: "100%",

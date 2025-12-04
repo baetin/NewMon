@@ -69,7 +69,10 @@ export const MainInterestsArticle = () => {
             <MdOutlineArrowBackIos size={28} />
           </ArrowButton>
 
-          <Image src={article?.image_url || fallbackImg} alt="메인 기사" />
+          <Image
+            src={article?.image_original_url || fallbackImg}
+            alt="메인 기사"
+          />
 
           <ArrowButton direction="right" onClick={handleNext}>
             <MdOutlineArrowForwardIos size={28} />
