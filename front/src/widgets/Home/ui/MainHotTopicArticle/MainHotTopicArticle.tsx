@@ -22,7 +22,8 @@ import { useHotTopicQuery } from "../../hooks/useHotTopicQuery";
 // const mockHotTopicData = [
 //   {
 //     id: 1,
-//     title: "한국은행, 기준금리 동결 발표",
+//     title:
+//       "한국은행, 기준금리 동결 발표한국은행, 기준금리 동결 발표한국은행, 기준금리 동결 발표",
 //     summary_text:
 //       "한국은행은 물가 안정 및 경기 상황을 고려해 기준금리를 동결하기로 결정했다.한국은행은 물가 안정 및 경기 상황을 고려해 기준금리를 동결하기로 결정했다.한국은행은 물가 안정 및 경기 상황을 고려해 기준금리를 동결하기로 결정했다.한국은행은 물가 안정 및 경기 상황을 고려해 기준금리를 동결하기로 결정했다.한국은행은 물가 안정 및 경기 상황을 고려해 기준금리를 동결하기로 결정했다.한국은행은 물가 안정 및 경기 상황을 고려해 기준금리를 동결하기로 결정했다.",
 //     full_text:
@@ -108,7 +109,9 @@ export const MainHotTopicArticle = () => {
           </ArrowButton>
         </ImageWrapper>
 
-        <Title>{article.title}</Title>
+        <Title>
+          <h2>{article.title}</h2>
+        </Title>
         <Summary>{article.summary_text}</Summary>
         <CompareBox>
           <h4>AI 요약 vs 원문 비교</h4>
