@@ -57,7 +57,7 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
     });
   };
 
-  const onChangeInforClick = () => {
+  const onChangeInfoClick = () => {
     navigate("/change-user-info");
   };
 
@@ -86,6 +86,14 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
 
       {/* 오른쪽: 로그인, 로그아웃 드롭다운 버튼 */}
       <RightSection>
+        {location.pathname.startsWith("/news") && <SearchBar />}
+
+        {!sessionData?.isAuthenticated && (
+          <LoginButton onClick={() => navigate("/login")}>
+            <FaSignInAlt size={16} />
+            로그인
+          </LoginButton>
+        )}
         {!isSessionPending && sessionData?.isAuthenticated && (
           <>
             <UserNameControllContainer
@@ -103,18 +111,10 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
                 <p onClick={onLogoutClick}>
                   {isPending ? "로그아웃 중..." : "로그아웃"}
                 </p>
-                <p onClick={onChangeInforClick}>정보 수정</p>
+                <p onClick={onChangeInfoClick}>정보 수정</p>
               </SelectDropDownContainer>
             )}
           </>
-        )}
-        {location.pathname.startsWith("/news") && <SearchBar />}
-
-        {!sessionData?.isAuthenticated && (
-          <LoginButton onClick={() => navigate("/login")}>
-            <FaSignInAlt size={16} />
-            로그인
-          </LoginButton>
         )}
       </RightSection>
     </Container>
