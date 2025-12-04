@@ -35,7 +35,7 @@ export const getHotTopics = async (): Promise<any[]> => {
             
             return `
                 (SELECT 
-                    article_id, title, summary_text, full_text, image_url, published_date, -- ✨ full_text 추가 ✨
+                    article_id, title, summary_text, full_text, image_original_url, published_date,previous_full_text, -- ✨ full_text 추가 ✨
                     ${safeTopicTableValue} AS topic_table 
                 FROM public.${safeTableName}
                 ORDER BY published_date DESC 
@@ -71,31 +71,25 @@ export const getPersonalizedFeed = async (userId: number): Promise<any[]> => {
     
     try {
         const topicToTableNameMap = await getTopicToTableNameMap(client);
-        
-        // ----------------------------------------------------
-        // 1. 사용자 관심 주제 ID 조회 (최대 2개만 선택)
-        // ----------------------------------------------------
-        
+
         const interestResult = await client.query(
             `SELECT topic_id FROM public.userinterest WHERE user_id = $1`, 
             [userId]
         );
         
+        // ✨ 여기서 interestedTopicIds 변수를 const로 선언하고 할당합니다. ✨
         const interestedTopicIds = interestResult.rows
                                                  .map(row => row.topic_id)
-                                                 .slice(0, 2); 
-        
+                                                 .slice(0, 2);
+
         if (interestedTopicIds.length === 0) {
             client.release();
             return []; // 관심 주제가 없으면 빈 배열 반환
         }
         
-        // ----------------------------------------------------
-        // 2. 개인화 피드 쿼리 생성 및 실행
-        // ----------------------------------------------------
+        // ... (관심 주제 ID 조회 로직 유지) ...
         
-        // ✨ 수정: personalizedQueries 변수를 여기서 선언 및 할당합니다. ✨
-        const personalizedQueries = interestedTopicIds.map(topicId => { 
+        const personalizedQueries = interestedTopicIds.map(topicId => {
             const tableName = topicToTableNameMap[topicId];
             if (!tableName) return null;
             
@@ -104,7 +98,8 @@ export const getPersonalizedFeed = async (userId: number): Promise<any[]> => {
             // 해당 관심 테이블에서 무작위 3개씩 조회
             return `
                 (SELECT 
-                    article_id, title, summary_text, full_text, image_url, published_date, 
+                    article_id, title, summary_text, full_text, image_original_url, published_date, 
+                    previous_full_text,crawled_at, -- ✨ crawled_at 컬럼 추가 ✨
                     ${topicId} AS topic_id,
                     (SELECT topic_name FROM public.topic WHERE topic_id = ${topicId}) AS topic_name
                 FROM public.${safeTableName} 

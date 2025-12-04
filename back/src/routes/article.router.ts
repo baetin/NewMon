@@ -13,6 +13,8 @@ router.get("/:topic/:id", articleController.readArticleDetail);
 // [D] DELETE: 기사 삭제 (DELETE /api/articles/Sport/456)
 router.delete("/:topic/:id", articleController.deleteArticle);
 
+router.get("/search", articleController.searchArticles);
+
 router.get("/personalized", authMiddleware, (req, res) => {
   // req.userId는 미들웨어를 통과하며 자동으로 추가된 사용자 ID입니다.
   const userId = req.userId;

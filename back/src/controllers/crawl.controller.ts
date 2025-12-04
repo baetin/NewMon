@@ -5,7 +5,8 @@ import * as path from 'path';
 import { processAndSaveCsv } from '../services/data.processing.service.js'; // .ts 또는 .js 파일에서 임포트
 
 // 크롤러가 CSV를 저장하는 경로 (프로젝트 루트 기준으로 설정)
-const CSV_FILE_PATH = 'C:\\Users\\ADMIN\\Downloads\\articles (3).csv';
+const CSV_FILE_PATH = 'c:\\Users\\ADMIN\\Desktop\\crawl\\exports\\articles.csv';
+// const CSV_FILE_PATH = 'C:\\Users\\ADMIN\\Downloads\\articles (3).csv';
 // TypeScript 오류 처리를 위한 타입 가드
 function isError(error: any): error is Error {
     return error && typeof error.message === 'string';

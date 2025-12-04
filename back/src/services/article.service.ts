@@ -1,5 +1,6 @@
 import db from "../utils/db.js";
 import { QueryResult } from "pg";
+import pool from '../utils/db.js';
 // import format from "pg-format"; // ✨ SQL 식별자를 안전하게 인용하기 위해 추가 ✨
 // import type { ArticleEntity, ArticleListResult } from "../utils/types.js"; // 타입 정의는 그대로 가정
 
@@ -42,14 +43,8 @@ export const ArticleService = {
     keywordName: string | undefined,
     page: number = 1,
     limit: number = 10
-  ): Promise<any> {
-    // ArticleListResult 대신 any 사용
+): Promise<any> {
     const { tableName } = await getTableDetails(topicId);
-
-    // ✨ 안전한 식별자 인용: format('%I')를 사용하지 않으므로 SQL 템플릿 리터럴로 직접 처리합니다.
-    // 하지만 테이블 이름을 쿼리 파라미터로 처리할 수 없으므로, 직접 삽입합니다 (매우 위험).
-    // => 안전을 위해 SQL 템플릿 리터럴 대신 직접 문자열 삽입을 허용하고, 테이블 이름이 안전함을 가정합니다.
-
     const offset = (page - 1) * limit;
     const isKeywordSearch = keywordName && keywordName.trim().length > 0;
 
@@ -57,89 +52,95 @@ export const ArticleService = {
     const keywordTable = "keyword";
 
     try {
-      let listQuery: string;
-      let countQuery: string;
-      let queryParams: any[];
+        let listQuery: string = '';
+        let countQuery: string = '';
+        
+        let queryParams: any[] = [];
+        let countParams: any[] = []; 
+        let listResult: QueryResult;
+        let countResult: QueryResult;
+            
 
-      // SQL 식별자 (테이블명)는 큰따옴표로 인용하여 대소문자 충돌을 방지합니다.
-      const safeTableName = `"${tableName}"`;
-      const safeArticleKeywordTable = `"${articleKeywordTable}"`;
-      const safeKeywordTable = `"${keywordTable}"`;
+        const safeTableName = `"${tableName}"`;
+        const safeArticleKeywordTable = `"${articleKeywordTable}"`;
+        const safeKeywordTable = `"${keywordTable}"`;
 
-      if (isKeywordSearch) {
-        // 경로 A: 키워드 검색 (해당 토픽 테이블만 검색)
-        listQuery = `
-          SELECT 
-            T.* FROM 
-            public.${safeTableName} AS T  
-          JOIN 
-            public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id
-          JOIN 
-            public.${safeKeywordTable} AS K ON AK.keyword_id = K.keyword_id
-          WHERE 
-            K.keyword_name = $1
-          ORDER BY 
-            T.crawled_at DESC
-          LIMIT $2 OFFSET $3; 
-        `;
-        countQuery = `
-          SELECT COUNT(T.article_id) 
-          FROM public.${safeTableName} AS T
-          JOIN public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id
-          JOIN public.${safeKeywordTable} AS K ON AK.keyword_id = K.keyword_id
-          WHERE K.keyword_name = $1;
-        `;
-        // $1: keywordName, $2: limit, $3: offset
-        queryParams = [keywordName, limit, offset];
-      } else {
-        // 경로 B: 토픽 전체 목록 조회
-        listQuery = `
-          SELECT * FROM public.${safeTableName} 
-          ORDER BY crawled_at DESC
-          LIMIT $1 OFFSET $2;
-        `;
-        countQuery = `
-          SELECT COUNT(*) 
-          FROM public.${safeTableName};
-        `;
-        // $1: limit, $2: offset
-        queryParams = [limit, offset];
-      }
 
-      const listResult: QueryResult = await db.query(listQuery, queryParams);
+          if (isKeywordSearch) {
+    // 경로 A: 키워드 검색 (JOIN 로직 복원)
+    
+    // 쿼리 파라미터 순서: $1(topicId), $2(keywordName), $3(limit), $4(offset)
+    queryParams = [topicId, keywordName, limit, offset]; 
+    countParams = [topicId, keywordName];
+    
+    listQuery = `SELECT T.*, K.keyword_name FROM public.${safeTableName} AS T JOIN public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id JOIN public.${safeKeywordTable} AS K ON AK.keyword_id = K.keyword_id WHERE AK.topic_id = $1 AND K.keyword_name = $2 ORDER BY T.published_date DESC LIMIT $3 OFFSET $4;`;
+    
+    countQuery = `SELECT COUNT(T.article_id) FROM public.${safeTableName} AS T JOIN public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id JOIN public.${safeKeywordTable} AS K ON AK.keyword_id = K.keyword_id WHERE AK.topic_id = $1 AND K.keyword_name = $2;`;
 
-      // countResult 쿼리
-      const countParams = isKeywordSearch ? [keywordName] : [];
-      const countResult: QueryResult = await db.query(countQuery, countParams);
+} else {
+    // 경로 B: 토픽 전체 목록 조회 (키워드 없음)
+    
+    // 쿼리 파라미터 순서: $1(limit), $2(offset)
+    queryParams = [limit, offset];
+    countParams = []; 
 
-      const totalCount: number = parseInt(countResult.rows[0].count);
-      const totalPages = Math.ceil(totalCount / limit);
+    listQuery = `SELECT * FROM public.${safeTableName} ORDER BY published_date DESC LIMIT $1 OFFSET $2;`;
+    
+    countQuery = `SELECT COUNT(*) FROM public.${safeTableName};`;
+}
+              
+        // 🚨 디버그 로그 출력 (쿼리 실행 직전)
+        console.log(`DEBUG: List Query: ${listQuery.substring(0, 100).replace(/\s+/g, ' ')}...`);
 
-      return {
-        articles: listResult.rows,
-        totalCount,
-        totalPages,
-      };
+        // ✨ 3. 최종 쿼리 실행 (중복 코드는 모두 제거됨) ✨
+        listResult = await db.query(listQuery, queryParams);
+        countResult = await db.query(countQuery, countParams);
+
+        // 결과 반환 (페이지네이션 포함)
+        const totalCount: number = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return {
+            articles: listResult.rows,
+            totalCount,
+            totalPages,
+            currentPage: page,
+        };
     } catch (error) {
-      console.error("Error fetching article list:", error);
-      throw error;
+        console.error("Error fetching article list:", error);
+        throw error;
     }
   },
 
   // [R] 기사 상세 조회 로직
-  async getArticleDetail(topicId: number, id: number): Promise<any | null> {
+  async getArticleDetail(
+    topicId: number,
+    id: number
+): Promise<any | null> {
     const { tableName } = await getTableDetails(topicId);
-    const safeTableName = `"${tableName}"`;
+    
+    // 테이블 이름은 이미 getTableDetails에서 소문자로 처리되었으므로, 
+    // SQL에서 큰따옴표로 감싸서 대소문자 충돌을 방지합니다.
+    const safeTableName = `"${tableName}"`; 
 
-    const query = `SELECT * FROM public.${safeTableName} WHERE article_id = $1`;
+    // ✨ 수정: 모든 컬럼(*)과 previous_full_text 컬럼을 명시적으로 선택합니다. ✨
+    const query = `
+        SELECT 
+            T.*, 
+            T.previous_full_text  
+        FROM public.${safeTableName} AS T
+        WHERE T.article_id = $1
+    `; 
+    
     const result = await db.query(query, [id]);
 
     if (result.rowCount === 0) {
       return null;
     }
-    return result.rows[0];
-  },
-
+    
+    // 응답은 모든 기사 정보와 함께 두 버전의 텍스트를 포함합니다.
+    return result.rows[0]; 
+},
   // [D] 기사 삭제 로직
   async deleteArticle(topicId: number, id: number): Promise<number> {
     const { tableName } = await getTableDetails(topicId);
@@ -220,4 +221,54 @@ export const getPersonalizedArticles = async (userId: number) => {
   const finalResult = await db.query(finalQuery);
 
   return finalResult.rows;
+};
+//검색
+
+export const searchArticlesByKeyword = async (
+    keywordName: string,
+    topicId: number,
+    page: number = 1,
+    limit: number = 10
+): Promise<any> => {
+    const { tableName } = await getTableDetails(topicId);
+    const offset = (page - 1) * limit;
+    
+    // 1. PostgreSQL ILIKE 검색을 위한 키워드 준비
+    const searchKeyword = `%${keywordName}%`; 
+
+    try {
+        // ✨ 2. 변수 선언 및 초기화 (let 대신 const로 쿼리 정의) ✨
+        const safeTableName = `"${tableName}"`;
+        const queryParams = [searchKeyword, limit, offset]; // listQuery parameters
+        const countParams = [searchKeyword]; // countQuery parameters
+        
+        // 3. 목록 조회 쿼리 (listQuery) - 단일 행으로 압축
+        const listQuery = `SELECT T.* FROM public.${safeTableName} AS T WHERE T.title ILIKE $1 OR T.full_text ILIKE $1 ORDER BY T.published_date DESC LIMIT $2 OFFSET $3;`;
+        
+        // 4. 카운트 쿼리 (countQuery) - 단일 행으로 압축
+        const countQuery = `SELECT COUNT(T.article_id) FROM public.${safeTableName} AS T WHERE T.title ILIKE $1 OR T.full_text ILIKE $1;`;
+        
+        // 5. 쿼리 실행
+        const listResult = await db.query(listQuery, queryParams);
+        const countResult = await db.query(countQuery, countParams);
+
+        // 6. 결과 반환 (페이지네이션 포함)
+        // 🛑 안전 검증을 위해 countResult.rows.length 검사 필요
+        if (!countResult.rows || countResult.rows.length === 0) {
+            return { articles: [], totalCount: 0, totalPages: 0, currentPage: page };
+        }
+        
+        const totalCount: number = parseInt(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return {
+            articles: listResult.rows,
+            totalCount,
+            totalPages,
+            currentPage: page
+        };
+    } catch (error) {
+        console.error("Error executing full text search:", error);
+        throw error;
+    }
 };
