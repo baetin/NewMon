@@ -66,27 +66,29 @@ export const ArticleService = {
         const safeKeywordTable = `"${keywordTable}"`;
 
 
-                                  if (isKeywordSearch) {
-    // 경로 A: 키워드 검색
+          if (isKeywordSearch) {
+    // 경로 A: 키워드 검색 (JOIN 로직 복원)
     
-    // ✨ 수정: 쿼리 전체를 단일 행으로 통합하고 공백을 명시적으로 관리합니다. ✨
+    // 쿼리 파라미터 순서: $1(topicId), $2(keywordName), $3(limit), $4(offset)
+    queryParams = [topicId, keywordName, limit, offset]; 
+    countParams = [topicId, keywordName];
+    
     listQuery = `SELECT T.*, K.keyword_name FROM public.${safeTableName} AS T JOIN public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id JOIN public.${safeKeywordTable} AS K ON AK.keyword_id = K.keyword_id WHERE AK.topic_id = $1 AND K.keyword_name = $2 ORDER BY T.published_date DESC LIMIT $3 OFFSET $4;`;
     
-    countQuery = `SELECT COUNT(T.article_id) FROM public.${safeTableName} AS T 
-    JOIN public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id JOIN public.${safeKeywordTable} 
-    AS K ON AK.keyword_id = K.keyword_id WHERE AK.topic_id = $1 AND K.keyword_name = $2;`;
+    countQuery = `SELECT COUNT(T.article_id) FROM public.${safeTableName} AS T JOIN public.${safeArticleKeywordTable} AS AK ON T.article_id = AK.article_id JOIN public.${safeKeywordTable} AS K ON AK.keyword_id = K.keyword_id WHERE AK.topic_id = $1 AND K.keyword_name = $2;`;
+
+} else {
+    // 경로 B: 토픽 전체 목록 조회 (키워드 없음)
     
-    // ... (queryParams, countParams 정의 유지)
-        } else {
-            // 경로 B: 토픽 전체 목록 조회
-          listQuery = `SELECT * FROM public.${safeTableName} ORDER BY published_date DESC LIMIT $1 OFFSET $2;`;
-            
-            countQuery = `SELECT COUNT(*) FROM public.${safeTableName};`;
-            
-            queryParams = [limit, offset];
-            countParams = []; 
+    // 쿼리 파라미터 순서: $1(limit), $2(offset)
+    queryParams = [limit, offset];
+    countParams = []; 
+
+    listQuery = `SELECT * FROM public.${safeTableName} ORDER BY published_date DESC LIMIT $1 OFFSET $2;`;
+    
+    countQuery = `SELECT COUNT(*) FROM public.${safeTableName};`;
 }
-        
+              
         // 🚨 디버그 로그 출력 (쿼리 실행 직전)
         console.log(`DEBUG: List Query: ${listQuery.substring(0, 100).replace(/\s+/g, ' ')}...`);
 
@@ -228,50 +230,34 @@ export const searchArticlesByKeyword = async (
     page: number = 1,
     limit: number = 10
 ): Promise<any> => {
-    // 1. 토픽 ID로 테이블 이름 및 메타데이터 조회
     const { tableName } = await getTableDetails(topicId);
     const offset = (page - 1) * limit;
     
-    // SQL 식별자 인용
-    const safeTableName = `"${tableName}"`;
-    const articleKeywordTable = `"articlekeyword"`;
-    const keywordTable = `"keyword"`;
+    // 1. PostgreSQL ILIKE 검색을 위한 키워드 준비
+    const searchKeyword = `%${keywordName}%`; 
 
     try {
-        // 2. 쿼리 생성: 해당 토픽 테이블 + Keyword 테이블 JOIN
-        const queryParams = [topicId, keywordName, limit, offset]; 
-
-        // 목록 조회 쿼리 (Topic ID와 Keyword Name으로 필터링)
-        const listQuery = `
-            SELECT 
-                T.*, K.keyword_name 
-            FROM 
-                public.${safeTableName} AS T  
-            JOIN 
-                public.${articleKeywordTable} AS AK ON T.article_id = AK.article_id
-            JOIN 
-                public.${keywordTable} AS K ON AK.keyword_id = K.keyword_id
-            WHERE 
-                AK.topic_id = $1 AND K.keyword_name = $2 
-            ORDER BY 
-                T.published_date DESC
-            LIMIT $3 OFFSET $4; 
-        `;
+        // ✨ 2. 변수 선언 및 초기화 (let 대신 const로 쿼리 정의) ✨
+        const safeTableName = `"${tableName}"`;
+        const queryParams = [searchKeyword, limit, offset]; // listQuery parameters
+        const countParams = [searchKeyword]; // countQuery parameters
         
-        // 카운트 쿼리 (페이지네이션 계산용)
-        const countQuery = `
-            SELECT COUNT(T.article_id) 
-            FROM public.${safeTableName} AS T
-            JOIN public.${articleKeywordTable} AS AK ON T.article_id = AK.article_id
-            JOIN public.${keywordTable} AS K ON AK.keyword_id = K.keyword_id
-            WHERE AK.topic_id = $1 AND K.keyword_name = $2;
-        `;
+        // 3. 목록 조회 쿼리 (listQuery) - 단일 행으로 압축
+        const listQuery = `SELECT T.* FROM public.${safeTableName} AS T WHERE T.title ILIKE $1 OR T.full_text ILIKE $1 ORDER BY T.published_date DESC LIMIT $2 OFFSET $3;`;
         
-        // 3. 쿼리 실행
+        // 4. 카운트 쿼리 (countQuery) - 단일 행으로 압축
+        const countQuery = `SELECT COUNT(T.article_id) FROM public.${safeTableName} AS T WHERE T.title ILIKE $1 OR T.full_text ILIKE $1;`;
+        
+        // 5. 쿼리 실행
         const listResult = await db.query(listQuery, queryParams);
-        const countResult = await db.query(countQuery, [topicId, keywordName]);
+        const countResult = await db.query(countQuery, countParams);
 
-        // 4. 결과 반환
+        // 6. 결과 반환 (페이지네이션 포함)
+        // 🛑 안전 검증을 위해 countResult.rows.length 검사 필요
+        if (!countResult.rows || countResult.rows.length === 0) {
+            return { articles: [], totalCount: 0, totalPages: 0, currentPage: page };
+        }
+        
         const totalCount: number = parseInt(countResult.rows[0].count);
         const totalPages = Math.ceil(totalCount / limit);
 
@@ -282,7 +268,7 @@ export const searchArticlesByKeyword = async (
             currentPage: page
         };
     } catch (error) {
-        console.error("Error executing keyword search:", error);
+        console.error("Error executing full text search:", error);
         throw error;
     }
 };
