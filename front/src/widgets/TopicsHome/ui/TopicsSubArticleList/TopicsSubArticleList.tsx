@@ -44,7 +44,7 @@ const TopicsSubArticleList = ({ articles }: ArticleDataProps) => {
               <Title>{article.title}</Title>
               <Summary>{article.summary_text}</Summary>
             </Texts>
-            <Image src={article.image_url} alt={article.title} />
+            <Image src={article.image_original_url} alt={article.title} />
           </SubArticle>
         ))}
 

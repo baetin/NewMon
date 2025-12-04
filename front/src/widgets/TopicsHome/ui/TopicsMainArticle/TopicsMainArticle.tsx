@@ -29,8 +29,8 @@ const TopicsMainArticle = ({ article }: ArticleDataProps) => {
         style={{ cursor: "pointer", width: "100%" }}
       >
         <ArticleContainer>
-          {article.image_url && (
-            <Image src={article.image_url} alt={article.title} />
+          {article.image_original_url && (
+            <Image src={article.image_original_url} alt={article.title} />
           )}
           <Contents>
             <Title>{article.title}</Title>
