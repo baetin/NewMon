@@ -1,28 +1,38 @@
 import { MdSearch } from "react-icons/md";
 import { SearchContainer } from "./SearchBar.styles";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export const SearchBar = () => {
-  const [keyword, setKeyWord] = useState("");
+  const [keyword, setKeyword] = useState("");
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { topic } = useParams<{ topic: string }>();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get("search");
+
+    if (q) {
+      setKeyword(q);
+    }
+  }, [location.search]);
 
   const onSearch = () => {
-    console.log("search", keyword);
-  };
-
-  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      onSearch();
-    }
+    if (!keyword.trim()) return;
+    navigate(`/news/${topic}?search=${keyword}&page=1`);
   };
 
   return (
     <SearchContainer>
       <input
         type="text"
-        placeholder="검색"
+        placeholder="검색어를 입력해주세요."
         value={keyword}
-        onChange={(e) => setKeyWord(e.target.value)}
-        onKeyDown={onKeyPress}
+        onChange={(e) => setKeyword(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && onSearch()}
       />
       <MdSearch size={22} style={{ cursor: "pointer" }} onClick={onSearch} />
     </SearchContainer>

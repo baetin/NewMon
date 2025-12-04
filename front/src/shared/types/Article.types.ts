@@ -9,7 +9,7 @@ export interface ArticleDataTypes {
   published_date: string;
   crawled_at: string;
   modified_at: string;
-  // information_depth: string;
-  // focus_area: string;
-  // objectivity_score: string;
+  information_depth: string;
+  focus_area: string;
+  objectivity_score: string;
 }
