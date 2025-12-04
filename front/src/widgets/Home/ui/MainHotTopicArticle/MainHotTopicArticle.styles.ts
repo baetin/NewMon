@@ -36,9 +36,14 @@ export const Image = styled.img`
   aspect-ratio: 2 / 1; // 가로:세로 비율 = 2:1
 `;
 
-export const Title = styled.h2`
-  font-size: 1.8rem;
-  font-weight: bold;
+export const Title = styled.div`
+  width: 100%;
+  max-width: 800px;
+  max-height: 400px;
+  h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
 `;
 
 export const Summary = styled.div`
