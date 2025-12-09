@@ -9,8 +9,10 @@ export const ArticleContainer = styled.div`
 
 export const Image = styled.img`
   width: 100%;
-  height: auto;
+  max-width: 800px;
   border-radius: 12px;
+  object-fit: cover;
+  aspect-ratio: 2 / 1;
 `;
 
 export const Contents = styled.div`

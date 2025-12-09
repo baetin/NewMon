@@ -2,17 +2,20 @@ import { diffWords } from "diff";
 import { DiffWordContainer } from "./DiffHighlightText.styles";
 
 interface DiffHighlightTextProps {
-  before: string | undefined;
+  previous: string | undefined;
   full: string;
 }
 
-const getDiffParts = ({ before, full }: DiffHighlightTextProps) => {
-  if (!before || before === full) return null;
-  return diffWords(before, full);
+const getDiffParts = ({ previous, full }: DiffHighlightTextProps) => {
+  if (!previous || previous === full) return null;
+  return diffWords(previous, full);
 };
 
-export const DiffHighlightText = ({ before, full }: DiffHighlightTextProps) => {
-  const diff = getDiffParts({ before, full });
+export const DiffHighlightText = ({
+  previous,
+  full,
+}: DiffHighlightTextProps) => {
+  const diff = getDiffParts({ previous, full });
   if (!diff) return full;
 
   return (

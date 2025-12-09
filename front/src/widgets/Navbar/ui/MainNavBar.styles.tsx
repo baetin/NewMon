@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { ButtonBase } from "../../../shared/styles/button.styles";
 
 export const Container = styled.nav`
   display: flex;
   max-height: 100px;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   padding: 12px 40px;
   background-color: ${({ theme }) =>
     `${theme.colors.background}CC`}; /* 투명도 80% 정도 */
@@ -19,19 +20,24 @@ export const Container = styled.nav`
   z-index: 100;
 `;
 
-export const LeftSection = styled.a`
+export const LeftSection = styled.div`
   display: flex;
   align-items: center;
+  flex: 1;
+  justify-content: center;
 `;
 
 export const Logo = styled.img`
   height: 100px;
+  cursor: pointer;
 `;
 
 export const CenterSection = styled.div`
   display: flex;
   align-items: center;
   gap: 60px;
+  flex: 1;
+  justify-content: center;
 `;
 
 export const NavItem = styled(Link)`
@@ -77,6 +83,8 @@ export const RightSection = styled.div`
   display: flex;
   align-items: center;
   gap: 14px;
+  flex: 1;
+  justify-content: center;
 `;
 
 export const UserNameControllContainer = styled.div`
@@ -108,20 +116,10 @@ export const SelectDropDownContainer = styled.div`
     }
   }
 `;
-export const ButtonBase = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  border-radius: 25px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.text.light};
-  cursor: pointer;
-  transition: all 0.3s ease;
-`;
 
 export const LoginButton = styled(ButtonBase)`
   background-color: #162733;
+  color: ${({ theme }) => theme.colors.text.light};
 
   &:hover {
     transition: all 0.3s ease;

@@ -3,8 +3,8 @@ import { upsertUserService } from "../services/auth.service.js";
 import { OAuth2Client } from "google-auth-library";
 // import { generateToken } from "../services/jwt.service.js"; // JWT는 사용하지 않습니다.
 
-// const CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID;
-// const client = new OAuth2Client(CLIENT_ID);
+const CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
 
 // Request 객체에 session 속성이 있음을 TypeScript에 알리기 위해 타입 확장
 declare global {
@@ -16,47 +16,47 @@ declare global {
   }
 }
 
-// Google 토큰 검증 로직
-// async function verifyGoogleToken(token: string) {
-//     if (!CLIENT_ID) {
-//         throw new Error("GOOGLE_CLIENT_ID environment variable is not set.");
-//     }
+//Google 토큰 검증 로직
+async function verifyGoogleToken(token: string) {
+    if (!CLIENT_ID) {
+        throw new Error("GOOGLE_CLIENT_ID environment variable is not set.");
+    }
 
-//     try {
-//         const ticket = await client.verifyIdToken({
-//             idToken: token, 
-//             audience: CLIENT_ID, 
-//         });
-//         const payload = ticket.getPayload();
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: token, 
+            audience: CLIENT_ID, 
+        });
+        const payload = ticket.getPayload();
 
-//         if (!payload || !payload.sub || !payload.email) {
-//             throw new Error("Invalid Google token payload.");
-//         }
+        if (!payload || !payload.sub || !payload.email) {
+            throw new Error("Invalid Google token payload.");
+        }
 
-//         // Google Payload에서 사용자 정보를 추출하여 반환
-//         return {
-//             googleId: payload.sub,
-//             email: payload.email,
-//             displayName: payload.name || payload.email,
-//         };
-//     } catch (error) {
-//         console.error("Google Token Verification Failed:", error);
-//         throw new Error("Invalid Google token."); // 401 에러 유도
-//     }
-// }
+        // Google Payload에서 사용자 정보를 추출하여 반환
+        return {
+            googleId: payload.sub,
+            email: payload.email,
+            displayName: payload.name || payload.email,
+        };
+    } catch (error) {
+        console.error("Google Token Verification Failed:", error);
+        throw new Error("Invalid Google token."); // 401 에러 유도
+    }
+}
 // //--------------------------------------------------------------------------
 
 // //테스트용
-async function verifyGoogleToken(token: string) {
-    console.log("--- DEBUG: Bypassing actual Google verification. ---");
-    // DB Upsert 키로 사용할 고정 ID를 반환합니다.
-    return {
-        // 이미 DB에 저장된 고정 ID를 반환 (Upsert 로직 유지를 위해 필요)
-        googleId: "TEST_UNIQUE_ID_FROM_GOOGLE_001", 
-        email: "db_test_001@email.com",
-        displayName: "Test User Name",
-    };
-}
+// async function verifyGoogleToken(token: string) {
+//     console.log("--- DEBUG: Bypassing actual Google verification. ---");
+//     // DB Upsert 키로 사용할 고정 ID를 반환합니다.
+//     return {
+//         // 이미 DB에 저장된 고정 ID를 반환 (Upsert 로직 유지를 위해 필요)
+//         googleId: "TEST_UNIQUE_ID_FROM_GOOGLE_001", 
+//         email: "db_test_001@email.com",
+//         displayName: "Test User Name",
+//     };
+// }
 
 export const googleAuthCallbackController = async (req: Request, res: Response) => {
     const { idToken } = req.body;
@@ -74,6 +74,7 @@ export const googleAuthCallbackController = async (req: Request, res: Response) 
 
     // 3. ✨ 인증 성공: 사용자 ID를 세션에 저장 ✨
     (req.session as any).userId = userInfo.user_id;
+    (req.session as any).displayName = userInfo.displayName;
 
     // 4. 응답 분기 처리
     return res.status(userInfo.isNewUser ? 201 : 200).json({
@@ -106,19 +107,8 @@ export const googleAuthCallbackController = async (req: Request, res: Response) 
 };
 
 export const logoutController = async (req: Request, res: Response) => {
-  // ✨ 로그아웃: 서버 세션 파괴 및 쿠키 삭제 ✨
-  // express-session 미들웨어가 추가한 destroy 메서드를 사용합니다.
-  (req.session as any).destroy((err: any) => {
-    if (err) {
-      console.error("Session destroy failed:", err);
-      return res.status(500).json({ message: "Failed to log out." });
-    }
-
-    // 브라우저에 저장된 세션 쿠키를 삭제합니다.
-    res.clearCookie("connect.sid"); // Express-session의 기본 쿠키 이름
-
-    console.log(`User ${req.userId || "unknown"} successfully logged out.`);
-
-    return res.status(200).json({ message: "Logout successful." });
-  });
+    // 세션 파괴 및 쿠키 삭제
+    (req.session as any).destroy((err: any) => { // ✨ destroy 함수 호출 시에도 캐스팅 유지 ✨
+        // ...
+    });
 };

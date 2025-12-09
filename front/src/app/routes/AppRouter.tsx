@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Spinner } from "../../shared/ui";
 import { MainLayout } from "../../widgets/layouts";
 import { createBrowserRouter } from "react-router-dom";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 // 페이지 lazy import
 
@@ -33,6 +34,17 @@ export const AppRouter = createBrowserRouter([
     ],
   },
   { path: "/login", element: withSuspense(LoginPage) },
-  { path: "/interest-select", element: withSuspense(InterestSelectPage) },
+  {
+    path: "/interest-select",
+    element: (
+      <ProtectedRoute>{withSuspense(InterestSelectPage)}</ProtectedRoute>
+    ),
+  },
+  {
+    path: "/change-user-info",
+    element: (
+      <ProtectedRoute>{withSuspense(InterestSelectPage)}</ProtectedRoute>
+    ),
+  },
   { path: "*", element: withSuspense(NotFoundPage) },
 ]);

@@ -1,6 +1,6 @@
 // article.controller.ts
 import { Request, Response } from "express";
-import { ArticleService } from "../services/article.service.js";
+import { ArticleService, searchArticlesByKeyword } from "../services/article.service.js";
 import { getPersonalizedArticles } from "../services/article.service.js";
 
 export const articleController = {
@@ -50,10 +50,12 @@ export const articleController = {
 
   // 2. [R] 기사 상세 조회: GET /api/articles/:topicId/:id
   async readArticleDetail(req: Request, res: Response) {
+    // req.params에서 topicId와 id를 구조 분해 할당
     const { topicId, id } = req.params;
     const topicIdNum = parseInt(topicId);
     const articleId = parseInt(id);
 
+    // 1. 유효성 검증
     if (isNaN(topicIdNum) || isNaN(articleId) || topicIdNum <= 0) {
       return res
         .status(400)
@@ -61,6 +63,7 @@ export const articleController = {
     }
 
     try {
+      // 2. 서비스 호출 (full_text와 previous_full_text를 모두 포함한 객체를 기대)
       const article = await ArticleService.getArticleDetail(
         topicIdNum,
         articleId
@@ -72,14 +75,16 @@ export const articleController = {
           .json({ message: `기사 ID ${id}를 찾을 수 없습니다.` });
       }
 
+      // 3. 응답: 두 텍스트 버전이 포함된 기사 객체를 클라이언트에게 반환
       res.status(200).json(article);
-    } catch (error: any) {
-      console.error(error);
+    } catch (error: any) { // 명시적 'any' 타입 캐스팅은 TypeScript 오류를 줄입니다.
+      console.error("Error in readArticleDetail:", error);
+      
       if (error.message.includes("Topic not found")) {
         return res.status(404).json({ message: error.message });
       }
       res.status(500).json({
-        message: "기사 상세 조회 중 오류 발생",
+        message: "기사 상세 조회 중 서버 오류 발생",
         detail: error.message,
       });
     }
@@ -122,7 +127,32 @@ export const articleController = {
         .json({ message: "기사 삭제 중 오류 발생", detail: error.message });
     }
   },
+async searchArticles(req: Request, res: Response) { 
+        const { topicId, keywordName, page, limit } = req.query;
+        const idNum = parseInt(topicId as string);
+        const keyword = keywordName as string;
+
+        // 1. 유효성 검증: topicId와 keywordName은 필수
+        if (isNaN(idNum) || !keyword || keyword.trim().length === 0) {
+            return res.status(400).json({ message: "Topic ID and keyword are required for search." });
+        }
+
+        try {
+            // 2. 키워드 검색 서비스 호출
+            const results = await searchArticlesByKeyword(
+                keyword, 
+                idNum, 
+                parseInt(page as string) || 1, 
+                parseInt(limit as string) || 10
+            );
+            res.status(200).json(results);
+        } catch (error) {
+            console.error("Search API Error:", error);
+            res.status(500).json({ message: "Search failed due to internal server error." });
+        }
+    }
 };
+  
 
 export const getPersonalizedFeed = async (req: Request, res: Response) => {
   const userId = req.userId; // JWT 미들웨어가 추가한 userId
@@ -143,4 +173,6 @@ export const getPersonalizedFeed = async (req: Request, res: Response) => {
     console.error("Personalized Feed Error:", error);
     return res.status(500).json({ message: "Failed to retrieve articles." });
   }
+  
 };
+

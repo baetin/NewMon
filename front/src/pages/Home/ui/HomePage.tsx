@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  Container,
+  TopicContainer,
   Left,
   Right,
 } from "../../../shared/styles/articleContents.styles";
@@ -15,7 +15,7 @@ const HomePage = () => {
   const { data: sessionData } = useSessionCheckQuery();
 
   return (
-    <Container>
+    <TopicContainer>
       <Left>
         <TabWrapper>
           <Tab $active={!isShow} onClick={() => setIsShow(false)}>
@@ -33,7 +33,7 @@ const HomePage = () => {
       <Right>
         <MainRightSection isShow={isShow} />
       </Right>
-    </Container>
+    </TopicContainer>
   );
 };
 
