@@ -20,13 +20,13 @@ app.use(cookieParser());
 app.use(session({
     secret: process.env.SESSION_SECRET || 'fallback_key',
     resave: false, 
-    saveUninitialized: false, 
+    saveUninitialized: true, 
     cookie: { /* ... */ }
 }));
 
 // ----------------------------------------------------------------
 // 1. 미들웨어 설정 (중복 제거 및 JSON 파싱)
-// ----------------------------------------------------------------
+// ----------------------------------------------------------------     
 app.use(express.json()); // 표준 JSON 파서만 사용
 
 // ----------------------------------------------------------------

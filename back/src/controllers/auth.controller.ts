@@ -74,6 +74,7 @@ export const googleAuthCallbackController = async (req: Request, res: Response) 
 
     // 3. ✨ 인증 성공: 사용자 ID를 세션에 저장 ✨
     (req.session as any).userId = userInfo.user_id;
+    (req.session as any).displayName = userInfo.displayName;
 
     // 4. 응답 분기 처리
     return res.status(userInfo.isNewUser ? 201 : 200).json({
@@ -106,19 +107,8 @@ export const googleAuthCallbackController = async (req: Request, res: Response) 
 };
 
 export const logoutController = async (req: Request, res: Response) => {
-  // ✨ 로그아웃: 서버 세션 파괴 및 쿠키 삭제 ✨
-  // express-session 미들웨어가 추가한 destroy 메서드를 사용합니다.
-  (req.session as any).destroy((err: any) => {
-    if (err) {
-      console.error("Session destroy failed:", err);
-      return res.status(500).json({ message: "Failed to log out." });
-    }
-
-    // 브라우저에 저장된 세션 쿠키를 삭제합니다.
-    res.clearCookie("connect.sid"); // Express-session의 기본 쿠키 이름
-
-    console.log(`User ${req.userId || "unknown"} successfully logged out.`);
-
-    return res.status(200).json({ message: "Logout successful." });
-  });
+    // 세션 파괴 및 쿠키 삭제
+    (req.session as any).destroy((err: any) => { // ✨ destroy 함수 호출 시에도 캐스팅 유지 ✨
+        // ...
+    });
 };
