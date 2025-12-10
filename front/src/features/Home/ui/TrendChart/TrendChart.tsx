@@ -1,5 +1,5 @@
-import { TrendChartContainer } from "./TrendChart.styles";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
+import { TrendChartContainer } from "@/features/home/ui/TrendChart/TrendChart.styles";
 
 const data = [
   { name: "경제", count: 24 },

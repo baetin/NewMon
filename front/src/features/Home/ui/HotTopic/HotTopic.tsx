@@ -1,7 +1,9 @@
-import { HotTopicContainer, TopicItem } from "../Topic.styles";
 import { useRecoilState } from "recoil";
-import { hotTopicSlideIndexSate } from "../../../../widgets/Home/model/examplesState";
-import { useHotTopicQuery } from "../../../../widgets/Home/hooks/useHotTopicQuery";
+
+import { HotTopicContainer, TopicItem } from "@/features/home/ui/Topic.styles";
+
+import { hotTopicSlideIndexSate } from "@/features/home/model/examplesState";
+import { useHotTopicQuery } from "@/features/home/hooks/useHotTopicQuery";
 
 export const HotTopicList = () => {
   const { data: hotTopicData, isLoading } = useHotTopicQuery();
@@ -14,9 +16,10 @@ export const HotTopicList = () => {
       <h3>🔥 Hot Topic</h3>
 
       {isLoading && <p>Loading...</p>}
-      {!isLoading && hotTopicData && hotTopicData.length === 0 && (
+      {!isLoading && hotTopicData?.length === 0 && (
         <div>데이터가 없습니다.</div>
       )}
+
       {!isLoading && hotTopicData && hotTopicData.length > 0 && (
         <ul>
           {hotTopicData.map((topic, i) => (

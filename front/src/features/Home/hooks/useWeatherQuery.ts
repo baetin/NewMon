@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getWeather } from "../api/getWeather";
-import type { WeatherDataProps } from "../model/WeatherDataProps.types";
+import { getWeather } from "@/features/home/api/getWeather";
+import type { WeatherDataProps } from "@/features/home/model/WeatherDataProps.types";
 
 export const useWeatherQuery = (lat: number, lon: number) => {
   return useQuery<WeatherDataProps, Error>({

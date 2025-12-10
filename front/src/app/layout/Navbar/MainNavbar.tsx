@@ -1,25 +1,29 @@
-import mainLogo from "../../../shared/assets/mainLogo.png";
-import { FaSignInAlt } from "react-icons/fa";
-import { IoMdArrowDropdown } from "react-icons/io";
-import { topics } from "../../../shared/model/topics";
+// src/app/layout/Navbar/MainNavbar.tsx
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { useQueryClient } from "@tanstack/react-query";
+
+import mainLogo from "@/shared/assets/mainLogo.png";
+import { topics } from "@/shared/model/topics";
+import { LoginUserState } from "@/shared/model/loginUserState";
+
+import { useLogoutMutation } from "@/widgets/Navbar/hooks/useLogoutMutation";
+import { useSessionCheckQuery } from "@/features/auth/hooks/useSessionCheckQuery";
+
+import { SearchBar } from "@/features/searchBar/ui/SearchBar";
 import {
   Container,
   LeftSection,
+  Logo,
   CenterSection,
   NavItem,
-  Logo,
   RightSection,
   LoginButton,
   UserNameControllContainer,
   SelectDropDownContainer,
-} from "./MainNavBar.styles";
-import { useSetRecoilState } from "recoil";
-import { LoginUserState } from "../../../shared/model/loginUserState";
-import { useLogoutMutation } from "../hooks/useLogoutMutation";
-import { useQueryClient } from "@tanstack/react-query";
-import { useSessionCheckQuery } from "../../../shared/hoooks/useSessionCheckQuery";
-import { SearchBar } from "../../../features/searchBar/ui/SearchBar";
+} from "./MainNavbar.styles";
 
 interface IsClickedProps {
   isClicked: boolean;
@@ -30,16 +34,14 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const setLoginUser = useSetRecoilState(LoginUserState); // 로그인 됐는지 확인할때
+  const setLoginUser = useSetRecoilState(LoginUserState);
+  const queryClient = useQueryClient();
 
   const { mutate: logoutMutate, isPending } = useLogoutMutation();
   const { data: sessionData, isPending: isSessionPending } =
     useSessionCheckQuery();
-  const queryClient = useQueryClient();
 
-  const onClick = () => {
-    setIsClicked((prev) => !prev);
-  };
+  const onClick = () => setIsClicked((prev) => !prev);
 
   const onLogoutClick = () => {
     const result = confirm("로그아웃 하시겠습니까?");
@@ -57,18 +59,16 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
     });
   };
 
-  const onChangeInfoClick = () => {
-    navigate("/change-user-info");
-  };
+  const onChangeInfoClick = () => navigate("/change-user-info");
 
   return (
     <Container>
-      {/* 왼쪽: 로고 */}
+      {/* Left: Logo */}
       <LeftSection>
         <Logo src={mainLogo} alt="Main Logo" onClick={() => navigate("/")} />
       </LeftSection>
 
-      {/* 가운데: 주제 메뉴 */}
+      {/* Center: Category Menu */}
       <CenterSection>
         {topics.map((topic) => (
           <NavItem
@@ -84,16 +84,14 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
         ))}
       </CenterSection>
 
-      {/* 오른쪽: 로그인, 로그아웃 드롭다운 버튼 */}
+      {/* Right: Search + Auth Menu */}
       <RightSection>
         {location.pathname.startsWith("/news") && <SearchBar />}
 
         {!sessionData?.isAuthenticated && (
-          <LoginButton onClick={() => navigate("/login")}>
-            <FaSignInAlt size={16} />
-            로그인
-          </LoginButton>
+          <LoginButton onClick={() => navigate("/login")}>로그인</LoginButton>
         )}
+
         {!isSessionPending && sessionData?.isAuthenticated && (
           <>
             <UserNameControllContainer
@@ -103,7 +101,6 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
               }}
             >
               <span>{sessionData.displayName}님</span>
-              <IoMdArrowDropdown size={30} />
             </UserNameControllContainer>
 
             {isClicked && (

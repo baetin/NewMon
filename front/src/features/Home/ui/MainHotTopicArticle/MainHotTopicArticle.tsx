@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 import {
+  MdOutlineArrowBackIos,
+  MdOutlineArrowForwardIos,
+} from "react-icons/md";
+import { useRecoilState } from "recoil";
+
+import {
   ArticleContainer,
   Image,
   Title,
@@ -10,35 +16,29 @@ import {
   DotContainer,
   Dot,
   ImageWrapper,
-} from "../MainHotTopicArticle/MainHotTopicArticle.styles";
-import {
-  MdOutlineArrowBackIos,
-  MdOutlineArrowForwardIos,
-} from "react-icons/md";
-import { useRecoilState } from "recoil";
-import { interestsSlideIndexSate } from "../../model/examplesState";
-import { useInterestsQuery } from "../../hooks/useInterestsQuery";
-export const MainInterestsArticle = () => {
-  const [slideIndex, setSlideIndex] = useRecoilState(interestsSlideIndexSate);
+} from "@/features/home/ui/MainHotTopicArticle/MainHotTopicArticle.styles";
+
+import { hotTopicSlideIndexSate } from "@/features/home/model/examplesState";
+import { useHotTopicQuery } from "@/features/home/hooks/useHotTopicQuery";
+
+export const MainHotTopicArticle = () => {
+  const [slideIndex, setSlideIndex] = useRecoilState(hotTopicSlideIndexSate);
   const [restTimer, setRestTimer] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
   const fallbackImg = "https://placehold.co/800x400";
 
-  const { data: interestsTopicData, isLoading } = useInterestsQuery();
+  const { data: hotTopicData, isFetching } = useHotTopicQuery();
 
   const handlePrev = () => {
-    if (!interestsTopicData) return;
-    setSlideIndex((prev) =>
-      prev === 0 ? interestsTopicData.length - 1 : prev - 1
-    );
+    if (!hotTopicData) return;
+    setSlideIndex((prev) => (prev === 0 ? hotTopicData.length - 1 : prev - 1));
     setRestTimer((prev) => prev + 1);
   };
 
   const handleNext = () => {
-    if (!interestsTopicData) return;
-    setSlideIndex((prev) =>
-      prev === interestsTopicData.length - 1 ? 0 : prev + 1
-    );
+    if (!hotTopicData) return;
+    setSlideIndex((prev) => (prev === hotTopicData.length - 1 ? 0 : prev + 1));
     setRestTimer((prev) => prev + 1);
   };
 
@@ -46,17 +46,16 @@ export const MainInterestsArticle = () => {
 
   // 자동 슬라이드
   useEffect(() => {
-    if (isPaused || !interestsTopicData) return;
+    if (isPaused || !hotTopicData) return;
     const interval = setInterval(() => handleNext(), 4000);
     return () => clearInterval(interval);
-  }, [restTimer, isPaused, interestsTopicData]);
+  }, [restTimer, isPaused, hotTopicData]);
 
-  // 로딩 / 빈 데이터 처리
-  if (isLoading) return <p>Loading...</p>;
-  if (!interestsTopicData || interestsTopicData.length === 0)
+  if (isFetching) return <p>Loading...</p>;
+  if (!hotTopicData || hotTopicData.length === 0)
     return <p>데이터가 없습니다.</p>;
 
-  const article = interestsTopicData[slideIndex];
+  const article = hotTopicData[slideIndex];
 
   return (
     <SlideWrapper
@@ -79,8 +78,11 @@ export const MainInterestsArticle = () => {
           </ArrowButton>
         </ImageWrapper>
 
-        <Title>{article.title}</Title>
+        <Title>
+          <h2>{article.title}</h2>
+        </Title>
         <Summary>{article.summary_text}</Summary>
+
         <CompareBox>
           <h4>AI 요약 vs 원문 비교</h4>
           <p>AI 요약: {article.summary_text}</p>
@@ -89,7 +91,7 @@ export const MainInterestsArticle = () => {
       </ArticleContainer>
 
       <DotContainer>
-        {interestsTopicData.map((_, index) => (
+        {hotTopicData.map((_, index) => (
           <Dot
             key={index}
             $active={slideIndex === index}

@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { useSessionCheckQuery } from "../../shared/hoooks/useSessionCheckQuery";
+import { useSessionCheckQuery } from "../../features/auth/hooks/useSessionCheckQuery";
 import { Spinner } from "../../shared/ui";
 import { Navigate } from "react-router-dom";
 

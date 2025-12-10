@@ -1,14 +1,18 @@
 import { useState } from "react";
+
 import {
   TopicContainer,
   Left,
   Right,
-} from "../../../shared/styles/articleContents.styles";
-import { MainHotTopicArticle } from "../../../widgets/Home/ui/MainHotTopicArticle/MainHotTopicArticle";
-import { MainInterestsArticle } from "../../../widgets/Home/ui/MainInterestsArticle/MainInterestsArticle";
-import { MainRightSection } from "../../../widgets/Home/ui/MainRightSection/MainRightSection";
-import { Tab, TabWrapper } from "./HomePage.styles";
-import { useSessionCheckQuery } from "../../../shared/hoooks/useSessionCheckQuery";
+} from "@/shared/styles/articleContents.styles";
+
+import { MainHotTopicArticle } from "@/features/home/ui/MainHotTopicArticle/MainHotTopicArticle";
+import { MainInterestsArticle } from "@/features/home/ui/MainInterestsArticle/MainInterestsArticle";
+import { MainRightSection } from "@/features/home/ui/MainRightSection/MainRightSection";
+
+import { useSessionCheckQuery } from "@/features/auth/hooks/useSessionCheckQuery";
+
+import { TabWrapper, Tab } from "@/features/home/pages/HomePage.styles";
 
 const HomePage = () => {
   const [isShow, setIsShow] = useState(false);
@@ -21,15 +25,18 @@ const HomePage = () => {
           <Tab $active={!isShow} onClick={() => setIsShow(false)}>
             Hot Topic
           </Tab>
+
           {sessionData?.isAuthenticated && (
             <Tab $active={isShow} onClick={() => setIsShow(true)}>
               Your Interests
             </Tab>
           )}
         </TabWrapper>
+
         {!isShow && <MainHotTopicArticle />}
         {isShow && sessionData?.isAuthenticated && <MainInterestsArticle />}
       </Left>
+
       <Right>
         <MainRightSection isShow={isShow} />
       </Right>

@@ -6,7 +6,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 
 // 페이지 lazy import
 
-const HomePage = lazy(() => import("@/pages/Home/ui/HomePage"));
+const HomePage = lazy(() => import("@/features/home/pages/HomePage"));
 const TopicsHomePage = lazy(
   () => import("@/pages/TopicsHome/ui/TopicsHomePage")
 );

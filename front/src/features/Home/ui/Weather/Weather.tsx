@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
-import { NoticeText, WeatherContainer } from "./Weather.styles";
-import { Spinner } from "../../../../shared/ui";
-import { useWeatherQuery } from "../../hooks/useWeatherQuery ";
+
+import {
+  NoticeText,
+  WeatherContainer,
+} from "@/features/home/ui/Weather/Weather.styles";
+
+import { Spinner } from "@/shared/ui/Spinner/Spinner";
+import { useWeatherQuery } from "@/features/home/hooks/useWeatherQuery";
 
 export const Weather = () => {
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(
@@ -12,7 +17,10 @@ export const Weather = () => {
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+        setCoords({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+        });
       },
       () => {
         setCoords({ lat: 37.5665, lon: 126.978 }); // 서울
@@ -42,8 +50,12 @@ export const Weather = () => {
       ) : (
         <>
           {notice && <NoticeText>{notice}</NoticeText>}
+
           <span>📍 {data.name}</span>
-          <img src={`https://openweathermap.org/img/wn/${data.icon}@2x.png`} />
+          <img
+            src={`https://openweathermap.org/img/wn/${data.icon}@2x.png`}
+            alt="날씨 아이콘"
+          />
           <span>{data.desc}</span>
           <span>{data.temp.toFixed(1)}℃</span>
         </>

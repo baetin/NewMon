@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getInterestsArticles } from "../api/getInterestsArticles";
+import { getInterestsArticles } from "@/features/home/api/getInterestsArticles";
 
 export const useInterestsQuery = () => {
   return useQuery({

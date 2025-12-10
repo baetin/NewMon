@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSessionCheck } from "../../widgets/layouts/api/getSessionCheck";
-import type { SessionCheckProps } from "../../widgets/layouts/model/sessionCheck.types";
+import { getSessionCheck } from "../../../widgets/layouts/api/getSessionCheck";
+import type { SessionCheckProps } from "../../../widgets/layouts/model/sessionCheck.types";
 
 export const useSessionCheckQuery = () => {
   return useQuery<SessionCheckProps | null, Error>({
