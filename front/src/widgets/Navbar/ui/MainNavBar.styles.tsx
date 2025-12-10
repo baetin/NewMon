@@ -84,7 +84,7 @@ export const RightSection = styled.div`
   align-items: center;
   gap: 14px;
   flex: 1;
-  justify-content: center;
+  justify-content: baseline;
 `;
 
 export const UserNameControllContainer = styled.div`
