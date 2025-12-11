@@ -6,7 +6,8 @@ import { Container, Main } from "./MainLayout.styles";
 
 import { LoginUserState } from "@/shared/model/loginUserState";
 import { useSessionCheckQuery } from "@/features/auth/hooks/useSessionCheckQuery";
-import { MainNavbar } from "../Navbar/MainNavbar";
+
+import { MainNavbar } from "@/app/layout/Navbar";
 import { Footer } from "@/shared/ui";
 
 export const MainLayout = () => {
