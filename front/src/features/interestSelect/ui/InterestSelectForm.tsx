@@ -8,12 +8,12 @@ import {
   InterestList,
   InterestItem,
   SubmitButton,
-} from "./InterestSelectPage.styles";
+} from "./InterestSelectForm.styles";
 
-import { useUserInterestsMutation } from "@/pages/interestSelect/hooks/useUserInterestsMutation";
+import { useUserInterestsMutation } from "@/features/interestSelect/hooks/useUserInterestsMutation";
 import { topics } from "@/shared/model/topics";
 
-const InterestSelectPage = () => {
+export const InterestSelectForm = () => {
   const [selected, setSelected] = useState<number[]>([]);
 
   const navigate = useNavigate();
@@ -58,5 +58,3 @@ const InterestSelectPage = () => {
     </Container>
   );
 };
-
-export default InterestSelectPage;

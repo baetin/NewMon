@@ -11,7 +11,7 @@ const HomePage = lazy(() => import("@/pages/home/HomePage"));
 const TopicsHomePage = lazy(() => import("@/pages/topicsHome/TopicsHomePage"));
 const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
 const InterestSelectPage = lazy(
-  () => import("@/pages/interestSelect/ui/InterestSelectPage")
+  () => import("@/pages/interestSelect/InterestSelectPage")
 );
 
 const NotFoundPage = lazy(() => import("@/pages/notFound/NotFoundPage"));
