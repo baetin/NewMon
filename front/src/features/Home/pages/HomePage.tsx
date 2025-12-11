@@ -6,13 +6,15 @@ import {
   Right,
 } from "@/shared/styles/articleContents.styles";
 
-import { MainHotTopicArticle } from "@/features/home/ui/MainHotTopicArticle/MainHotTopicArticle";
-import { MainInterestsArticle } from "@/features/home/ui/MainInterestsArticle/MainInterestsArticle";
-import { MainRightSection } from "@/features/home/ui/MainRightSection/MainRightSection";
+import { useSessionCheckQuery } from "@/features/auth";
 
-import { useSessionCheckQuery } from "@/features/auth/hooks/useSessionCheckQuery";
+import {
+  MainHotTopicArticle,
+  MainInterestsArticle,
+  MainRightSection,
+} from "@/features/home";
 
-import { TabWrapper, Tab } from "@/features/home/pages/HomePage.styles";
+import { TabWrapper, Tab } from "./HomePage.styles";
 
 const HomePage = () => {
   const [isShow, setIsShow] = useState(false);
