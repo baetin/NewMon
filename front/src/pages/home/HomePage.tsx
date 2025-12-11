@@ -13,8 +13,7 @@ import {
   MainInterestsArticle,
   MainRightSection,
 } from "@/features/home";
-
-import { TabWrapper, Tab } from "./HomePage.styles";
+import { Tab, TabWrapper } from "./HomePage.styles";
 
 const HomePage = () => {
   const [isShow, setIsShow] = useState(false);

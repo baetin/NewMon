@@ -1,6 +1,3 @@
-// Pages
-export { default as TopicsHomePage } from "./pages/TopicsHomePage";
-
 // UI Components
 export { default as TopicsMainArticle } from "./ui/TopicsMainArticle/TopicsMainArticle";
 export { default as TopicsSubArticleList } from "./ui/TopicsSubArticleList/TopicsSubArticleList";

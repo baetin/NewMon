@@ -1,15 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
-  Title,
   Container,
+  Card,
+  Title,
   InterestList,
   InterestItem,
   SubmitButton,
-  Card,
-} from "./InterestSelect.styles";
-import { topics } from "../../../shared/model/topics";
-import { useNavigate } from "react-router-dom";
-import { useUserInterestsMutation } from "../hooks/useUserInterestsMutation";
+} from "./InterestSelectPage.styles";
+
+import { useUserInterestsMutation } from "@/pages/interestSelect/hooks/useUserInterestsMutation";
+import { topics } from "@/shared/model/topics";
 
 const InterestSelectPage = () => {
   const [selected, setSelected] = useState<number[]>([]);

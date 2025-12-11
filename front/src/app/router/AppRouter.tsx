@@ -1,21 +1,20 @@
 import { lazy, Suspense } from "react";
-import { Spinner } from "../../shared/ui";
-import { MainLayout } from "../../widgets/layouts";
 import { createBrowserRouter } from "react-router-dom";
-import { ProtectedRoute } from "./ProtectedRoute";
+
+import { Spinner } from "@/shared/ui";
+import { MainLayout } from "@/app/layout/MainLayout/MainLayout";
+import { ProtectedRoute } from "@/app/router/ProtectedRoute";
 
 // 페이지 lazy import
 
-const HomePage = lazy(() => import("@/features/home/pages/HomePage"));
-const TopicsHomePage = lazy(
-  () => import("@/pages/TopicsHome/ui/TopicsHomePage")
-);
-const LoginPage = lazy(() => import("@/pages/Login/LoginPage"));
+const HomePage = lazy(() => import("@/pages/home/HomePage"));
+const TopicsHomePage = lazy(() => import("@/pages/topicsHome/TopicsHomePage"));
+const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
 const InterestSelectPage = lazy(
-  () => import("@/pages/InterestSelect/ui/InterestSelect")
+  () => import("@/pages/interestSelect/ui/InterestSelectPage")
 );
 
-const NotFoundPage = lazy(() => import("@/pages/NotFound/NotFoundPage"));
+const NotFoundPage = lazy(() => import("@/pages/notFound/NotFoundPage"));
 
 // Suspense 래퍼
 const SuspenseWrapper = (Component: React.LazyExoticComponent<any>) => {
