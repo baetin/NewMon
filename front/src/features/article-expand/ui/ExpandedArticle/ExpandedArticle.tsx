@@ -1,5 +1,5 @@
-import type { ArticleDataTypes } from "../../../shared/types/Article.types";
-import { DiffHighlightText } from "./DiffHighlightText";
+import type { ArticleDataTypes } from "@/shared/types/Article.types";
+import { DiffHighlightText } from "@/features/article-expand/ui/ExpandedArticle/DiffHighlightText";
 import {
   ExpandedCard,
   Overlay,
