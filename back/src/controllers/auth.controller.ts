@@ -18,31 +18,31 @@ declare global {
 
 //Google 토큰 검증 로직
 async function verifyGoogleToken(token: string) {
-    if (!CLIENT_ID) {
-        throw new Error("GOOGLE_CLIENT_ID environment variable is not set.");
+  if (!CLIENT_ID) {
+    throw new Error("GOOGLE_CLIENT_ID environment variable is not set.");
+  }
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.sub || !payload.email) {
+      throw new Error("Invalid Google token payload.");
     }
 
-    try {
-        const ticket = await client.verifyIdToken({
-            idToken: token, 
-            audience: CLIENT_ID, 
-        });
-        const payload = ticket.getPayload();
-
-        if (!payload || !payload.sub || !payload.email) {
-            throw new Error("Invalid Google token payload.");
-        }
-
-        // Google Payload에서 사용자 정보를 추출하여 반환
-        return {
-            googleId: payload.sub,
-            email: payload.email,
-            displayName: payload.name || payload.email,
-        };
-    } catch (error) {
-        console.error("Google Token Verification Failed:", error);
-        throw new Error("Invalid Google token."); // 401 에러 유도
-    }
+    // Google Payload에서 사용자 정보를 추출하여 반환
+    return {
+      googleId: payload.sub,
+      email: payload.email,
+      displayName: payload.name || payload.email,
+    };
+  } catch (error) {
+    console.error("Google Token Verification Failed:", error);
+    throw new Error("Invalid Google token."); // 401 에러 유도
+  }
 }
 // //--------------------------------------------------------------------------
 
@@ -52,14 +52,17 @@ async function verifyGoogleToken(token: string) {
 //     // DB Upsert 키로 사용할 고정 ID를 반환합니다.
 //     return {
 //         // 이미 DB에 저장된 고정 ID를 반환 (Upsert 로직 유지를 위해 필요)
-//         googleId: "TEST_UNIQUE_ID_FROM_GOOGLE_001", 
+//         googleId: "TEST_UNIQUE_ID_FROM_GOOGLE_001",
 //         email: "db_test_001@email.com",
 //         displayName: "Test User Name",
 //     };
 // }
 
-export const googleAuthCallbackController = async (req: Request, res: Response) => {
-    const { idToken } = req.body;
+export const googleAuthCallbackController = async (
+  req: Request,
+  res: Response
+) => {
+  const { idToken } = req.body;
 
   try {
     // 1. Google API에 토큰 검증 요청
@@ -107,8 +110,20 @@ export const googleAuthCallbackController = async (req: Request, res: Response) 
 };
 
 export const logoutController = async (req: Request, res: Response) => {
-    // 세션 파괴 및 쿠키 삭제
-    (req.session as any).destroy((err: any) => { // ✨ destroy 함수 호출 시에도 캐스팅 유지 ✨
-        // ...
+  (req.session as any).destroy((err: any) => {
+    if (err) {
+      console.error("세션 삭제 오류:", err);
+      return res.status(500).json({ message: "세션 삭제 실패" });
+    }
+
+    // 쿠키 삭제
+    res.clearCookie("connect.sid", {
+      httpOnly: true,
+      secure: true, // 운영환경이라면 true
+      sameSite: "lax",
     });
+
+    // 여기서 반드시 응답 보내야 함
+    return res.json({ message: "로그아웃 성공" });
+  });
 };
