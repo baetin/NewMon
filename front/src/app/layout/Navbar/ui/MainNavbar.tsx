@@ -11,7 +11,7 @@ import { LoginUserState } from "@/shared/model/loginUserState";
 import { useLogoutMutation } from "@/app/layout/Navbar/hooks/useLogoutMutation";
 import { useSessionCheckQuery } from "@/features/auth/hooks/useSessionCheckQuery";
 
-import { SearchBar } from "@/features/searchBar/ui/SearchBar";
+import { SearchBar } from "@/features/searchBar";
 
 import { useSetRecoilState } from "recoil";
 import {
