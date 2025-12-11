@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { ButtonBase } from "../../../shared/styles/button.styles";
+import { ButtonBase } from "../../../../shared/styles/button.styles";
 
 export const Container = styled.nav`
   display: flex;

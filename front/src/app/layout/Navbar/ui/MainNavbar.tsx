@@ -1,18 +1,16 @@
-// src/app/layout/Navbar/MainNavbar.tsx
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
 import { useQueryClient } from "@tanstack/react-query";
 
 import mainLogo from "@/shared/assets/mainLogo.png";
 import { topics } from "@/shared/model/topics";
 import { LoginUserState } from "@/shared/model/loginUserState";
 
-import { useLogoutMutation } from "@/widgets/Navbar/hooks/useLogoutMutation";
+import { useLogoutMutation } from "@/app/layout/Navbar/hooks/useLogoutMutation";
 import { useSessionCheckQuery } from "@/features/auth/hooks/useSessionCheckQuery";
 
 import { SearchBar } from "@/features/searchBar/ui/SearchBar";
+
+import { useSetRecoilState } from "recoil";
 import {
   Container,
   LeftSection,
