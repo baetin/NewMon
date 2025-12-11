@@ -78,13 +78,13 @@ export const NavItem = styled(Link)`
   }
 `;
 
-export const RightSection = styled.div`
+export const RightSection = styled.div<{ $isNewsPath: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
   flex: 1;
-  justify-content: baseline;
+  justify-content: ${(props) => (props.$isNewsPath ? "baseline" : "center")};
 `;
 
 export const UserNameControllContainer = styled.div`
@@ -96,8 +96,8 @@ export const UserNameControllContainer = styled.div`
 `;
 
 export const SelectDropDownContainer = styled.div`
-  position: absolute; /* 부모를 기준으로 위치 지정 */
-  top: 100%; /* 버튼 바로 아래에 나타나게 */
+  position: absolute;
+  top: 100%;
   /* right: 0; */
   background-color: ${({ theme }) => theme.colors.background};
   border: 1px solid #ddd;

@@ -2,6 +2,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 
 import mainLogo from "@/shared/assets/mainLogo.png";
+import { FaSignInAlt } from "react-icons/fa";
+import { IoMdArrowDropdown } from "react-icons/io";
+
 import { topics } from "@/shared/model/topics";
 import { LoginUserState } from "@/shared/model/loginUserState";
 
@@ -48,7 +51,11 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
     logoutMutate(undefined, {
       onSuccess: () => {
         setLoginUser({ userId: 0, displayName: "", isNewUser: null });
-        queryClient.clear();
+        queryClient.setQueryData(["session"], {
+          isAuthenticated: false,
+          displayName: "",
+          userId: 0,
+        });
         navigate("/");
       },
       onError: () => {
@@ -59,6 +66,7 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
 
   const onChangeInfoClick = () => navigate("/change-user-info");
 
+  const isNewsPath = location.pathname.startsWith("/news");
   return (
     <Container>
       {/* Left: Logo */}
@@ -83,11 +91,15 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
       </CenterSection>
 
       {/* Right: Search + Auth Menu */}
-      <RightSection>
-        {location.pathname.startsWith("/news") && <SearchBar />}
+
+      <RightSection $isNewsPath={isNewsPath}>
+        {isNewsPath && <SearchBar />}
 
         {!sessionData?.isAuthenticated && (
-          <LoginButton onClick={() => navigate("/login")}>로그인</LoginButton>
+          <LoginButton onClick={() => navigate("/login")}>
+            <FaSignInAlt size={16} />
+            로그인
+          </LoginButton>
         )}
 
         {!isSessionPending && sessionData?.isAuthenticated && (
@@ -99,6 +111,7 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
               }}
             >
               <span>{sessionData.displayName}님</span>
+              <IoMdArrowDropdown size={30} />
             </UserNameControllContainer>
 
             {isClicked && (
