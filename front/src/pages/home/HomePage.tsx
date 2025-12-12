@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import {
   TopicContainer,
   Left,
@@ -15,20 +13,31 @@ import {
 } from "@/features/home";
 import { Tab, TabWrapper } from "./HomePage.styles";
 
+import { useSearchParams } from "react-router-dom";
+
 const HomePage = () => {
-  const [isShow, setIsShow] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get("tab");
+  const isShow = tab === "interest";
+
   const { data: sessionData } = useSessionCheckQuery();
 
   return (
     <TopicContainer>
       <Left>
         <TabWrapper>
-          <Tab $active={!isShow} onClick={() => setIsShow(false)}>
+          <Tab
+            $active={!isShow}
+            onClick={() => setSearchParams({ tab: "hot" })}
+          >
             Hot Topic
           </Tab>
 
           {sessionData?.isAuthenticated && (
-            <Tab $active={isShow} onClick={() => setIsShow(true)}>
+            <Tab
+              $active={isShow}
+              onClick={() => setSearchParams({ tab: "interest" })}
+            >
               Your Interests
             </Tab>
           )}
