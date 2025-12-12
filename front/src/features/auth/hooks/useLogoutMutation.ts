@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { postLogout } from "@/app/layout/Navbar/api/postLogout";
+import { postLogout } from "../api/postLogout";
 
 export const useLogoutMutation = () => {
-  return useMutation<void, Error, void>({
+  return useMutation({
     mutationFn: postLogout,
   });
 };

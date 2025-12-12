@@ -6,14 +6,9 @@ import { FaSignInAlt } from "react-icons/fa";
 import { IoMdArrowDropdown } from "react-icons/io";
 
 import { topics } from "@/shared/model/topics";
-import { LoginUserState } from "@/shared/model/loginUserState";
-
-import { useLogoutMutation } from "@/app/layout/Navbar/hooks/useLogoutMutation";
-import { useSessionCheckQuery } from "@/features/auth/hooks/useSessionCheckQuery";
 
 import { SearchBar } from "@/features/searchBar";
 
-import { useSetRecoilState } from "recoil";
 import {
   Container,
   LeftSection,
@@ -25,6 +20,7 @@ import {
   UserNameControllContainer,
   SelectDropDownContainer,
 } from "./MainNavbar.styles";
+import { useAuth, useLogoutMutation } from "@/features/auth";
 
 interface IsClickedProps {
   isClicked: boolean;
@@ -34,23 +30,20 @@ interface IsClickedProps {
 export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  const setLoginUser = useSetRecoilState(LoginUserState);
   const queryClient = useQueryClient();
 
+  const { isAuthenticated, displayName } = useAuth();
   const { mutate: logoutMutate, isPending } = useLogoutMutation();
-  const { data: sessionData, isPending: isSessionPending } =
-    useSessionCheckQuery();
 
   const onClick = () => setIsClicked((prev) => !prev);
 
   const onLogoutClick = () => {
     const result = confirm("로그아웃 하시겠습니까?");
+
     if (!result) return;
 
     logoutMutate(undefined, {
       onSuccess: () => {
-        setLoginUser({ userId: 0, displayName: "", isNewUser: null });
         queryClient.setQueryData(["session"], {
           isAuthenticated: false,
           displayName: "",
@@ -95,14 +88,14 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
       <RightSection $isNewsPath={isNewsPath}>
         {isNewsPath && <SearchBar />}
 
-        {!sessionData?.isAuthenticated && (
+        {!isAuthenticated && (
           <LoginButton onClick={() => navigate("/login")}>
             <FaSignInAlt size={16} />
             로그인
           </LoginButton>
         )}
 
-        {!isSessionPending && sessionData?.isAuthenticated && (
+        {isAuthenticated && (
           <>
             <UserNameControllContainer
               onClick={(e) => {
@@ -110,7 +103,7 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
                 onClick();
               }}
             >
-              <span>{sessionData.displayName}님</span>
+              <span>{displayName}님</span>
               <IoMdArrowDropdown size={30} />
             </UserNameControllContainer>
 

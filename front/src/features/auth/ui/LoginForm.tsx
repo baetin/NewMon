@@ -2,9 +2,6 @@ import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
 import mainLogo from "@/shared/assets/mainLogo.png";
 
 import { Link, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-
-import { LoginUserState } from "@/shared/model/loginUserState";
 
 import { useLoginMutation } from "@/features/auth/hooks/useLoginMutation";
 
@@ -14,15 +11,28 @@ import {
   Logo,
   GoogleButtonWrapper,
 } from "@/features/auth/ui/LoginForm.styles";
+import { useQueryClient } from "@tanstack/react-query";
 
-const LoginForm = () => {
-  const setLoginUser = useSetRecoilState(LoginUserState);
+export const LoginForm = () => {
   const navigate = useNavigate();
 
-  const loginMutation = useLoginMutation(setLoginUser, navigate);
+  const loginMutation = useLoginMutation();
+
+  const queryClient = useQueryClient();
 
   const onLoginSuccess = (res: CredentialResponse) => {
-    loginMutation.mutate(res);
+    if (!res.credential) return;
+
+    loginMutation.mutate(res.credential, {
+      onSuccess: ({ user, isNewUser }) => {
+        queryClient.setQueryData(["session"], {
+          isAuthenticated: true,
+          userId: user.userId,
+          displayName: user.displayName,
+        });
+        navigate(isNewUser ? "/interest-select" : "/");
+      },
+    });
   };
 
   return (
@@ -43,4 +53,3 @@ const LoginForm = () => {
     </Container>
   );
 };
-export default LoginForm;
