@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import styled from "styled-components";
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
 
 export const Overlay = styled(motion.div)`
   position: fixed;
@@ -76,4 +76,12 @@ export const SubInforContainer = styled.div`
   .modified {
     background-color: yellow;
   }
+`;
+
+export const ScrollContainer = styled.div<{ $visible: boolean }>`
+  position: sticky;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
 `;
