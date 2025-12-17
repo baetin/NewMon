@@ -1,53 +1,29 @@
-import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
-import mainLogo from "@/shared/assets/mainLogo.png";
+import { type CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { Link } from 'react-router-dom';
 
-import { Link, useNavigate } from "react-router-dom";
+import mainLogo from '@/shared/assets/mainLogo.png';
 
-import { useLoginMutation } from "@/features/auth/hooks/useLoginMutation";
-
-import {
-  Container,
-  Card,
-  Logo,
-  GoogleButtonWrapper,
-} from "@/features/auth/ui/LoginForm.styles";
-import { useQueryClient } from "@tanstack/react-query";
+import { useLoginFlow } from '../hooks/useLoginFlow';
+import { Card, Container, GoogleButtonWrapper, Logo } from './LoginForm.styles';
 
 export const LoginForm = () => {
-  const navigate = useNavigate();
-
-  const loginMutation = useLoginMutation();
-
-  const queryClient = useQueryClient();
+  const { login, onAuthError } = useLoginFlow();
 
   const onLoginSuccess = (res: CredentialResponse) => {
     if (!res.credential) return;
-
-    loginMutation.mutate(res.credential, {
-      onSuccess: ({ user, isNewUser }) => {
-        queryClient.setQueryData(["session"], {
-          isAuthenticated: true,
-          userId: user.userId,
-          displayName: user.displayName,
-        });
-        navigate(isNewUser ? "/interest-select" : "/");
-      },
-    });
+    login(res.credential);
   };
 
   return (
     <Container>
       <Card>
-        <Link to={"/"}>
+        <Link to={'/'}>
           <Logo src={mainLogo} alt="Main Logo" />
         </Link>
 
         {/* 구글 로그인 */}
         <GoogleButtonWrapper>
-          <GoogleLogin
-            onSuccess={onLoginSuccess}
-            onError={() => console.error("구글 로그인 실패")}
-          />
+          <GoogleLogin onSuccess={onLoginSuccess} onError={onAuthError} />
         </GoogleButtonWrapper>
       </Card>
     </Container>
