@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import { useState } from 'react';
+
+import { AnimatePresence } from 'framer-motion';
+
+import { ExpandedArticle } from '@/features/article-expand';
+import type { ArticleDataTypes } from '@/shared/types/Article.types';
+import { SeeMore } from '@/shared/ui';
 
 import {
+  Image,
   ListContainer,
   SubArticle,
-  Image,
-  Title,
-  Texts,
   Summary,
-} from "./TopicsSubArticleList.styles";
-
-import { SeeMore } from "@/shared/ui";
-import type { ArticleDataTypes } from "@/shared/types/Article.types";
-
-import { ExpandedArticle } from "@/features/article-expand";
+  Texts,
+  Title,
+} from './TopicsSubArticleList.styles';
 
 interface ArticleDataProps {
   articles: ArticleDataTypes[];
@@ -40,7 +40,7 @@ const TopicsSubArticleList = ({ articles }: ArticleDataProps) => {
             onClick={() => setSelectedId(article.article_id)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
-            transition={{ type: "keyframes", stiffness: 200, damping: 20 }}
+            transition={{ type: 'keyframes', stiffness: 200, damping: 20 }}
           >
             <Texts>
               <Title>{article.title}</Title>

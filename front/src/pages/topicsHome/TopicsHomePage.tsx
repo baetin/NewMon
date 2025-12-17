@@ -1,22 +1,22 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from 'react';
 
+import { useParams } from 'react-router-dom';
+
+import { useSearchQuery } from '@/features/searchBar/hooks/useSearchQuery';
 import {
   TopicsMainArticle,
   TopicsSubArticleList,
-  useArticlesQuery,
   topicMap,
-} from "@/features/topicsHome";
-
+  useArticlesQuery,
+} from '@/features/topicsHome';
 import {
-  TopicsLeft,
   Right,
   TopicContainer,
-} from "@/shared/styles/articleContents.styles";
+  TopicsLeft,
+} from '@/shared/styles/articleContents.styles';
+import { Pagination, Spinner } from '@/shared/ui';
 
-import { Pagination, Spinner } from "@/shared/ui";
-import { useSearchQuery } from "@/features/searchBar/hooks/useSearchQuery";
-import { PaginationContainer } from "./TopicsHomePage.styles";
+import { PaginationContainer } from './TopicsHomePage.styles';
 
 const TopicsHomePage = () => {
   const [page, setPage] = useState(1);
@@ -25,7 +25,7 @@ const TopicsHomePage = () => {
   const topicId = topic ? topicMap[topic.toLowerCase()] : null;
 
   const searchParams = new URLSearchParams(location.search);
-  const searchValue = searchParams.get("search");
+  const searchValue = searchParams.get('search');
 
   if (!topicId) return <div>올바른 주제를 선택해주세요.</div>;
 
@@ -52,13 +52,15 @@ const TopicsHomePage = () => {
         </Right>
       </TopicContainer>
 
-      <PaginationContainer>
-        <Pagination
-          page={page}
-          totalPages={data.totalPages}
-          onPageChange={setPage}
-        />
-      </PaginationContainer>
+      {searchValue && (
+        <PaginationContainer>
+          <Pagination
+            page={page}
+            totalPages={data.totalPages}
+            onPageChange={setPage}
+          />
+        </PaginationContainer>
+      )}
     </>
   );
 };
