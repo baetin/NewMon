@@ -1,4 +1,4 @@
-import { FooterContainer, FooterLink } from "./Footeer.styles";
+import { FooterContainer, FooterLink } from "./Footer.styles";
 
 export const Footer = () => {
   return (

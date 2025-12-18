@@ -1,5 +1,9 @@
-export { Spinner } from "./Spinner/Spinner";
+export { Spinner } from './Spinner/Spinner';
 
-export { Footer } from "./Footer/Footer";
+export { Footer } from './Footer/Footer';
 
-export { Pagination } from "./Pagination/Pagination";
+export { Pagination } from './Pagination/Pagination';
+
+export { SeeMore } from './SeeMore/SeeMore';
+
+export { ScrollToTop } from './ScrollToTop/ScrollToTop';

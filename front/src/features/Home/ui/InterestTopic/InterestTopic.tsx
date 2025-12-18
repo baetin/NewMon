@@ -1,29 +1,28 @@
-import { useRecoilState } from "recoil";
-import { interestsSlideIndexSate } from "../../../../widgets/Home/model/examplesState";
-import { HotTopicContainer, TopicItem } from "../Topic.styles";
-import { useInterestsQuery } from "../../../../widgets/Home/hooks/useInterestsQuery";
+import { useInterestsQuery } from '@/features/home/hooks/useInterestsQuery';
+import { HotTopicContainer, TopicItem } from '@/features/home/ui/Topic.styles';
+
+import { useTopicSelection } from '../../hooks/useTopicSelection';
 
 export const InterestTopic = () => {
-  const { data: interestsTopicData, isLoading } = useInterestsQuery();
-  const [slideIndex, setSlideIndex] = useRecoilState(interestsSlideIndexSate);
-
-  const handleTopicClick = (index: number) => setSlideIndex(index);
-
+  const { data: interestsTopicData, isPending } = useInterestsQuery();
+  const { selectedIndex, selectTopic } = useTopicSelection('interest');
   return (
     <HotTopicContainer>
       <h3>🔥 Your Interest Topic</h3>
 
-      {isLoading && <p>Loading...</p>}
-      {!isLoading && interestsTopicData && interestsTopicData.length === 0 && (
+      {isPending && <p>Loading...</p>}
+
+      {!isPending && interestsTopicData?.length === 0 && (
         <div>데이터가 없습니다.</div>
       )}
-      {!isLoading && interestsTopicData && interestsTopicData.length > 0 && (
+
+      {!isPending && interestsTopicData && interestsTopicData.length > 0 && (
         <ul>
           {interestsTopicData.map((topic, i) => (
             <TopicItem
               key={topic.article_id}
-              $active={i === slideIndex}
-              onClick={() => handleTopicClick(i)}
+              $active={i === selectedIndex}
+              onClick={() => selectTopic(i)}
             >
               {topic.title}
             </TopicItem>
