@@ -1,8 +1,9 @@
-import axios from "axios";
+import axios from 'axios';
+
 import type {
   GetSearchArticlesProps,
   SearchArticlesResponse,
-} from "../model/types";
+} from '../model/types';
 
 export const getSearchArticles = async ({
   topicId,
@@ -10,7 +11,7 @@ export const getSearchArticles = async ({
   page = 1,
 }: GetSearchArticlesProps): Promise<SearchArticlesResponse> => {
   try {
-    const response = await axios.get("/api/articles/search", {
+    const response = await axios.get('/api/articles/search', {
       params: {
         topicId,
         keywordName,
@@ -19,7 +20,7 @@ export const getSearchArticles = async ({
     });
     return response.data;
   } catch (err) {
-    console.error("검색 기사 api 호출 실패:", err);
+    console.error('검색 기사 api 호출 실패:', err);
     throw err;
   }
 };

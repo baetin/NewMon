@@ -13,22 +13,21 @@ export const SearchBar = () => {
 
   const { topic } = useParams<{ topic: string }>();
 
+  const params = new URLSearchParams(location.search);
+  const searchParam = params.get('search') ?? '';
+
+  useEffect(() => {
+    setKeyword(searchParam);
+  }, [searchParam]);
+
   const onSearch = () => {
     const trimmed = keyword.trim();
     if (!trimmed) return;
 
-    const params = new URLSearchParams(location.search);
-    const currentSearch = params.get('search');
+    if (searchParam === trimmed) return;
 
-    if (currentSearch === trimmed) return;
     navigate(`/news/${topic}?search=${trimmed}&page=1`);
   };
-
-  useEffect(() => {
-    if (!topic) return;
-    setKeyword('');
-    navigate(`/news/${topic}?page=1`, { replace: true });
-  }, [topic]);
 
   return (
     <SearchContainer>
