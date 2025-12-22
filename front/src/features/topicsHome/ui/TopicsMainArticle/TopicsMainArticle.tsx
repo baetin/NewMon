@@ -1,27 +1,24 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from 'react';
+
+import { AnimatePresence, motion } from 'framer-motion';
+
+import { ExpandedArticle } from '@/features/article-expand';
+import type { ArticleDataTypes } from '@/shared/types/Article.types';
 
 import {
   ArticleContainer,
-  Title,
-  Summary,
-  Image,
   Contents,
-} from "./TopicsMainArticle.styles";
-
-import type { ArticleDataTypes } from "@/shared/types/Article.types";
-import { Spinner } from "@/shared/ui";
-
-import { ExpandedArticle } from "@/features/article-expand";
+  Image,
+  Summary,
+  Title,
+} from './TopicsMainArticle.styles';
 
 interface ArticleDataProps {
   article: ArticleDataTypes;
 }
 
-const TopicsMainArticle = ({ article }: ArticleDataProps) => {
+export const TopicsMainArticle = ({ article }: ArticleDataProps) => {
   const [selected, setSelected] = useState(false);
-
-  if (!article) return <Spinner />;
 
   return (
     <>
@@ -29,7 +26,7 @@ const TopicsMainArticle = ({ article }: ArticleDataProps) => {
         layoutId={`card-${article.article_id}`}
         onClick={() => setSelected(true)}
         whileTap={{ scale: 0.98 }}
-        style={{ cursor: "pointer", width: "100%" }}
+        style={{ cursor: 'pointer', width: '100%' }}
       >
         <ArticleContainer>
           {article.image_original_url && (
@@ -57,5 +54,3 @@ const TopicsMainArticle = ({ article }: ArticleDataProps) => {
     </>
   );
 };
-
-export default TopicsMainArticle;

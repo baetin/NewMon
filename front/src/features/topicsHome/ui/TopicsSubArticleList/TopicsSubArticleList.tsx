@@ -19,7 +19,7 @@ interface ArticleDataProps {
   articles: ArticleDataTypes[];
 }
 
-const TopicsSubArticleList = ({ articles }: ArticleDataProps) => {
+export const TopicsSubArticleList = ({ articles }: ArticleDataProps) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(4);
 
@@ -65,5 +65,3 @@ const TopicsSubArticleList = ({ articles }: ArticleDataProps) => {
     </>
   );
 };
-
-export default TopicsSubArticleList;
