@@ -1,6 +1,8 @@
-import { MdOutlineKeyboardDoubleArrowDown } from "react-icons/md";
-import { CircleButton, Container } from "./SeeMore.styles";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+
+import { MdOutlineKeyboardDoubleArrowDown } from 'react-icons/md';
+
+import { CircleButton, Container } from './SeeMore.styles';
 
 interface SeeMoreProps {
   onClick: () => void;

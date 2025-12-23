@@ -1,5 +1,6 @@
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { Container, NavButton, PageText } from "./Pagination.styles";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
+
+import { Container, NavButton, PageText } from './Pagination.styles';
 
 interface PaginationProps {
   page: number;

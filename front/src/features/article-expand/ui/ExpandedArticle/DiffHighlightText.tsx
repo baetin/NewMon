@@ -1,5 +1,6 @@
-import { diffWords } from "diff";
-import { DiffWordContainer } from "./DiffHighlightText.styles";
+import { diffWords } from 'diff';
+
+import { DiffWordContainer } from './DiffHighlightText.styles';
 
 interface DiffHighlightTextProps {
   previous: string | undefined;

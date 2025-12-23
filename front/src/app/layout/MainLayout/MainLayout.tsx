@@ -1,10 +1,11 @@
-import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useState } from 'react';
 
-import { Container, Main } from "./MainLayout.styles";
+import { Outlet } from 'react-router-dom';
 
-import { MainNavbar } from "@/app/layout/Navbar";
-import { Footer } from "@/shared/ui";
+import { MainNavbar } from '@/app/layout/Navbar';
+import { Footer } from '@/shared/ui';
+
+import { Container, Main } from './MainLayout.styles';
 
 export const MainLayout = () => {
   const [isClicked, setIsClicked] = useState(false);

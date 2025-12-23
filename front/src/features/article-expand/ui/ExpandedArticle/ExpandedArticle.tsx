@@ -20,7 +20,7 @@ interface ExpandedArticleProps {
   onClose: () => void;
 }
 
-const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
+export const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -96,4 +96,3 @@ const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
     </Overlay>
   );
 };
-export default ExpandedArticle;
