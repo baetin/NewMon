@@ -4,7 +4,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import { MainLayout } from '@/app/layout/MainLayout/MainLayout';
 import { ProtectedRoute } from '@/app/router/ProtectedRoute';
-import { Spinner } from '@/shared/ui';
+import { ScrollToTopPage, Spinner } from '@/shared/ui';
 
 // 페이지 lazy import
 
@@ -29,7 +29,12 @@ const SuspenseWrapper = (Component: React.LazyExoticComponent<any>) => {
 export const AppRouter = createBrowserRouter([
   {
     path: '/',
-    element: <MainLayout />,
+    element: (
+      <>
+        <ScrollToTopPage />
+        <MainLayout />
+      </>
+    ),
     children: [
       { index: true, element: SuspenseWrapper(HomePage) },
       { path: 'news/:topic', element: SuspenseWrapper(TopicsHomePage) },

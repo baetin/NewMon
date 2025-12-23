@@ -6,7 +6,7 @@ interface ScrollToTopProps {
   targetRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-export const ScrollToTop = ({ targetRef }: ScrollToTopProps) => {
+export const ScrollToTopComponent = ({ targetRef }: ScrollToTopProps) => {
   const onClick = () => {
     if (targetRef?.current) {
       targetRef.current.scrollTo({ top: 0, behavior: 'smooth' });
