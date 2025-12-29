@@ -1,23 +1,24 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+
+import { useNavigate } from 'react-router-dom';
+
+import { useUserInterestsMutation } from '@/features/interestSelect/hooks/useUserInterestsMutation';
+import { topics } from '@/shared/model/topics';
 
 import {
-  Container,
   Card,
-  Title,
-  InterestList,
+  Container,
   InterestItem,
+  InterestList,
   SubmitButton,
-} from "./InterestSelectForm.styles";
-
-import { useUserInterestsMutation } from "@/features/interestSelect/hooks/useUserInterestsMutation";
-import { topics } from "@/shared/model/topics";
+  Title,
+} from './InterestSelectForm.styles';
 
 export const InterestSelectForm = () => {
   const [selected, setSelected] = useState<number[]>([]);
 
   const navigate = useNavigate();
-  const { mutate, isPending } = useUserInterestsMutation(navigate);
+  const { mutate, isPending } = useUserInterestsMutation();
 
   const toggleInterest = (interest: number) => {
     setSelected((prev) => {
@@ -31,7 +32,19 @@ export const InterestSelectForm = () => {
     });
   };
 
-  const handleSubmit = () => mutate({ interests: selected });
+  const handleSubmit = () =>
+    mutate(
+      { interests: selected },
+      {
+        onSuccess: () => {
+          alert('관심 종목 설정에 성공했습니다.');
+          navigate('/');
+        },
+        onError: () => {
+          alert('시스템 오류로 관심 종목 설정에 실패했습니다.');
+        },
+      }
+    );
 
   return (
     <Container>
@@ -52,7 +65,7 @@ export const InterestSelectForm = () => {
           disabled={selected.length !== 2 || isPending}
           onClick={handleSubmit}
         >
-          {isPending ? "저장 중..." : "선택 완료"}
+          {isPending ? '저장 중...' : '선택 완료'}
         </SubmitButton>
       </Card>
     </Container>

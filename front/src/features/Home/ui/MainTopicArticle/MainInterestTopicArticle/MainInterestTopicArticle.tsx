@@ -4,7 +4,7 @@ import {
 } from 'react-icons/md';
 
 import { useAutoSlide } from '@/features/home/hooks/useAutoSlide';
-import { useInterestsQuery } from '@/features/home/hooks/useInterestsQuery';
+import { useInterestsQuery } from '@/features/home/hooks/useTopicQueries';
 import { useTopicSlideControl } from '@/features/home/hooks/useTopicSlideControl';
 import {
   ArrowButton,

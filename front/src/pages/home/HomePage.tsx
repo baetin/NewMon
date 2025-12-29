@@ -65,7 +65,7 @@ const HomePage = () => {
       </Left>
 
       <Right>
-        <MainRightSection isShow={isInterestTab} />
+        <MainRightSection />
       </Right>
     </TopicContainer>
   );

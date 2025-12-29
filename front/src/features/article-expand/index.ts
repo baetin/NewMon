@@ -1,1 +1,1 @@
-export { default as ExpandedArticle } from "./ui/ExpandedArticle/ExpandedArticle";
+export { ExpandedArticle } from './ui/ExpandedArticle/ExpandedArticle';

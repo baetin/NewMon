@@ -6,4 +6,6 @@ export { Pagination } from './Pagination/Pagination';
 
 export { SeeMore } from './SeeMore/SeeMore';
 
-export { ScrollToTop } from './ScrollToTop/ScrollToTop';
+export { ScrollToTopComponent } from './ScrollToTop/ScrollToTopComponent';
+
+export { ScrollToTopPage } from './ScrollToTop/ScrollToTopPage';

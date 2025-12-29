@@ -4,7 +4,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 
 import { DiffHighlightText } from '@/features/article-expand/ui/ExpandedArticle/DiffHighlightText';
 import type { ArticleDataTypes } from '@/shared/types/Article.types';
-import { ScrollToTop } from '@/shared/ui';
+import { ScrollToTopComponent } from '@/shared/ui';
 
 import {
   CloseBtn,
@@ -20,7 +20,7 @@ interface ExpandedArticleProps {
   onClose: () => void;
 }
 
-const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
+export const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -89,11 +89,10 @@ const ExpandedArticle = ({ article, onClose }: ExpandedArticleProps) => {
         )}
         {showScrollTop && (
           <ScrollContainer $visible={showScrollTop}>
-            <ScrollToTop targetRef={scrollRef} />
+            <ScrollToTopComponent targetRef={scrollRef} />
           </ScrollContainer>
         )}
       </ExpandedCard>
     </Overlay>
   );
 };
-export default ExpandedArticle;
