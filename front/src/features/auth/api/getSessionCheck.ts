@@ -3,7 +3,7 @@ import { http } from '@/shared/api';
 
 export const getSessionCheck = async (): Promise<SessionCheckProps> => {
   try {
-    const { data } = await http.get<SessionCheckProps>('/user/status');
+    const { data } = await http.get('/user/status');
 
     return data;
   } catch (err) {

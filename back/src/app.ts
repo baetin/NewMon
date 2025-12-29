@@ -1,11 +1,11 @@
 import express, { Application } from "express";
-import session from 'express-session'; // 세션 관리
-import cookieParser from 'cookie-parser'; // 쿠키 파서
+import session from "express-session"; // 세션 관리
+import cookieParser from "cookie-parser"; // 쿠키 파서
 import articleRouter from "./routes/article.router.js";
 import db from "./utils/db.js"; // DB 연결 풀 인스턴스를 가져옴
 import authRouter from "./routes/auth.router.js";
 import userRouter from "./routes/user.routers.js";
-import crawlRouter from './routes/crawl.router.js';
+import crawlRouter from "./routes/crawl.router.js";
 import mainRouter from "./routes/main.router.js";
 import * as dotenv from "dotenv";
 import startCronJob from "./services/scheduler.service.js";
@@ -17,16 +17,20 @@ const PORT = process.env.PORT || 3000;
 app.use(cookieParser());
 
 // 2. 세션 설정 (userId를 서버 메모리/DB에 저장하고 ID만 쿠키로 클라이언트에 전송)
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'fallback_key',
-    resave: false, 
-    saveUninitialized: true, 
-    cookie: { /* ... */ }
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "fallback_key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      /* ... */
+    },
+  })
+);
 
 // ----------------------------------------------------------------
 // 1. 미들웨어 설정 (중복 제거 및 JSON 파싱)
-// ----------------------------------------------------------------     
+// ----------------------------------------------------------------
 app.use(express.json()); // 표준 JSON 파서만 사용
 
 // ----------------------------------------------------------------

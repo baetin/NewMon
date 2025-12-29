@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { FaSignInAlt } from 'react-icons/fa';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -6,6 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth, useLogoutMutation } from '@/features/auth';
 import { SearchBar } from '@/features/searchBar';
 import mainLogo from '@/shared/assets/mainLogo.png';
+import { queryClient } from '@/shared/lib';
 import { topics } from '@/shared/model/topics';
 
 import {
@@ -28,7 +28,6 @@ interface IsClickedProps {
 export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const { isAuthenticated, displayName } = useAuth();
   const { mutate: logoutMutate, isPending } = useLogoutMutation();

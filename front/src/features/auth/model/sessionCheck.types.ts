@@ -1,4 +1,4 @@
-import type { LoginUser } from "@/shared/types/loginUser.types";
+import type { LoginUser } from '@/shared/types/loginUser.types';
 
 export interface SessionCheckProps extends LoginUser {
   isAuthenticated: boolean;
