@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Outlet } from 'react-router-dom';
 
-import { MainNavbar } from '@/app/layout/Navbar';
+import { MainNavbar, MobileNavbar } from '@/app/layout/Navbar';
 import { Footer } from '@/shared/ui';
 
 import { Container, Main } from './MainLayout.styles';
@@ -13,6 +13,7 @@ export const MainLayout = () => {
   return (
     <Container onClick={() => setIsClicked(false)}>
       <MainNavbar isClicked={isClicked} setIsClicked={setIsClicked} />
+      <MobileNavbar />
 
       <Main>
         <Outlet />

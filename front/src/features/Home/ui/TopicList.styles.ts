@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { MainRightSectionStyles } from '../../../shared/styles/mainRightSection.styles';
+import { MainRightSectionStyles } from '@/shared/styles/mainRightSection.styles';
 
 export const TopicContainer = styled(MainRightSectionStyles)`
   position: relative;
@@ -20,5 +20,9 @@ export const TopicItem = styled.li<{ $active: boolean }>`
 
   &:hover {
     color: ${({ theme }) => theme.colors.secondary};
+  }
+
+  ${({ theme }) => theme.media.tabletDown} {
+    font-size: 0.825rem;
   }
 `;

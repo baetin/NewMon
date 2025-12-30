@@ -16,4 +16,9 @@ export const SearchContainer = styled(ButtonBase)`
   &:has(input:focus) {
     border: 2px solid #000;
   }
+  ${({ theme }) => theme.media.tabletDown} {
+    input {
+      font-size: 0.8rem;
+    }
+  }
 `;

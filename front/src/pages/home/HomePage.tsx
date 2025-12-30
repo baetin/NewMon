@@ -38,7 +38,7 @@ const HomePage = () => {
   }, [tab, isAuthenticated]);
 
   return (
-    <TopicContainer>
+    <TopicContainer $variant="home">
       <Left>
         <TabWrapper>
           <Tab

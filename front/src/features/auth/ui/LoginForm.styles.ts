@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
   width: 100%;
   background: linear-gradient(135deg, #162733, #fa9675);
@@ -23,14 +23,13 @@ export const Card = styled.div`
 export const Logo = styled.img`
   height: 150px;
   width: 180px;
-  margin-bottom: 50px;
 `;
 
 export const GoogleButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-bottom: 10px;
+  margin: 20px 0;
   button {
     width: 100% !important;
     max-width: 250px;

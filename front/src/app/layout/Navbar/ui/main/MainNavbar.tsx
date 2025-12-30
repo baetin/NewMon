@@ -64,7 +64,7 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
         <Logo src={mainLogo} alt="Main Logo" onClick={() => navigate('/')} />
       </LeftSection>
 
-      {/* Center: Category Menu */}
+      {/* Center: ㅁㅔ뉴 */}
       <CenterSection>
         {topics.map((topic) => (
           <NavItem
@@ -79,12 +79,8 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
           </NavItem>
         ))}
       </CenterSection>
-
-      {/* Right: Search + Auth Menu */}
-
+      {/* Right : 검색, 로그인  */}
       <RightSection $isNewsPath={isNewsPath}>
-        {isNewsPath && <SearchBar />}
-
         {!isAuthenticated && (
           <LoginButton onClick={() => navigate('/login')}>
             <FaSignInAlt size={16} />
@@ -114,6 +110,7 @@ export const MainNavbar = ({ isClicked, setIsClicked }: IsClickedProps) => {
             )}
           </>
         )}
+        {isNewsPath && <SearchBar />}
       </RightSection>
     </Container>
   );
