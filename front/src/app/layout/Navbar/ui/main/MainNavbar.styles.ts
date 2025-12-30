@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import { ButtonBase } from "../../../../shared/styles/button.styles";
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { ButtonBase } from '@/shared/styles/button.styles';
 
 export const Container = styled.nav`
   display: flex;
@@ -8,16 +9,22 @@ export const Container = styled.nav`
   align-items: center;
   justify-content: space-between;
   padding: 12px 40px;
-  background-color: ${({ theme }) =>
-    `${theme.colors.background}CC`}; /* 투명도 80% 정도 */
+  background-color: ${({ theme }) => `${theme.colors.background}CC`};
 
-  backdrop-filter: blur(12px); /* 배경 콘텐츠 블러 */
+  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px); /* Safari 호환용 */
 
   border-bottom: 1px solid ${({ theme }) => theme.colors.text.sub};
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 9999;
+
+  ${({ theme }) => theme.media.tabletDown} {
+    height: 85px;
+  }
+  ${({ theme }) => theme.media.mobileDown} {
+    display: none;
+  }
 `;
 
 export const LeftSection = styled.div`
@@ -30,6 +37,10 @@ export const LeftSection = styled.div`
 export const Logo = styled.img`
   height: 100px;
   cursor: pointer;
+
+  ${({ theme }) => theme.media.tabletDown} {
+    height: 70px;
+  }
 `;
 
 export const CenterSection = styled.div`
@@ -38,11 +49,14 @@ export const CenterSection = styled.div`
   gap: 60px;
   flex: 1;
   justify-content: center;
+
+  flex-wrap: nowrap;
+  white-space: nowrap;
 `;
 
 export const NavItem = styled(Link)`
   position: relative;
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text.main};
   text-decoration: none;
@@ -53,7 +67,7 @@ export const NavItem = styled(Link)`
   }
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     left: 50%;
     bottom: -3px;
@@ -76,6 +90,9 @@ export const NavItem = styled(Link)`
   &.active {
     color: ${({ theme }) => theme.colors.secondary};
   }
+  ${({ theme }) => theme.media.tabletDown} {
+    font-size: 0.8rem;
+  }
 `;
 
 export const RightSection = styled.div<{ $isNewsPath: boolean }>`
@@ -84,7 +101,7 @@ export const RightSection = styled.div<{ $isNewsPath: boolean }>`
   align-items: center;
   gap: 14px;
   flex: 1;
-  justify-content: ${(props) => (props.$isNewsPath ? "baseline" : "center")};
+  justify-content: ${(props) => (props.$isNewsPath ? 'baseline' : 'center')};
 `;
 
 export const UserNameControllContainer = styled.div`
@@ -93,12 +110,17 @@ export const UserNameControllContainer = styled.div`
   align-items: center;
 
   cursor: pointer;
+
+  ${({ theme }) => theme.media.tabletDown} {
+    span {
+      font-size: 0.8rem;
+    }
+  }
 `;
 
 export const SelectDropDownContainer = styled.div`
   position: absolute;
   top: 100%;
-  /* right: 0; */
   background-color: ${({ theme }) => theme.colors.background};
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -124,5 +146,9 @@ export const LoginButton = styled(ButtonBase)`
   &:hover {
     transition: all 0.3s ease;
     background-color: ${({ theme }) => theme.colors.secondary};
+  }
+
+  ${({ theme }) => theme.media.tabletDown} {
+    font-size: 0.8rem;
   }
 `;

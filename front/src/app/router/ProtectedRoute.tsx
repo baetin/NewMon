@@ -6,10 +6,8 @@ import { useAuth } from '@/features/auth';
 import { Spinner } from '@/shared/ui';
 
 export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { isAuthenticated, isPending, isError } = useAuth();
+  const { isAuthenticated, isPending } = useAuth();
   if (isPending) return <Spinner />;
-
-  if (isError) return;
 
   if (!isAuthenticated) {
     return <Navigate to={'/login'} replace />;

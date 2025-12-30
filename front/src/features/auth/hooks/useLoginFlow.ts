@@ -1,6 +1,7 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+import { queryClient } from '@/shared/lib';
 
 import { useLoginMutation } from './useLoginMutation';
 
@@ -8,8 +9,6 @@ export const useLoginFlow = () => {
   const navigate = useNavigate();
 
   const loginMutation = useLoginMutation();
-
-  const queryClient = useQueryClient();
 
   const login = (credential: string) => {
     loginMutation.mutate(credential, {

@@ -42,7 +42,7 @@ const TopicsHomePage = () => {
 
   return (
     <>
-      <TopicContainer>
+      <TopicContainer $variant="topics">
         <TopicsLeft>
           <TopicsMainArticle article={mainArticle} />
         </TopicsLeft>

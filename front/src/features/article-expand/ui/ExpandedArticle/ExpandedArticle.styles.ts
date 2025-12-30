@@ -37,7 +37,7 @@ export const ExpandedCard = styled(motion.div)`
   -ms-overflow-style: none;
 
   h2 {
-    margin: 0 0 1rem 0;
+    margin: 1rem 0 1rem 0;
   }
   span {
     font-size: 0.9rem;
@@ -62,6 +62,7 @@ export const CloseBtn = styled.div`
   position: absolute;
   top: 10px;
   right: 30px;
+  padding: 8px;
   cursor: pointer;
 `;
 
@@ -75,6 +76,11 @@ export const SubInforContainer = styled.div`
   }
   .modified {
     background-color: yellow;
+  }
+
+  ${({ theme }) => theme.media.mobileDown} {
+    gap: 0.5rem;
+    font-size: 0.8rem;
   }
 `;
 

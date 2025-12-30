@@ -5,7 +5,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { SearchContainer } from './SearchBar.styles';
 
-export const SearchBar = () => {
+interface SearchBarProps {
+  autoFocus?: boolean;
+}
+
+export const SearchBar = ({ autoFocus }: SearchBarProps) => {
   const [keyword, setKeyword] = useState('');
 
   const navigate = useNavigate();
@@ -37,6 +41,7 @@ export const SearchBar = () => {
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && onSearch()}
+        autoFocus={autoFocus}
       />
       <MdSearch size={22} style={{ cursor: 'pointer' }} onClick={onSearch} />
     </SearchContainer>
